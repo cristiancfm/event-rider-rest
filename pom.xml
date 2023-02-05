@@ -8,10 +8,10 @@
     <relativePath /> <!-- lookup parent from repository -->
   </parent>
   <groupId>es.udc.asi</groupId>
-  <artifactId>post-example-rest</artifactId>
+  <artifactId>event-rider-rest</artifactId>
   <version>0.0.1-SNAPSHOT</version>
-  <name>post-example-rest</name>
-  <description>Ejemplo práctica ASI</description>
+  <name>event-rider-rest</name>
+  <description>Event Rider REST</description>
   <properties>
     <java.version>17</java.version>
   </properties>

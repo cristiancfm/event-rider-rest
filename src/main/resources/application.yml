@@ -2,9 +2,9 @@ spring:
   datasource:
     host: localhost
     port: 5432
-    database: asi
-    username: asi
-    password: asi
+    database: event_rider
+    username: event_rider_user
+    password: 1234
     url: jdbc:postgresql://${spring.datasource.host}:${spring.datasource.port}/${spring.datasource.database}
     hikari:
       connectionTimeout: 20000
