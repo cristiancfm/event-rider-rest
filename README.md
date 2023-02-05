@@ -1,4 +1,4 @@
-# project-bastiagueiro-rest
+# event-rider-rest
 
 ## Configuración
 
