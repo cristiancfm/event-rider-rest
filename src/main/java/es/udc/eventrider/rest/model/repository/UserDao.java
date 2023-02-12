@@ -9,7 +9,7 @@ public interface UserDao {
 
   User findById(Long id);
 
-  User findByLogin(String login);
+  User findByEmail(String email);
 
   void create(User user);
 

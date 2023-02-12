@@ -24,9 +24,9 @@ public class UserDaoJpa extends GenericDaoJpa implements UserDao {
   }
 
   @Override
-  public User findByLogin(String login) {
-    TypedQuery<User> query = entityManager.createQuery("from User u where u.login = :login", User.class)
-        .setParameter("login", login);
+  public User findByEmail(String email) {
+    TypedQuery<User> query = entityManager.createQuery("from User u where u.email = :email", User.class)
+        .setParameter("email", email);
     return DataAccessUtils.singleResult(query.getResultList());
   }
 

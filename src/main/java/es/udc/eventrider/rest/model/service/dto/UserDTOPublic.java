@@ -4,7 +4,7 @@ import es.udc.eventrider.rest.model.domain.User;
 
 public class UserDTOPublic {
   private Long id;
-  private String login;
+  private String email;
   private boolean active = true;
 
   public UserDTOPublic() {
@@ -12,7 +12,7 @@ public class UserDTOPublic {
 
   public UserDTOPublic(User user) {
     this.id = user.getId();
-    this.login = user.getLogin();
+    this.email = user.getEmail();
     this.setActive(user.isActive());
   }
 
@@ -24,12 +24,12 @@ public class UserDTOPublic {
     this.id = id;
   }
 
-  public String getLogin() {
-    return login;
+  public String getEmail() {
+    return email;
   }
 
-  public void setLogin(String login) {
-    this.login = login;
+  public void setEmail(String email) {
+    this.email = email;
   }
 
   public boolean isActive() {

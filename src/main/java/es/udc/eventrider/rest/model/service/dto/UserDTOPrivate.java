@@ -10,7 +10,7 @@ public class UserDTOPrivate {
 
   @NotEmpty
   @Size(min = 4)
-  private String login;
+  private String email;
 
   @NotEmpty
   @Size(min = 4)
@@ -22,7 +22,7 @@ public class UserDTOPrivate {
 
   public UserDTOPrivate(User user) {
     this.id = user.getId();
-    this.login = user.getLogin();
+    this.email = user.getEmail();
     // la contraseña no se rellena, nunca se envía al cliente
     this.authority = user.getAuthority().name();
   }
@@ -35,12 +35,12 @@ public class UserDTOPrivate {
     this.id = id;
   }
 
-  public String getLogin() {
-    return login;
+  public String getEmail() {
+    return email;
   }
 
-  public void setLogin(String login) {
-    this.login = login;
+  public void setEmail(String email) {
+    this.email = email;
   }
 
   public String getPassword() {

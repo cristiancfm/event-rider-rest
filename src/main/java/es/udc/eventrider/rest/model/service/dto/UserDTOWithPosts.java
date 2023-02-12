@@ -16,7 +16,7 @@ public class UserDTOWithPosts {
 
   public UserDTOWithPosts(User user) {
     this.id = user.getId();
-    this.login = user.getLogin();
+    this.login = user.getEmail();
     this.setActive(user.isActive());
     user.getPosts().forEach(p -> {
       this.posts.add(new PostDTO(p));

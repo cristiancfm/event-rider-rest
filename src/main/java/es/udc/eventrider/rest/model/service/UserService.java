@@ -48,20 +48,20 @@ public class UserService {
   }
 
   @Transactional(readOnly = false)
-  public void registerUser(String login, String password) throws UserLoginExistsException {
-    registerUser(login, password, false);
+  public void registerUser(String email, String password) throws UserLoginExistsException {
+    registerUser(email, password, false);
   }
 
   @Transactional(readOnly = false)
-  public void registerUser(String login, String password, boolean isAdmin) throws UserLoginExistsException {
-    if (userDAO.findByLogin(login) != null) {
-      throw new UserLoginExistsException(login);
+  public void registerUser(String email, String password, boolean isAdmin) throws UserLoginExistsException {
+    if (userDAO.findByEmail(email) != null) {
+      throw new UserLoginExistsException(email);
     }
 
     User user = new User();
     String encryptedPassword = passwordEncoder.encode(password);
 
-    user.setLogin(login);
+    user.setEmail(email);
     user.setPassword(encryptedPassword);
     user.setAuthority(UserAuthority.USER);
     if (isAdmin) {
@@ -90,9 +90,9 @@ public class UserService {
   }
 
   public UserDTOPrivate getCurrentUserWithAuthority() {
-    String currentUserLogin = SecurityUtils.getCurrentUserLogin();
-    if (currentUserLogin != null) {
-      return new UserDTOPrivate(userDAO.findByLogin(currentUserLogin));
+    String currentUserEmail = SecurityUtils.getCurrentUserLogin();
+    if (currentUserEmail != null) {
+      return new UserDTOPrivate(userDAO.findByEmail(currentUserEmail));
     }
     return null;
   }
