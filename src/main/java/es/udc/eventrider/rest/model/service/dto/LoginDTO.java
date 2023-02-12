@@ -5,18 +5,18 @@ import javax.validation.constraints.Size;
 
 public class LoginDTO {
   @NotEmpty
-  private String login;
+  private String email;
 
   @NotEmpty
   @Size(min = 4)
   private String password;
 
-  public String getLogin() {
-    return login;
+  public String getEmail() {
+    return email;
   }
 
-  public void setLogin(String login) {
-    this.login = login;
+  public void setEmail(String email) {
+    this.email = email;
   }
 
   public String getPassword() {

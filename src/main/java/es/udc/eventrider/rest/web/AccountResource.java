@@ -52,7 +52,7 @@ public class AccountResource {
   public JWTToken authenticate(@Valid @RequestBody LoginDTO loginDTO) throws CredentialsAreNotValidException {
 
     UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-        loginDTO.getLogin(), loginDTO.getPassword());
+        loginDTO.getEmail(), loginDTO.getPassword());
     try {
       Authentication authentication = authenticationManager.authenticate(authenticationToken);
       SecurityContextHolder.getContext().setAuthentication(authentication);
