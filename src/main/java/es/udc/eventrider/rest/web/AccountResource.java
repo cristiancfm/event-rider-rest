@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import es.udc.eventrider.rest.model.exception.UserLoginExistsException;
+import es.udc.eventrider.rest.model.exception.UserEmailExistsException;
 import es.udc.eventrider.rest.model.service.UserService;
 import es.udc.eventrider.rest.model.service.dto.LoginDTO;
 import es.udc.eventrider.rest.model.service.dto.UserDTOPrivate;
@@ -71,11 +71,11 @@ public class AccountResource {
 
   @PostMapping("/register")
   public void registerAccount(@Valid @RequestBody UserDTOPrivate account, Errors errors)
-      throws UserLoginExistsException, RequestBodyNotValidException {
+    throws UserEmailExistsException, RequestBodyNotValidException {
     if (errors.hasErrors()) {
       throw new RequestBodyNotValidException(errors);
     }
 
-    userService.registerUser(account.getEmail(), account.getPassword());
+    userService.registerUser(account.getName(), account.getSurname(), account.getEmail(), account.getPassword());
   }
 }

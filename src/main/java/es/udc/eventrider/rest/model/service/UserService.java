@@ -8,7 +8,7 @@ import es.udc.eventrider.rest.model.domain.User;
 import es.udc.eventrider.rest.model.domain.UserAuthority;
 import es.udc.eventrider.rest.model.exception.NotFoundException;
 import es.udc.eventrider.rest.model.exception.OperationNotAllowed;
-import es.udc.eventrider.rest.model.exception.UserLoginExistsException;
+import es.udc.eventrider.rest.model.exception.UserEmailExistsException;
 import es.udc.eventrider.rest.model.repository.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -48,19 +48,21 @@ public class UserService {
   }
 
   @Transactional(readOnly = false)
-  public void registerUser(String email, String password) throws UserLoginExistsException {
-    registerUser(email, password, false);
+  public void registerUser(String name, String surname, String email, String password) throws UserEmailExistsException {
+    registerUser(name, surname, email, password, false);
   }
 
   @Transactional(readOnly = false)
-  public void registerUser(String email, String password, boolean isAdmin) throws UserLoginExistsException {
+  public void registerUser(String name, String surname, String email, String password, boolean isAdmin) throws UserEmailExistsException {
     if (userDAO.findByEmail(email) != null) {
-      throw new UserLoginExistsException(email);
+      throw new UserEmailExistsException(email);
     }
 
     User user = new User();
     String encryptedPassword = passwordEncoder.encode(password);
 
+    user.setName(name);
+    user.setSurname(surname);
     user.setEmail(email);
     user.setPassword(encryptedPassword);
     user.setAuthority(UserAuthority.USER);

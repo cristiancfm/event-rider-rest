@@ -7,7 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import es.udc.eventrider.rest.model.domain.Post;
 import es.udc.eventrider.rest.model.domain.Tag;
 import es.udc.eventrider.rest.model.domain.User;
-import es.udc.eventrider.rest.model.exception.UserLoginExistsException;
+import es.udc.eventrider.rest.model.exception.UserEmailExistsException;
 import es.udc.eventrider.rest.model.repository.PostDao;
 import es.udc.eventrider.rest.model.repository.TagDao;
 import es.udc.eventrider.rest.model.repository.UserDao;
@@ -34,15 +34,15 @@ public class DatabaseLoader {
    * transaciones.
    */
   @Transactional(readOnly = false, rollbackFor = Exception.class)
-  public void loadData() throws UserLoginExistsException, InterruptedException {
-    userService.registerUser("pepe@mail.com", "pepe", true);
-    userService.registerUser("maria@mail.com", "maria", true);
-    userService.registerUser("laura@mail.com", "laura");
-    userService.registerUser("pedro@mail.com", "pedro");
+  public void loadData() throws UserEmailExistsException {
+    userService.registerUser("pepe", "pérez", "pepe@mail.com", "pepe", true);
+    userService.registerUser("maría", "machado", "maria@mail.com", "maria", true);
+    userService.registerUser("laura", "lorenzo", "laura@mail.com", "laura");
+    userService.registerUser("pedro", "pascal", "pedro@mail.com", "pedro");
     User pedro = userDAO.findByEmail("pedro@mail.com");
     pedro.setActive(false);
     userDAO.update(pedro);
-    userService.registerUser("ramon@mail.com", "ramon");
+    userService.registerUser("ramón", "rey", "ramon@mail.com", "ramon");
 
     Tag news = new Tag("news");
     Tag podcast = new Tag("podcast");

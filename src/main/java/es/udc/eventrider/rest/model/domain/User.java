@@ -23,6 +23,10 @@ public class User {
   @SequenceGenerator(name = "user_generator", sequenceName = "user_seq")
   private Long id;
 
+  private String name;
+
+  private String surname;
+
   @Column(unique = true)
   private String email;
 
@@ -45,6 +49,22 @@ public class User {
 
   public void setId(Long id) {
     this.id = id;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public String getSurname() {
+    return surname;
+  }
+
+  public void setSurname(String surname) {
+    this.surname = surname;
   }
 
   public String getEmail() {
