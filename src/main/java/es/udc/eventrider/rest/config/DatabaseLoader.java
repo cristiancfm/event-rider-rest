@@ -1,5 +1,7 @@
 package es.udc.eventrider.rest.config;
 
+import es.udc.eventrider.rest.model.domain.Event;
+import io.github.sebasbaumh.postgis.Point;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,6 +14,9 @@ import es.udc.eventrider.rest.model.repository.PostDao;
 import es.udc.eventrider.rest.model.repository.TagDao;
 import es.udc.eventrider.rest.model.repository.UserDao;
 import es.udc.eventrider.rest.model.service.UserService;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 @Configuration
 public class DatabaseLoader {
@@ -73,5 +78,18 @@ public class DatabaseLoader {
     //Thread.sleep(2000);
     post = new Post("Texto del sexto post", userDAO.findByEmail("pepe@mail.com"));
     postDAO.create(post);
+
+    ArrayList<String> eventImages = new ArrayList<>();
+    eventImages.add("path/to/img1");
+    eventImages.add("path/to/img2");
+    Event event = new Event("Meisel 93", userDAO.findByEmail("pepe@mail.com"),
+                            LocalDateTime.of(2022, 10, 20, 9, 0),
+                            LocalDateTime.of(2023, 05, 10, 22, 0),
+                            new Point(43.3613731, -8.3901377), "Puerto de A Coruña",
+                  "Evento de Meisel 93",
+                            new ArrayList<String>(),
+                            Event.EventStatus.UNREVIEWED);
+
+    //añadir eventDAO
   }
 }

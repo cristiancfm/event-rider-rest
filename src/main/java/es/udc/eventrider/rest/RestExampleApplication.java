@@ -2,6 +2,7 @@ package es.udc.eventrider.rest;
 
 import javax.annotation.PostConstruct;
 
+import es.udc.eventrider.rest.model.exception.UserEmailExistsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +11,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Lazy;
 
 import es.udc.eventrider.rest.config.DatabaseLoader;
-import es.udc.eventrider.rest.model.exception.UserLoginExistsException;
 
 @SpringBootApplication
 public class RestExampleApplication {
@@ -28,7 +28,7 @@ public class RestExampleApplication {
   public void init() throws InterruptedException {
     try {
       databaseLoader.loadData();
-    } catch (UserLoginExistsException e) {
+    } catch (UserEmailExistsException e) {
       logger.error(e.getMessage(), e);
     }
   }
