@@ -1,67 +1,45 @@
-package es.udc.eventrider.rest.model.domain;
+package es.udc.eventrider.rest.model.service.dto;
 
-import io.github.sebasbaumh.postgis.Point;
+import es.udc.eventrider.rest.model.domain.Event;
 
-import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
-@Entity
-public class Event {
-  @Id
-  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "event_generator")
-  @SequenceGenerator(name = "event_generator", sequenceName = "event_seq")
+public class EventDTO {
   private Long id;
-
+  @NotEmpty
   private String title;
-
-  @ManyToOne(fetch = FetchType.LAZY, optional = false)
-  private User host;
-
+  @NotNull
+  private UserDTOPublic host;
   private LocalDateTime startingDate;
-
   private LocalDateTime endingDate;
-
   private String coordinates;
-
   private String locationDetails;
-
   private String description;
-
-  @ElementCollection
-  @CollectionTable(name = "event_image_paths", joinColumns = @JoinColumn(name = "owner_id"))
-  private List<String> imagePaths = new ArrayList<>();
-
+  private Boolean hasImages = false;
   private String adminComments;
-
   private String cancellationReason;
+  private Event.EventStatus eventStatus;
 
-  public enum EventStatus {
-    UNREVIEWED,
-    PUBLISHED,
-    REJECTED,
-    CANCELLED
-  }
-  @Enumerated(EnumType.STRING)
-  private EventStatus eventStatus;
-
-
-  public Event(){
+  public EventDTO() {
   }
 
-  public Event(String title, User host, LocalDateTime startingDate, LocalDateTime endingDate,
-               String coordinates, String locationDetails, String description,
-               List<String> imagePaths, EventStatus eventStatus) {
-    this.title = title;
-    this.host = host;
-    this.startingDate = startingDate;
-    this.endingDate = endingDate;
-    this.coordinates = coordinates;
-    this.locationDetails = locationDetails;
-    this.description = description;
-    this.imagePaths = imagePaths;
-    this.eventStatus = eventStatus;
+  public EventDTO(Event event) {
+    this.id = event.getId();
+    this.title = event.getTitle();
+    this.host = new UserDTOPublic(event.getHost());
+    this.startingDate = event.getStartingDate();
+    this.endingDate = event.getEndingDate();
+    this.coordinates = event.getCoordinates();
+    this.locationDetails = event.getLocationDetails();
+    this.description = event.getDescription();
+    if(event.getImagePaths() != null){
+      this.hasImages = true;
+    }
+    this.adminComments = event.getAdminComments();
+    this.cancellationReason = event.getCancellationReason();
+    this.eventStatus = event.getEventStatus();
   }
 
   public Long getId() {
@@ -80,11 +58,11 @@ public class Event {
     this.title = title;
   }
 
-  public User getHost() {
+  public UserDTOPublic getHost() {
     return host;
   }
 
-  public void setHost(User host) {
+  public void setHost(UserDTOPublic host) {
     this.host = host;
   }
 
@@ -128,12 +106,12 @@ public class Event {
     this.description = description;
   }
 
-  public List<String> getImagePaths() {
-    return imagePaths;
+  public Boolean getHasImages() {
+    return hasImages;
   }
 
-  public void setImagePaths(List<String> imagePaths) {
-    this.imagePaths = imagePaths;
+  public void setHasImages(Boolean hasImages) {
+    this.hasImages = hasImages;
   }
 
   public String getAdminComments() {
@@ -152,11 +130,11 @@ public class Event {
     this.cancellationReason = cancellationReason;
   }
 
-  public EventStatus getEventStatus() {
+  public Event.EventStatus getEventStatus() {
     return eventStatus;
   }
 
-  public void setEventStatus(EventStatus eventStatus) {
+  public void setEventStatus(Event.EventStatus eventStatus) {
     this.eventStatus = eventStatus;
   }
 }

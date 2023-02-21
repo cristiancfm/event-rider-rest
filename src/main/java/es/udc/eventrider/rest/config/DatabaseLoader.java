@@ -1,6 +1,7 @@
 package es.udc.eventrider.rest.config;
 
 import es.udc.eventrider.rest.model.domain.Event;
+import es.udc.eventrider.rest.model.repository.EventDao;
 import io.github.sebasbaumh.postgis.Point;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -25,6 +26,9 @@ public class DatabaseLoader {
 
   @Autowired
   private UserService userService;
+
+  @Autowired
+  private EventDao eventDao;
 
   @Autowired
   private PostDao postDAO;
@@ -85,11 +89,11 @@ public class DatabaseLoader {
     Event event = new Event("Meisel 93", userDAO.findByEmail("pepe@mail.com"),
                             LocalDateTime.of(2022, 10, 20, 9, 0),
                             LocalDateTime.of(2023, 05, 10, 22, 0),
-                            new Point(43.3613731, -8.3901377), "Puerto de A Coruña",
+                            "43.3613731, -8.3901377", "Puerto de A Coruña",
                   "Evento de Meisel 93",
                             new ArrayList<String>(),
                             Event.EventStatus.UNREVIEWED);
 
-    //añadir eventDAO
+    eventDao.create(event);
   }
 }

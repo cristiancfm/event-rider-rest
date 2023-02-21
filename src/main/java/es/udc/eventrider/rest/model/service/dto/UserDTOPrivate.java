@@ -28,6 +28,8 @@ public class UserDTOPrivate {
 
   public UserDTOPrivate(User user) {
     this.id = user.getId();
+    this.name = user.getName();
+    this.surname = user.getSurname();
     this.email = user.getEmail();
     // la contraseña no se rellena, nunca se envía al cliente
     this.authority = user.getAuthority().name();

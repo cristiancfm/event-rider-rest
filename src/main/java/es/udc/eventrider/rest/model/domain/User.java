@@ -38,6 +38,9 @@ public class User {
   @OneToMany(mappedBy = "author", cascade = CascadeType.REMOVE)
   private List<Post> posts = new ArrayList<>();
 
+  @OneToMany(mappedBy = "host", cascade = CascadeType.REMOVE)
+  private List<Event> events = new ArrayList<>();
+
   private boolean active = true;
 
   public User() {
@@ -97,6 +100,14 @@ public class User {
 
   public void setPosts(List<Post> posts) {
     this.posts = posts;
+  }
+
+  public List<Event> getEvents() {
+    return events;
+  }
+
+  public void setEvents(List<Event> events) {
+    this.events = events;
   }
 
   public boolean isActive() {
