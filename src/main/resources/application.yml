@@ -34,5 +34,5 @@ properties:
   clientHost: http://localhost:1234
   jwtSecretKey: sdfgsdgsdfgsdfgdsfgdfgsdfgsdgs23458h234242352amoq348agfasdf
   jwtValidity: 7200
-  imagesPath: /tmp/images/
-#  imagesPath: C:\\Users\\Public\\Pictures\\asi\\
+# imagesPath: /tmp/images/
+  imagesPath: C:\\Users\\Public\\Pictures\\event-rider\\
