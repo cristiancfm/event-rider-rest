@@ -1,10 +1,6 @@
 package es.udc.eventrider.rest.model.service.util;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -29,26 +25,45 @@ public class ImageServiceFilesystem implements ImageService {
   private Path rootLoc;
 
   @Override
-  public String saveImage(MultipartFile file, Long id) throws ModelException {
+  public String saveImage(Entity entity, MultipartFile file, Long id) throws ModelException {
     if (file.isEmpty()) {
       throw new ModelException("No se ha enviado ningún fichero");
     }
     String filename = StringUtils.cleanPath(file.getOriginalFilename());
 
+    String entityFolder = getEntityFolder(entity);
+    if(entityFolder == null) {
+      throw new ModelException("No se ha especificado el tipo de entidad para guardar la imagen");
+    }
+
+    int imgId;
+
     try (InputStream inputStream = file.getInputStream()) {
-      Files.copy(inputStream, getRootLoc().resolve(id + getExtension(filename)), StandardCopyOption.REPLACE_EXISTING);
+      Path basePath = getRootLoc().resolve(entityFolder + "/" + id + "/" + "images");
+      Files.createDirectories(basePath);
+
+      imgId = new File(basePath.toString()).list().length;
+      Files.copy(inputStream, basePath.resolve(imgId + getExtension(filename)),
+        StandardCopyOption.REPLACE_EXISTING);
     } catch (IOException e) {
       e.printStackTrace();
       throw new ModelException("Problema procesando el fichero");
     }
 
-    return filename;
+    return imgId + getExtension(filename);
   }
 
   @Override
-  public ImageDTO getImage(String imagePath, Long id) throws ModelException {
+  public ImageDTO getImage(Entity entity, String imagePath, Long id) throws ModelException {
     try {
-      InputStream is = new FileInputStream(properties.getImagesPath() + id + getExtension(imagePath));
+
+      String entityFolder = getEntityFolder(entity);
+      if (entityFolder == null){
+        throw new ModelException("No se ha especificado el tipo de entidad para guardar la imagen");
+      }
+
+      Path path = getRootLoc().resolve(entityFolder + "/" + id + "/" + "images" + "/" + imagePath);
+      InputStream is = new FileInputStream(path.toString());
       byte[] buffer = new byte[1024];
       ByteArrayOutputStream os = new ByteArrayOutputStream();
       int len;
@@ -63,6 +78,16 @@ public class ImageServiceFilesystem implements ImageService {
       e.printStackTrace();
       throw new ModelException("Problem while getting the image");
     }
+  }
+
+  private String getEntityFolder(Entity entity) {
+    if(entity == Entity.EVENT) {
+      return "events";
+    }
+    else if(entity == Entity.POST) {
+      return "posts";
+    }
+    return null;
   }
 
   private Path getRootLoc() {
