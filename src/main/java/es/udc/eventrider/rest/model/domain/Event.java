@@ -159,4 +159,12 @@ public class Event {
   public void setEventStatus(EventStatus eventStatus) {
     this.eventStatus = eventStatus;
   }
+
+  public String getImagePath(Long imgId) {
+    return this.imagePaths.get(Math.toIntExact(imgId));
+  }
+
+  public void setImagePath(String imagePath) {
+    this.imagePaths.add(imagePath);
+  }
 }

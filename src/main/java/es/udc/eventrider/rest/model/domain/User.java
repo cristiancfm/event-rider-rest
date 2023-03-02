@@ -41,6 +41,7 @@ public class User {
   @OneToMany(mappedBy = "host", cascade = CascadeType.REMOVE)
   private List<Event> events = new ArrayList<>();
 
+  //el usuario está activo (no está suspendido)
   private boolean active = true;
 
   public User() {

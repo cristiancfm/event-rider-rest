@@ -7,7 +7,12 @@ import es.udc.eventrider.rest.model.service.dto.ImageDTO;
 
 public interface ImageService {
 
-  String saveImage(MultipartFile file, Long id) throws ModelException;
+  enum Entity{
+    EVENT,
+    POST,
+  }
 
-  ImageDTO getImage(String imagePath, Long id) throws ModelException;
+  String saveImage(Entity entity, MultipartFile file, Long id) throws ModelException;
+
+  ImageDTO getImage(Entity entity, String imagePath, Long id) throws ModelException;
 }

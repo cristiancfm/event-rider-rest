@@ -130,7 +130,7 @@ public class PostService {
     if (post == null)
       throw new NotFoundException(id.toString(), Post.class);
 
-    String filePath = imageService.saveImage(file, post.getId());
+    String filePath = imageService.saveImage(ImageService.Entity.POST, file, post.getId());
     post.setImagePath(filePath);
     postDAO.update(post);
   }
@@ -143,6 +143,6 @@ public class PostService {
     if (post.getImagePath() == null) {
       return null;
     }
-    return imageService.getImage(post.getImagePath(), post.getId());
+    return imageService.getImage(ImageService.Entity.POST, post.getImagePath(), post.getId());
   }
 }

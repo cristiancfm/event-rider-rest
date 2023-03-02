@@ -16,8 +16,10 @@ import es.udc.eventrider.rest.model.repository.TagDao;
 import es.udc.eventrider.rest.model.repository.UserDao;
 import es.udc.eventrider.rest.model.service.UserService;
 
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 
 @Configuration
 public class DatabaseLoader {
@@ -35,6 +37,9 @@ public class DatabaseLoader {
 
   @Autowired
   private TagDao tagDAO;
+
+  @Autowired
+  private Properties properties;
 
   /*
    * Para hacer que la carga de datos sea transacional, hay que cargar el propio
@@ -83,15 +88,16 @@ public class DatabaseLoader {
     post = new Post("Texto del sexto post", userDAO.findByEmail("pepe@mail.com"));
     postDAO.create(post);
 
-    ArrayList<String> eventImages = new ArrayList<>();
-    eventImages.add("path/to/img1");
-    eventImages.add("path/to/img2");
+    List<String> eventImages = new ArrayList<>();
+    eventImages.add("0.jpg");
+    eventImages.add("1.jpg");
+    eventImages.add("2.jpg");
     Event event = new Event("Meisel 93", userDAO.findByEmail("pepe@mail.com"),
                             LocalDateTime.of(2022, 10, 20, 9, 0),
                             LocalDateTime.of(2023, 05, 10, 22, 0),
                             "43.3613731, -8.3901377", "Puerto de A Coruña",
                   "Evento de Meisel 93",
-                            new ArrayList<String>(),
+                            eventImages,
                             Event.EventStatus.UNREVIEWED);
 
     eventDao.create(event);

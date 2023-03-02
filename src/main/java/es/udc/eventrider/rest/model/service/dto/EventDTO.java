@@ -17,7 +17,7 @@ public class EventDTO {
   private String coordinates;
   private String locationDetails;
   private String description;
-  private Boolean hasImages = false;
+  private Integer numImages;
   private String adminComments;
   private String cancellationReason;
   private Event.EventStatus eventStatus;
@@ -34,9 +34,7 @@ public class EventDTO {
     this.coordinates = event.getCoordinates();
     this.locationDetails = event.getLocationDetails();
     this.description = event.getDescription();
-    if(event.getImagePaths() != null){
-      this.hasImages = true;
-    }
+    this.numImages = event.getImagePaths().size();
     this.adminComments = event.getAdminComments();
     this.cancellationReason = event.getCancellationReason();
     this.eventStatus = event.getEventStatus();
@@ -106,12 +104,12 @@ public class EventDTO {
     this.description = description;
   }
 
-  public Boolean getHasImages() {
-    return hasImages;
+  public Integer getNumImages() {
+    return numImages;
   }
 
-  public void setHasImages(Boolean hasImages) {
-    this.hasImages = hasImages;
+  public void setNumImages(Integer numImages) {
+    this.numImages = numImages;
   }
 
   public String getAdminComments() {
