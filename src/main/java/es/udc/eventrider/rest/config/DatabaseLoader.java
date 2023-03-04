@@ -93,12 +93,26 @@ public class DatabaseLoader {
     eventImages.add("1.jpg");
     eventImages.add("2.jpg");
     Event event = new Event("Meisel 93", userDAO.findByEmail("pepe@mail.com"),
-                            LocalDateTime.of(2022, 10, 20, 9, 0),
-                            LocalDateTime.of(2023, 05, 10, 22, 0),
-                            "43.3613731, -8.3901377", "Puerto de A Coruña",
-                  "Evento de Meisel 93",
-                            eventImages,
-                            Event.EventStatus.UNREVIEWED);
+      LocalDateTime.of(2022, 10, 20, 9, 0),
+      LocalDateTime.of(2023, 05, 10, 22, 0),
+      "43.3613731, -8.3901377", "Puerto de A Coruña",
+      String.format("Muestra de fotografías realizadas por Steven Meisel, centradas en el año 1993. " +
+        "El evento podrá visitarse de forma gratuita en el puerto de A Coruña"),
+      eventImages,
+      Event.EventStatus.UNREVIEWED);
+
+    eventDao.create(event);
+
+
+    eventImages = new ArrayList<>();
+    eventImages.add("foo0.jpg");
+    event = new Event("Foo Fighters Tour", userDAO.findByEmail("pepe@mail.com"),
+      LocalDateTime.of(2022, 10, 20, 9, 0),
+      LocalDateTime.of(2023, 05, 10, 22, 0),
+      "43.3613731, -8.3901377", "Coliseum de A Coruña",
+      String.format("Foo Fighters Tour"),
+      eventImages,
+      Event.EventStatus.UNREVIEWED);
 
     eventDao.create(event);
   }
