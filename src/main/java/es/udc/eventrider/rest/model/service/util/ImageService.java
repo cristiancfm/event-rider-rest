@@ -10,6 +10,7 @@ public interface ImageService {
   enum Entity{
     EVENT,
     POST,
+    USER,
   }
 
   String saveImage(Entity entity, MultipartFile file, Long id) throws ModelException;

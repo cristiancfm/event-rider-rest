@@ -53,8 +53,9 @@ public class DatabaseLoader {
     userService.registerUser("maría", "machado", "maria@mail.com", "maria", true);
     userService.registerUser("laura", "lorenzo", "laura@mail.com", "laura");
     userService.registerUser("pedro", "pascal", "pedro@mail.com", "pedro");
-    User pedro = userDAO.findByEmail("pedro@mail.com");
-    pedro.setActive(false);
+    User pedro = userDAO.findByEmail("pepe@mail.com");
+    pedro.setActive(true);
+    pedro.setImagePath("profile.jpg");
     userDAO.update(pedro);
     userService.registerUser("ramón", "rey", "ramon@mail.com", "ramon");
 
@@ -99,20 +100,21 @@ public class DatabaseLoader {
       String.format("Muestra de fotografías realizadas por Steven Meisel, centradas en el año 1993. " +
         "El evento podrá visitarse de forma gratuita en el puerto de A Coruña"),
       eventImages,
-      Event.EventStatus.UNREVIEWED);
+      Event.EventStatus.PUBLISHED);
 
     eventDao.create(event);
 
 
     eventImages = new ArrayList<>();
     eventImages.add("foo0.jpg");
+    eventImages.add("foo1.jpg");
     event = new Event("Foo Fighters Tour", userDAO.findByEmail("pepe@mail.com"),
-      LocalDateTime.of(2022, 10, 20, 9, 0),
-      LocalDateTime.of(2023, 05, 10, 22, 0),
+      LocalDateTime.of(2023, 10, 20, 22, 0),
+      LocalDateTime.of(2023, 10, 20, 0, 0),
       "43.3613731, -8.3901377", "Coliseum de A Coruña",
       String.format("Foo Fighters Tour"),
       eventImages,
-      Event.EventStatus.UNREVIEWED);
+      Event.EventStatus.PUBLISHED);
 
     eventDao.create(event);
   }

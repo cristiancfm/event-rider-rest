@@ -35,6 +35,8 @@ public class User {
   @Enumerated(EnumType.STRING)
   private UserAuthority authority;
 
+  private String imagePath;
+
   @OneToMany(mappedBy = "author", cascade = CascadeType.REMOVE)
   private List<Post> posts = new ArrayList<>();
 
@@ -93,6 +95,14 @@ public class User {
 
   public void setAuthority(UserAuthority authority) {
     this.authority = authority;
+  }
+
+  public String getImagePath() {
+    return imagePath;
+  }
+
+  public void setImagePath(String imagePath) {
+    this.imagePath = imagePath;
   }
 
   public List<Post> getPosts() {
