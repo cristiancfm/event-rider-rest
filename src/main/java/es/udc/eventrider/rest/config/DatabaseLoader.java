@@ -56,6 +56,7 @@ public class DatabaseLoader {
     User pedro = userDAO.findByEmail("pepe@mail.com");
     pedro.setActive(true);
     pedro.setImagePath("profile.jpg");
+    pedro.setBiography("Me llamo Pepe y organizo eventos");
     userDAO.update(pedro);
     userService.registerUser("ramón", "rey", "ramon@mail.com", "ramon");
 

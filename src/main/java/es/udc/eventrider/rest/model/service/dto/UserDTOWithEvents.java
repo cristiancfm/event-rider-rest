@@ -13,6 +13,7 @@ public class UserDTOWithEvents {
   private String name;
   private String surname;
   private String email;
+  private String biography;
   private String image;
   private boolean active = true;
   private List<EventDTO> hostedEvents = new ArrayList<>();
@@ -27,6 +28,7 @@ public class UserDTOWithEvents {
     this.name = user.getName();
     this.surname = user.getSurname();
     this.email = user.getEmail();
+    this.biography = user.getBiography();
     this.image = user.getImagePath();
     this.setActive(user.isActive());
     user.getEvents().forEach(event -> {
@@ -72,6 +74,14 @@ public class UserDTOWithEvents {
 
   public void setEmail(String email) {
     this.email = email;
+  }
+
+  public String getBiography() {
+    return biography;
+  }
+
+  public void setBiography(String biography) {
+    this.biography = biography;
   }
 
   public String getImage() {

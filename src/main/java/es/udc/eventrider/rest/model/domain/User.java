@@ -31,6 +31,7 @@ public class User {
   private String email;
 
   private String password;
+  private String biography;
 
   @Enumerated(EnumType.STRING)
   private UserAuthority authority;
@@ -87,6 +88,14 @@ public class User {
 
   public void setPassword(String password) {
     this.password = password;
+  }
+
+  public String getBiography() {
+    return biography;
+  }
+
+  public void setBiography(String biography) {
+    this.biography = biography;
   }
 
   public UserAuthority getAuthority() {
