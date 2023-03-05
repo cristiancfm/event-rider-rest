@@ -83,9 +83,10 @@ public class ImageServiceFilesystem implements ImageService {
   private String getEntityFolder(Entity entity) {
     if(entity == Entity.EVENT) {
       return "events";
-    }
-    else if(entity == Entity.POST) {
+    } else if(entity == Entity.POST) {
       return "posts";
+    } else if (entity == Entity.USER) {
+      return "users";
     }
     return null;
   }
