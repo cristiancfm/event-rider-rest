@@ -60,6 +60,7 @@ public class SecurityConfiguration {
       .antMatchers(HttpMethod.POST, "/api/register").permitAll()
       .antMatchers(HttpMethod.GET, "/api/posts/**").permitAll()
       .antMatchers(HttpMethod.GET, "/api/events/**").permitAll()
+      .antMatchers(HttpMethod.GET, "/api/event-categories/**").permitAll()
       .antMatchers(HttpMethod.GET, "/api/users/**").permitAll()
       .antMatchers(HttpMethod.GET, "/api/tags").permitAll()
       .antMatchers("/**").authenticated().and()

@@ -4,7 +4,6 @@ import es.udc.eventrider.rest.model.domain.Event;
 import es.udc.eventrider.rest.model.domain.User;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.stream.Collectors;
 
 public class UserDTOPublic {
@@ -30,11 +29,11 @@ public class UserDTOPublic {
     this.image = user.getImagePath();
     this.setActive(user.isActive());
     this.upcomingEvents = user.getEvents()
-      .stream().filter(event -> event.getEventStatus() == Event.EventStatus.PUBLISHED &&
+      .stream().filter(event -> event.getStatus() == Event.EventStatus.PUBLISHED &&
         !event.getStartingDate().isBefore(LocalDateTime.now()))
-      .collect(Collectors.toList()).size(); //TODO: INTENTAR DEVOLVER A LISTA
+      .collect(Collectors.toList()).size();
     this.totalEvents = user.getEvents()
-      .stream().filter(event -> event.getEventStatus() == Event.EventStatus.PUBLISHED)
+      .stream().filter(event -> event.getStatus() == Event.EventStatus.PUBLISHED)
       .collect(Collectors.toList()).size();
   }
 

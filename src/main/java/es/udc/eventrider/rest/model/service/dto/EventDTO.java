@@ -21,7 +21,8 @@ public class EventDTO {
   private Integer numImages;
   private String adminComments;
   private String cancellationReason;
-  private Event.EventStatus eventStatus;
+  private Event.EventStatus status;
+  private EventCategoryDTO category;
 
   public EventDTO() {
   }
@@ -39,7 +40,8 @@ public class EventDTO {
     this.numImages = event.getImagePaths().size();
     this.adminComments = event.getAdminComments();
     this.cancellationReason = event.getCancellationReason();
-    this.eventStatus = event.getEventStatus();
+    this.status = event.getStatus();
+    this.category = new EventCategoryDTO(event.getCategory());
   }
 
   public Long getId() {
@@ -138,11 +140,19 @@ public class EventDTO {
     this.cancellationReason = cancellationReason;
   }
 
-  public Event.EventStatus getEventStatus() {
-    return eventStatus;
+  public Event.EventStatus getStatus() {
+    return status;
   }
 
-  public void setEventStatus(Event.EventStatus eventStatus) {
-    this.eventStatus = eventStatus;
+  public void setStatus(Event.EventStatus status) {
+    this.status = status;
+  }
+
+  public EventCategoryDTO getCategory() {
+    return category;
+  }
+
+  public void setCategory(EventCategoryDTO category) {
+    this.category = category;
   }
 }
