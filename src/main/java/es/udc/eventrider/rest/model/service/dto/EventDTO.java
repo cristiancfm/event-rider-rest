@@ -14,7 +14,8 @@ public class EventDTO {
   private UserDTOPublic host;
   private LocalDateTime startingDate;
   private LocalDateTime endingDate;
-  private String coordinates;
+  private double coordinateX;
+  private double coordinateY;
   private String locationDetails;
   private String description;
   private Integer numImages;
@@ -31,7 +32,8 @@ public class EventDTO {
     this.host = new UserDTOPublic(event.getHost());
     this.startingDate = event.getStartingDate();
     this.endingDate = event.getEndingDate();
-    this.coordinates = event.getCoordinates();
+    this.coordinateX = event.getPoint().getX();
+    this.coordinateY = event.getPoint().getY();
     this.locationDetails = event.getLocationDetails();
     this.description = event.getDescription();
     this.numImages = event.getImagePaths().size();
@@ -80,12 +82,20 @@ public class EventDTO {
     this.endingDate = endingDate;
   }
 
-  public String getCoordinates() {
-    return coordinates;
+  public double getCoordinateX() {
+    return coordinateX;
   }
 
-  public void setCoordinates(String coordinates) {
-    this.coordinates = coordinates;
+  public void setCoordinateX(double coordinateX) {
+    this.coordinateX = coordinateX;
+  }
+
+  public double getCoordinateY() {
+    return coordinateY;
+  }
+
+  public void setCoordinateY(double coordinateY) {
+    this.coordinateY = coordinateY;
   }
 
   public String getLocationDetails() {

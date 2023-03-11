@@ -9,6 +9,9 @@ en el mismo fichero
 la propiedad `imagesPath` con la ruta de la carpeta donde se guardan las imágenes (C:\\carpeta\\... en sistemas
 Windows o /carpeta/... en sistemas UNIX/Linux).
 
+Es posible que sea necesario ejecutar el comando `CREATE EXTENSION postgis;` abriendo pgAdmin, seleccionando la
+base de datos `event_rider` y haciendo click en el icono de "Query Tool".
+
 ## Ejecutar
 
 ```

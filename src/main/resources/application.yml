@@ -17,6 +17,11 @@ spring:
     properties:
       hibernate:
         format_sql: true
+        dialect: org.hibernate.spatial.dialect.postgis.PostgisDialect
+  servlet:
+    multipart:
+      maxFileSize: 40MB
+      maxRequestSize: 40MB
   sql:
     init:
       encoding: UTF-8

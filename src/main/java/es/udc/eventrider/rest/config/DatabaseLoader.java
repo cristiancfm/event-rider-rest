@@ -2,7 +2,9 @@ package es.udc.eventrider.rest.config;
 
 import es.udc.eventrider.rest.model.domain.Event;
 import es.udc.eventrider.rest.model.repository.EventDao;
-import io.github.sebasbaumh.postgis.Point;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.Point;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.annotation.Transactional;
@@ -94,10 +96,14 @@ public class DatabaseLoader {
     eventImages.add("0.jpg");
     eventImages.add("1.jpg");
     eventImages.add("2.jpg");
+
+    GeometryFactory geometryFactory = new GeometryFactory();
+    Point point = geometryFactory.createPoint(new Coordinate(43.3613731, -8.3901377));
+
     Event event = new Event("Meisel 93", userDAO.findByEmail("pepe@mail.com"),
       LocalDateTime.of(2022, 10, 20, 9, 0),
       LocalDateTime.of(2023, 05, 10, 22, 0),
-      "43.3613731, -8.3901377", "Puerto de A Coruña",
+      point, "Puerto de A Coruña",
       String.format("Muestra de fotografías realizadas por Steven Meisel, centradas en el año 1993. " +
         "El evento podrá visitarse de forma gratuita en el puerto de A Coruña"),
       eventImages,
@@ -112,7 +118,7 @@ public class DatabaseLoader {
     event = new Event("Foo Fighters Tour", userDAO.findByEmail("pepe@mail.com"),
       LocalDateTime.of(2023, 10, 20, 22, 0),
       LocalDateTime.of(2023, 10, 20, 0, 0),
-      "43.3613731, -8.3901377", "Coliseum de A Coruña",
+      point, "Coliseum de A Coruña",
       String.format("Foo Fighters Tour"),
       eventImages,
       Event.EventStatus.PUBLISHED);

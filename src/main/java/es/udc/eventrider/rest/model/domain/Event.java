@@ -1,6 +1,6 @@
 package es.udc.eventrider.rest.model.domain;
 
-import io.github.sebasbaumh.postgis.Point;
+import org.locationtech.jts.geom.Point;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -23,7 +23,7 @@ public class Event {
 
   private LocalDateTime endingDate;
 
-  private String coordinates;
+  private Point point;
 
   private String locationDetails;
 
@@ -51,13 +51,13 @@ public class Event {
   }
 
   public Event(String title, User host, LocalDateTime startingDate, LocalDateTime endingDate,
-               String coordinates, String locationDetails, String description,
+               Point point, String locationDetails, String description,
                List<String> imagePaths, EventStatus eventStatus) {
     this.title = title;
     this.host = host;
     this.startingDate = startingDate;
     this.endingDate = endingDate;
-    this.coordinates = coordinates;
+    this.point = point;
     this.locationDetails = locationDetails;
     this.description = description;
     this.imagePaths = imagePaths;
@@ -104,12 +104,12 @@ public class Event {
     this.endingDate = endingDate;
   }
 
-  public String getCoordinates() {
-    return coordinates;
+  public Point getPoint() {
+    return point;
   }
 
-  public void setCoordinates(String coordinates) {
-    this.coordinates = coordinates;
+  public void setPoint(Point point) {
+    this.point = point;
   }
 
   public String getLocationDetails() {
