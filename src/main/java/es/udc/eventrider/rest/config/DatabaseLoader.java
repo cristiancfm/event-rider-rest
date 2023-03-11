@@ -1,7 +1,7 @@
 package es.udc.eventrider.rest.config;
 
-import es.udc.eventrider.rest.model.domain.Event;
-import es.udc.eventrider.rest.model.repository.EventDao;
+import es.udc.eventrider.rest.model.domain.*;
+import es.udc.eventrider.rest.model.repository.*;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
@@ -9,13 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.annotation.Transactional;
 
-import es.udc.eventrider.rest.model.domain.Post;
-import es.udc.eventrider.rest.model.domain.Tag;
-import es.udc.eventrider.rest.model.domain.User;
 import es.udc.eventrider.rest.model.exception.UserEmailExistsException;
-import es.udc.eventrider.rest.model.repository.PostDao;
-import es.udc.eventrider.rest.model.repository.TagDao;
-import es.udc.eventrider.rest.model.repository.UserDao;
 import es.udc.eventrider.rest.model.service.UserService;
 
 import java.nio.file.Paths;
@@ -33,6 +27,9 @@ public class DatabaseLoader {
 
   @Autowired
   private EventDao eventDao;
+
+  @Autowired
+  private EventCategoryDao eventCategoryDao;
 
   @Autowired
   private PostDao postDAO;
@@ -92,6 +89,14 @@ public class DatabaseLoader {
     post = new Post("Texto del sexto post", userDAO.findByEmail("pepe@mail.com"));
     postDAO.create(post);
 
+    // Create event categories
+    EventCategory exhibitionCategory = new EventCategory("Exhibition", EventCategory.EventCategoryStatus.PUBLISHED);
+    eventCategoryDao.create(exhibitionCategory);
+
+    EventCategory concertCategory = new EventCategory("Concert", EventCategory.EventCategoryStatus.PUBLISHED);
+    eventCategoryDao.create(concertCategory);
+
+    // Create events
     List<String> eventImages = new ArrayList<>();
     eventImages.add("0.jpg");
     eventImages.add("1.jpg");
@@ -107,7 +112,8 @@ public class DatabaseLoader {
       String.format("Muestra de fotografías realizadas por Steven Meisel, centradas en el año 1993. " +
         "El evento podrá visitarse de forma gratuita en el puerto de A Coruña"),
       eventImages,
-      Event.EventStatus.PUBLISHED);
+      Event.EventStatus.PUBLISHED,
+      exhibitionCategory);
 
     eventDao.create(event);
 
@@ -121,7 +127,8 @@ public class DatabaseLoader {
       point, "Coliseum de A Coruña",
       String.format("Foo Fighters Tour"),
       eventImages,
-      Event.EventStatus.PUBLISHED);
+      Event.EventStatus.PUBLISHED,
+      concertCategory);
 
     eventDao.create(event);
   }

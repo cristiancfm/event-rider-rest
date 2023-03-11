@@ -35,11 +35,11 @@ public class UserDTOWithEvents {
       this.hostedEvents.add(new EventDTO(event));
     });
     this.upcomingHostedEvents = this.hostedEvents.stream().filter(
-        eventDTO -> eventDTO.getEventStatus() == Event.EventStatus.PUBLISHED &&
+        eventDTO -> eventDTO.getStatus() == Event.EventStatus.PUBLISHED &&
         !eventDTO.getEndingDate().isBefore(LocalDateTime.now()))
       .collect(Collectors.toList());
     this.pastHostedEvents = this.hostedEvents.stream().filter(
-        eventDTO -> eventDTO.getEventStatus() == Event.EventStatus.PUBLISHED &&
+        eventDTO -> eventDTO.getStatus() == Event.EventStatus.PUBLISHED &&
         eventDTO.getEndingDate().isBefore(LocalDateTime.now()))
       .collect(Collectors.toList());
   }

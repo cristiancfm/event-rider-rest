@@ -44,15 +44,17 @@ public class Event {
     CANCELLED
   }
   @Enumerated(EnumType.STRING)
-  private EventStatus eventStatus;
+  private EventStatus status;
 
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  private EventCategory category;
 
   public Event(){
   }
 
   public Event(String title, User host, LocalDateTime startingDate, LocalDateTime endingDate,
                Point point, String locationDetails, String description,
-               List<String> imagePaths, EventStatus eventStatus) {
+               List<String> imagePaths, EventStatus status, EventCategory category) {
     this.title = title;
     this.host = host;
     this.startingDate = startingDate;
@@ -61,7 +63,8 @@ public class Event {
     this.locationDetails = locationDetails;
     this.description = description;
     this.imagePaths = imagePaths;
-    this.eventStatus = eventStatus;
+    this.status = status;
+    this.category = category;
   }
 
   public Long getId() {
@@ -152,12 +155,12 @@ public class Event {
     this.cancellationReason = cancellationReason;
   }
 
-  public EventStatus getEventStatus() {
-    return eventStatus;
+  public EventStatus getStatus() {
+    return status;
   }
 
-  public void setEventStatus(EventStatus eventStatus) {
-    this.eventStatus = eventStatus;
+  public void setStatus(EventStatus status) {
+    this.status = status;
   }
 
   public String getImagePath(Long imgId) {
@@ -166,5 +169,13 @@ public class Event {
 
   public void setImagePath(String imagePath) {
     this.imagePaths.add(imagePath);
+  }
+
+  public EventCategory getCategory() {
+    return category;
+  }
+
+  public void setCategory(EventCategory category) {
+    this.category = category;
   }
 }
