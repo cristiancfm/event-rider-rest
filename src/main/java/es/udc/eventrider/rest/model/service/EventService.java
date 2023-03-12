@@ -17,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.management.InstanceNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -35,8 +36,8 @@ public class EventService {
   @Autowired
   private UserService userService;
 
-  public List<EventDTO> findAll() {
-    Stream<Event> events = eventDAO.findAll().stream();
+  public List<EventDTO> findAll(Map<String, String> query) {
+    Stream<Event> events = eventDAO.findAll(query).stream();
     if(!SecurityUtils.getCurrentUserIsAdmin()) {
       events = events.filter(e -> e.getHost().isActive());
     }
