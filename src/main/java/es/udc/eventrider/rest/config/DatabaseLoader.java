@@ -103,7 +103,7 @@ public class DatabaseLoader {
     eventImages.add("2.jpg");
 
     GeometryFactory geometryFactory = new GeometryFactory();
-    Point point = geometryFactory.createPoint(new Coordinate(43.3613731, -8.3901377));
+    Point point = geometryFactory.createPoint(new Coordinate(43.371209, -8.395877));
 
     Event event = new Event("Meisel 93", userDAO.findByEmail("pepe@mail.com"),
       LocalDateTime.of(2022, 10, 20, 9, 0),
