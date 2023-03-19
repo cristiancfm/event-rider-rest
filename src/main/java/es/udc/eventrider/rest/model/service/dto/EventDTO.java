@@ -5,6 +5,8 @@ import es.udc.eventrider.rest.model.domain.Event;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class EventDTO {
   private Long id;
@@ -12,6 +14,7 @@ public class EventDTO {
   private String title;
   @NotNull
   private UserDTOPublic host;
+  private List<UserDTOPublic> subscribers = new ArrayList<>();
   private LocalDateTime startingDate;
   private LocalDateTime endingDate;
   private double coordinateX;
@@ -31,6 +34,9 @@ public class EventDTO {
     this.id = event.getId();
     this.title = event.getTitle();
     this.host = new UserDTOPublic(event.getHost());
+    event.getSubscribers().forEach(s -> {
+      this.subscribers.add(new UserDTOPublic(s));
+    });
     this.startingDate = event.getStartingDate();
     this.endingDate = event.getEndingDate();
     this.coordinateX = event.getPoint().getX();
@@ -66,6 +72,14 @@ public class EventDTO {
 
   public void setHost(UserDTOPublic host) {
     this.host = host;
+  }
+
+  public List<UserDTOPublic> getSubscribers() {
+    return subscribers;
+  }
+
+  public void setSubscribers(List<UserDTOPublic> subscribers) {
+    this.subscribers = subscribers;
   }
 
   public LocalDateTime getStartingDate() {

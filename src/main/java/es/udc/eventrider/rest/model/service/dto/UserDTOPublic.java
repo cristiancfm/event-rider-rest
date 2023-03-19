@@ -13,8 +13,8 @@ public class UserDTOPublic {
   private String email;
   private String biography;
   private String image;
-  private Integer upcomingEvents;
-  private Integer totalEvents;
+  private Integer upcomingHostedEvents;
+  private Integer hostedEvents;
   private boolean active = true;
 
   public UserDTOPublic() {
@@ -28,11 +28,11 @@ public class UserDTOPublic {
     this.biography = user.getBiography();
     this.image = user.getImagePath();
     this.setActive(user.isActive());
-    this.upcomingEvents = user.getEvents()
+    this.upcomingHostedEvents = user.getEvents()
       .stream().filter(event -> event.getStatus() == Event.EventStatus.PUBLISHED &&
         !event.getStartingDate().isBefore(LocalDateTime.now()))
       .collect(Collectors.toList()).size();
-    this.totalEvents = user.getEvents()
+    this.hostedEvents = user.getEvents()
       .stream().filter(event -> event.getStatus() == Event.EventStatus.PUBLISHED)
       .collect(Collectors.toList()).size();
   }
@@ -93,19 +93,19 @@ public class UserDTOPublic {
     this.active = active;
   }
 
-  public Integer getUpcomingEvents() {
-    return upcomingEvents;
+  public Integer getUpcomingHostedEvents() {
+    return upcomingHostedEvents;
   }
 
-  public void setUpcomingEvents(Integer upcomingEvents) {
-    this.upcomingEvents = upcomingEvents;
+  public void setUpcomingHostedEvents(Integer upcomingHostedEvents) {
+    this.upcomingHostedEvents = upcomingHostedEvents;
   }
 
-  public Integer getTotalEvents() {
-    return totalEvents;
+  public Integer getHostedEvents() {
+    return hostedEvents;
   }
 
-  public void setTotalEvents(Integer totalEvents) {
-    this.totalEvents = totalEvents;
+  public void setHostedEvents(Integer hostedEvents) {
+    this.hostedEvents = hostedEvents;
   }
 }

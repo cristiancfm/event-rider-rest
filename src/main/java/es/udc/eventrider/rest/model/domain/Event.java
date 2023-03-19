@@ -19,6 +19,9 @@ public class Event {
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
   private User host;
 
+  @ManyToMany(fetch = FetchType.LAZY)
+  private List<User> subscribers = new ArrayList<>();
+
   private LocalDateTime startingDate;
 
   private LocalDateTime endingDate;
@@ -89,6 +92,14 @@ public class Event {
 
   public void setHost(User host) {
     this.host = host;
+  }
+
+  public List<User> getSubscribers() {
+    return subscribers;
+  }
+
+  public void setSubscribers(List<User> subscribers) {
+    this.subscribers = subscribers;
   }
 
   public LocalDateTime getStartingDate() {

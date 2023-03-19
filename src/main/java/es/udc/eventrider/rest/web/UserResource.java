@@ -32,14 +32,19 @@ public class UserResource {
   @Autowired
   private EventService eventService;
 
-  @GetMapping
-  public List<UserDTOWithEvents> findAll() {
-    return userService.findAll();
+  @GetMapping("/with-events")
+  public List<UserDTOWithEvents> findAllWithEvents() {
+    return userService.findAllWithEvents();
   }
 
   @GetMapping("/{id}")
-  public UserDTOWithEvents findOne(@PathVariable Long id) throws NotFoundException {
+  public UserDTOPublic findOne(@PathVariable Long id) throws NotFoundException {
     return userService.findById(id);
+  }
+
+  @GetMapping("/{id}/with-events")
+  public UserDTOWithEvents findOneWithEvents(@PathVariable Long id) throws NotFoundException {
+    return userService.findByIdWithEvents(id);
   }
 
   @GetMapping("/{id}/image")

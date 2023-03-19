@@ -1,18 +1,25 @@
 package es.udc.eventrider.rest.web;
 
+import es.udc.eventrider.rest.model.domain.Event;
 import es.udc.eventrider.rest.model.exception.ModelException;
 import es.udc.eventrider.rest.model.exception.NotFoundException;
 import es.udc.eventrider.rest.model.service.EventService;
 import es.udc.eventrider.rest.model.service.dto.EventDTO;
 import es.udc.eventrider.rest.model.service.dto.ImageDTO;
+import es.udc.eventrider.rest.model.service.dto.PostDTO;
+import es.udc.eventrider.rest.web.exceptions.IdAndBodyNotMatchingOnUpdateException;
+import es.udc.eventrider.rest.web.exceptions.RequestBodyNotValidException;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.management.InstanceNotFoundException;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
 
@@ -58,5 +65,23 @@ public class EventResource {
   public void saveEventImageById(@PathVariable Long id, @RequestParam MultipartFile file, HttpServletResponse response)
     throws InstanceNotFoundException, ModelException {
     eventService.saveEventImageById(id, file);
+  }
+
+  @PostMapping
+  public EventDTO create(@RequestBody @Valid EventDTO event, Errors errors){
+    return null; //TODO
+  }
+
+  @PutMapping("/{id}")
+  public EventDTO update(@PathVariable Long id, @RequestBody @Valid EventDTO event, Errors errors)
+      throws IdAndBodyNotMatchingOnUpdateException, RequestBodyNotValidException, NotFoundException {
+    if (errors.hasErrors()){
+      throw new RequestBodyNotValidException(errors);
+    }
+
+    if (id != event.getId()){
+      throw new IdAndBodyNotMatchingOnUpdateException(Event.class);
+    }
+    return eventService.update(event);
   }
 }

@@ -117,6 +117,9 @@ public class DatabaseLoader {
 
     eventDao.create(event);
 
+    event.getSubscribers().add(userDAO.findByEmail("maria@mail.com"));
+    eventDao.update(event);
+
 
     eventImages = new ArrayList<>();
     eventImages.add("foo0.jpg");

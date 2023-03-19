@@ -3,17 +3,7 @@ package es.udc.eventrider.rest.model.domain;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "theUser")
@@ -43,6 +33,9 @@ public class User {
 
   @OneToMany(mappedBy = "host", cascade = CascadeType.REMOVE)
   private List<Event> events = new ArrayList<>();
+
+  @ManyToMany(mappedBy = "subscribers", fetch = FetchType.LAZY)
+  private List<Event> subscribedEvents = new ArrayList<>();
 
   //el usuario está activo (no está suspendido)
   private boolean active = true;
@@ -128,6 +121,14 @@ public class User {
 
   public void setEvents(List<Event> events) {
     this.events = events;
+  }
+
+  public List<Event> getSubscribedEvents() {
+    return subscribedEvents;
+  }
+
+  public void setSubscribedEvents(List<Event> subscribedEvents) {
+    this.subscribedEvents = subscribedEvents;
   }
 
   public boolean isActive() {

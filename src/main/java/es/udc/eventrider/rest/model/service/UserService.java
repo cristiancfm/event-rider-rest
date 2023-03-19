@@ -14,6 +14,7 @@ import es.udc.eventrider.rest.model.exception.UserEmailExistsException;
 import es.udc.eventrider.rest.model.repository.UserDao;
 import es.udc.eventrider.rest.model.service.dto.*;
 import es.udc.eventrider.rest.model.service.util.ImageService;
+import org.aspectj.weaver.ast.Not;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -37,7 +38,7 @@ public class UserService {
   @Autowired
   private PasswordEncoder passwordEncoder;
 
-  public List<UserDTOWithEvents> findAll() {
+  public List<UserDTOWithEvents> findAllWithEvents() {
     Stream<UserDTOWithEvents> users = userDAO.findAll().stream().map(user -> new UserDTOWithEvents(user));
     if (SecurityUtils.getCurrentUserIsAdmin()) {
       return users.collect(Collectors.toList());
@@ -45,7 +46,15 @@ public class UserService {
     return users.filter(user -> user.isActive()).collect(Collectors.toList());
   }
 
-  public UserDTOWithEvents findById(Long id) throws NotFoundException {
+  public UserDTOPublic findById(Long id) throws NotFoundException {
+    User user = userDAO.findById(id);
+    if (user == null) {
+      throw new NotFoundException(id.toString(), User.class);
+    }
+    return new UserDTOPublic(user);
+  }
+
+  public UserDTOWithEvents findByIdWithEvents(Long id) throws NotFoundException {
     User user = userDAO.findById(id);
     if (user == null) {
       throw new NotFoundException(id.toString(), User.class);
