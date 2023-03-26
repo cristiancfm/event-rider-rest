@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/events")
@@ -31,8 +32,8 @@ public class EventResource {
   private EventService eventService;
 
   @GetMapping
-  public List<EventDTO> findAll(@RequestParam(required = false) String query) {
-    return eventService.findAll();
+  public List<EventDTO> findAll(@RequestParam(required = false) Map<String, String> query) {
+    return eventService.findAll(query);
   }
 
   @GetMapping("/{id}")
