@@ -2,14 +2,9 @@ package es.udc.eventrider.rest.model.repository;
 
 import es.udc.eventrider.rest.model.domain.Event;
 import es.udc.eventrider.rest.model.repository.util.GenericDaoJpa;
-import org.hibernate.annotations.NamedNativeQuery;
-import org.locationtech.jts.geom.Coordinate;
-import org.locationtech.jts.geom.Geometry;
-import org.locationtech.jts.geom.GeometryFactory;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.Query;
-import javax.persistence.TypedQuery;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -22,7 +17,7 @@ public class EventDaoJpa extends GenericDaoJpa implements EventDao {
     Boolean hasFilter = !query.isEmpty();
 
 
-    String queryStr = "select e from Event e";
+    String queryStr = "select * from Event e";
 
     if (hasFilter) {
       queryStr += " where ";
@@ -61,8 +56,8 @@ public class EventDaoJpa extends GenericDaoJpa implements EventDao {
 
         // apply location and distance filters
         if(latitude != null && longitude != null && distance != null){
-          //queryStr += "dwithin(e.point, " +
-            //"POINT(" + longitude + ", " + latitude  + "), " + distance + ") and ";
+          queryStr += "st_dwithin(e.point, " +
+            "st_geogfromtext('POINT(" + latitude + " " + longitude + ")'), " + distance + ") = true and ";
         }
 
         // delete the last " AND "
@@ -70,7 +65,7 @@ public class EventDaoJpa extends GenericDaoJpa implements EventDao {
       }
     }
 
-    TypedQuery<Event> myQuery = entityManager.createQuery(queryStr, Event.class);
+    Query myQuery = entityManager.createNativeQuery(queryStr, Event.class);
     return myQuery.getResultList();
   }
 
