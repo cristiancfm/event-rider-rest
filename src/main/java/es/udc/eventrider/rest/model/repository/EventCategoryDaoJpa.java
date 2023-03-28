@@ -13,7 +13,7 @@ public class EventCategoryDaoJpa extends GenericDaoJpa implements EventCategoryD
 
   @Override
   public List<EventCategory> findAll() {
-    String queryStr = "select e from EventCategory e";
+    String queryStr = "select e from EventCategory e order by e.name";
 
     TypedQuery<EventCategory> query = entityManager.createQuery(queryStr, EventCategory.class);
 

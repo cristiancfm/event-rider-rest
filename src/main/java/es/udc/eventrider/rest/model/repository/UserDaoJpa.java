@@ -15,7 +15,7 @@ public class UserDaoJpa extends GenericDaoJpa implements UserDao {
 
   @Override
   public List<User> findAll() {
-    return entityManager.createQuery("from User", User.class).getResultList();
+    return entityManager.createQuery("from User u order by u.name", User.class).getResultList();
   }
 
   @Override
