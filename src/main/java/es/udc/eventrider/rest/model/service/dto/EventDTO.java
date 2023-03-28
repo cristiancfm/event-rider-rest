@@ -15,6 +15,7 @@ public class EventDTO {
   @NotNull
   private UserDTOPublic host;
   private List<UserDTOPublic> subscribers = new ArrayList<>();
+  private List<UserDTOPublic> saves = new ArrayList<>();
   private LocalDateTime startingDate;
   private LocalDateTime endingDate;
   private double coordinateX;
@@ -36,6 +37,9 @@ public class EventDTO {
     this.host = new UserDTOPublic(event.getHost());
     event.getSubscribers().forEach(s -> {
       this.subscribers.add(new UserDTOPublic(s));
+    });
+    event.getSaves().forEach(s -> {
+      this.saves.add(new UserDTOPublic(s));
     });
     this.startingDate = event.getStartingDate();
     this.endingDate = event.getEndingDate();
@@ -80,6 +84,14 @@ public class EventDTO {
 
   public void setSubscribers(List<UserDTOPublic> subscribers) {
     this.subscribers = subscribers;
+  }
+
+  public List<UserDTOPublic> getSaves() {
+    return saves;
+  }
+
+  public void setSaves(List<UserDTOPublic> saves) {
+    this.saves = saves;
   }
 
   public LocalDateTime getStartingDate() {
