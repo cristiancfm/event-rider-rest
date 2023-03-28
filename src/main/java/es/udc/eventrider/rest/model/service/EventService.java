@@ -97,6 +97,11 @@ public class EventService {
       dbEvent.getSubscribers().add(userDAO.findById(s.getId()));
     });
 
+    dbEvent.getSaves().clear();
+    event.getSaves().forEach(s -> {
+      dbEvent.getSaves().add(userDAO.findById(s.getId()));
+    });
+
     dbEvent.setStartingDate(event.getStartingDate());
     dbEvent.setEndingDate(event.getEndingDate());
 
