@@ -65,6 +65,9 @@ public class EventDaoJpa extends GenericDaoJpa implements EventDao {
       }
     }
 
+    // order results by event title
+    queryStr += " order by e.title";
+
     Query myQuery = entityManager.createNativeQuery(queryStr, Event.class);
     return myQuery.getResultList();
   }
