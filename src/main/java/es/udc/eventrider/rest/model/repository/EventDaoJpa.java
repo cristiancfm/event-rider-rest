@@ -60,8 +60,14 @@ public class EventDaoJpa extends GenericDaoJpa implements EventDao {
             "st_geogfromtext('POINT(" + latitude + " " + longitude + ")'), " + distance + ") = true and ";
         }
 
-        // delete the last " AND "
-        queryStr = queryStr.substring(0, queryStr.length() - 5);
+        if(queryStr.equals("select * from Event e where ")){  //no filters were applied
+          // delete the " WHERE "
+          queryStr = queryStr.substring(0, queryStr.length() - 7);
+        } else {
+          // delete the last " AND "
+          queryStr = queryStr.substring(0, queryStr.length() - 5);
+        }
+
       }
     }
 
