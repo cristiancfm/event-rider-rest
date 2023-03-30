@@ -8,6 +8,7 @@ import es.udc.eventrider.rest.model.repository.EventDao;
 import es.udc.eventrider.rest.model.repository.UserDao;
 import es.udc.eventrider.rest.model.service.dto.EventDTO;
 import es.udc.eventrider.rest.model.service.dto.ImageDTO;
+import es.udc.eventrider.rest.model.service.util.EmailServiceImpl;
 import es.udc.eventrider.rest.model.service.util.ImageService;
 import es.udc.eventrider.rest.security.SecurityUtils;
 import org.locationtech.jts.geom.Coordinate;
@@ -34,6 +35,9 @@ public class EventService {
 
   @Autowired
   private ImageService imageService;
+
+  @Autowired
+  private EmailServiceImpl emailService;
 
   @Autowired
   private UserDao userDAO;
@@ -119,6 +123,10 @@ public class EventService {
     dbEvent.setStatus(event.getStatus());
     dbEvent.setCategory(eventCategoryDao.findById(event.getCategory().getId()));
 
+    //TODO send email updates
+    //emailService.sendSimpleMessage("cristian.ferreiro@udc.es", "Prueba de Event Rider", "Esta es una prueba");
+
+    eventDAO.update(dbEvent);
     return new EventDTO(dbEvent);
   }
 }

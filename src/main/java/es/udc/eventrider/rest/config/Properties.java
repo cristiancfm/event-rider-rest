@@ -13,6 +13,8 @@ public class Properties {
   private String jwtSecretKey;
   private Long jwtValidity;
   private String imagesPath;
+  private String mailUsername;
+  private String mailPassword;
 
   public String getClientHost() {
     return clientHost;
@@ -45,5 +47,21 @@ public class Properties {
 
   public void setImagesPath(String imagesPath) {
     this.imagesPath = imagesPath;
+  }
+
+  public String getMailUsername() {
+    return mailUsername;
+  }
+
+  public void setMailUsername(String mailUsername) {
+    this.mailUsername = mailUsername;
+  }
+
+  public String getMailPassword() {
+    return mailPassword;
+  }
+
+  public void setMailPassword(String mailPassword) {
+    this.mailPassword = mailPassword;
   }
 }

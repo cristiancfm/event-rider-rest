@@ -27,6 +27,14 @@ spring:
       encoding: UTF-8
       mode: always
       continue-on-error: false
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${mailUsername}
+    password: ${mailPassword}
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
 logging:
   pattern:
     console: "%d{yyyy-MMM-dd HH:mm:ss.SSS} [%thread] %highlight(%-5level) %cyan(%logger{15}) - %msg %n"
@@ -39,5 +47,7 @@ properties:
   clientHost: http://localhost:1234
   jwtSecretKey: sdfgsdgsdfgsdfgdsfgdfgsdfgsdgs23458h234242352amoq348agfasdf
   jwtValidity: 7200
+  mailUsername: cristiancfm123@gmail.com
+  mailPassword: udlslssuvnafggbz
 # imagesPath: /tmp/images/
   imagesPath: C:\\Users\\Public\\Pictures\\event-rider\\
