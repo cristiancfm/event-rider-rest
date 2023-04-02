@@ -23,6 +23,7 @@ import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/api/events")
@@ -80,7 +81,7 @@ public class EventResource {
       throw new RequestBodyNotValidException(errors);
     }
 
-    if (id != event.getId()){
+    if (!Objects.equals(id, event.getId())){
       throw new IdAndBodyNotMatchingOnUpdateException(Event.class);
     }
     return eventService.update(event);

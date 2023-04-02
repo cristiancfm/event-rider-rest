@@ -4,11 +4,14 @@ import es.udc.eventrider.rest.model.domain.Event;
 import es.udc.eventrider.rest.model.domain.EventCategory;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class EventCategoryDTO {
   private Long id;
   private String name;
+  private List<UserDTOPublic> subscribers = new ArrayList<>();
   private EventCategory.EventCategoryStatus status;
   private Integer upcomingEvents;
 
@@ -18,6 +21,9 @@ public class EventCategoryDTO {
   public EventCategoryDTO(EventCategory eventCategory) {
     this.id = eventCategory.getId();
     this.name = eventCategory.getName();
+    eventCategory.getSubscribers().forEach(s -> {
+      this.subscribers.add(new UserDTOPublic(s));
+    });
     this.status = eventCategory.getStatus();
     this.upcomingEvents = eventCategory.getEvents()
       .stream().filter(event -> event.getStatus() == Event.EventStatus.PUBLISHED &&
@@ -39,6 +45,14 @@ public class EventCategoryDTO {
 
   public void setName(String name) {
     this.name = name;
+  }
+
+  public List<UserDTOPublic> getSubscribers() {
+    return subscribers;
+  }
+
+  public void setSubscribers(List<UserDTOPublic> subscribers) {
+    this.subscribers = subscribers;
   }
 
   public EventCategory.EventCategoryStatus getStatus() {
