@@ -16,6 +16,9 @@ public class EventCategory {
   @OneToMany(mappedBy = "category", cascade = CascadeType.REMOVE)
   private List<Event> events = new ArrayList<>();
 
+  @ManyToMany(fetch = FetchType.LAZY)
+  private List<User> subscribers = new ArrayList<>();
+
   public enum EventCategoryStatus {
     UNREVIEWED,
     PUBLISHED,
@@ -62,5 +65,13 @@ public class EventCategory {
 
   public void setEvents(List<Event> events) {
     this.events = events;
+  }
+
+  public List<User> getSubscribers() {
+    return subscribers;
+  }
+
+  public void setSubscribers(List<User> subscribers) {
+    this.subscribers = subscribers;
   }
 }

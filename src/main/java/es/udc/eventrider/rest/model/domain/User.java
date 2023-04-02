@@ -37,6 +37,9 @@ public class User {
   @ManyToMany(mappedBy = "subscribers", fetch = FetchType.LAZY)
   private List<Event> subscribedEvents = new ArrayList<>();
 
+  @ManyToMany(mappedBy = "subscribers", fetch = FetchType.LAZY)
+  private List<EventCategory> subscribedEventCategories = new ArrayList<>();
+
   //el usuario está activo (no está suspendido)
   private boolean active = true;
 
@@ -129,6 +132,14 @@ public class User {
 
   public void setSubscribedEvents(List<Event> subscribedEvents) {
     this.subscribedEvents = subscribedEvents;
+  }
+
+  public List<EventCategory> getSubscribedEventCategories() {
+    return subscribedEventCategories;
+  }
+
+  public void setSubscribedEventCategories(List<EventCategory> subscribedEventCategories) {
+    this.subscribedEventCategories = subscribedEventCategories;
   }
 
   public boolean isActive() {
