@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 public class EventCategoryDTO {
   private Long id;
   private String name;
-  private List<UserDTOPublic> subscribers = new ArrayList<>();
+  private List<UserDTOBase> subscribers = new ArrayList<>();
   private EventCategory.EventCategoryStatus status;
   private Integer upcomingEvents;
 
@@ -22,7 +22,7 @@ public class EventCategoryDTO {
     this.id = eventCategory.getId();
     this.name = eventCategory.getName();
     eventCategory.getSubscribers().forEach(s -> {
-      this.subscribers.add(new UserDTOPublic(s));
+      this.subscribers.add(new UserDTOBase(s));
     });
     this.status = eventCategory.getStatus();
     this.upcomingEvents = eventCategory.getEvents()
@@ -47,11 +47,11 @@ public class EventCategoryDTO {
     this.name = name;
   }
 
-  public List<UserDTOPublic> getSubscribers() {
+  public List<UserDTOBase> getSubscribers() {
     return subscribers;
   }
 
-  public void setSubscribers(List<UserDTOPublic> subscribers) {
+  public void setSubscribers(List<UserDTOBase> subscribers) {
     this.subscribers = subscribers;
   }
 

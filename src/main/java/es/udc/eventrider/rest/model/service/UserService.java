@@ -11,10 +11,13 @@ import es.udc.eventrider.rest.model.exception.ModelException;
 import es.udc.eventrider.rest.model.exception.NotFoundException;
 import es.udc.eventrider.rest.model.exception.OperationNotAllowed;
 import es.udc.eventrider.rest.model.exception.UserEmailExistsException;
+import es.udc.eventrider.rest.model.repository.EventDao;
 import es.udc.eventrider.rest.model.repository.UserDao;
 import es.udc.eventrider.rest.model.service.dto.*;
 import es.udc.eventrider.rest.model.service.util.ImageService;
-import org.aspectj.weaver.ast.Not;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.Point;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -33,13 +36,16 @@ public class UserService {
   private UserDao userDAO;
 
   @Autowired
+  private EventDao eventDAO;
+
+  @Autowired
   private ImageService imageService;
 
   @Autowired
   private PasswordEncoder passwordEncoder;
 
-  public List<UserDTOWithEvents> findAllWithEvents() {
-    Stream<UserDTOWithEvents> users = userDAO.findAll().stream().map(user -> new UserDTOWithEvents(user));
+  public List<UserDTOPublic> findAll() {
+    Stream<UserDTOPublic> users = userDAO.findAll().stream().map(user -> new UserDTOPublic(user));
     if (SecurityUtils.getCurrentUserIsAdmin()) {
       return users.collect(Collectors.toList());
     }
@@ -54,12 +60,12 @@ public class UserService {
     return new UserDTOPublic(user);
   }
 
-  public UserDTOWithEvents findByIdWithEvents(Long id) throws NotFoundException {
+  public UserDTOBase findByIdBase(Long id) throws NotFoundException {
     User user = userDAO.findById(id);
     if (user == null) {
       throw new NotFoundException(id.toString(), User.class);
     }
-    return new UserDTOWithEvents(user);
+    return new UserDTOBase(user);
   }
 
   public ImageDTO getUserImageById(Long id) throws InstanceNotFoundException, ModelException {
@@ -72,6 +78,47 @@ public class UserService {
     }
 
     return imageService.getImage(ImageService.Entity.USER, user.getImagePath(), user.getId());
+  }
+
+  @PreAuthorize("isAuthenticated()")
+  @Transactional(readOnly = false, rollbackFor = Exception.class)
+  public UserDTOPublic update(UserDTOPublic user) throws NotFoundException {
+    User dbUser = userDAO.findById(user.getId());
+    if (dbUser == null) {
+      throw new NotFoundException(user.getId().toString(), Event.class);
+    }
+    dbUser.setName(user.getName());
+    dbUser.setSurname(user.getSurname());
+    dbUser.setBiography(user.getBiography());
+    dbUser.setEmail(user.getEmail());
+    //TODO dbUser.setPassword
+    //TODO dbUser.setActive
+
+    dbUser.getHostedEvents().clear();
+    user.getHostedEvents().forEach(e -> {
+      dbUser.getHostedEvents().add(eventDAO.findById(e.getId()));
+    });
+
+    dbUser.getSubscribedEvents().clear();
+    user.getSubscribedEvents().forEach(e -> {
+      dbUser.getSubscribedEvents().add(eventDAO.findById(e.getId()));
+    });
+
+    dbUser.getSavedEvents().clear();
+    user.getSavedEvents().forEach(e -> {
+      dbUser.getSavedEvents().add(eventDAO.findById(e.getId()));
+    });
+
+    dbUser.getFollowers().clear();
+    user.getFollowers().forEach(f -> {
+      dbUser.getFollowers().add(userDAO.findById(f.getId()));
+    });
+
+    //TODO send email updates
+    //emailService.sendSimpleMessage("cristian.ferreiro@udc.es", "Prueba de Event Rider", "Esta es una prueba");
+
+    userDAO.update(dbUser);
+    return new UserDTOPublic(dbUser);
   }
 
   @Transactional(readOnly = false)
@@ -102,7 +149,7 @@ public class UserService {
 
   @PreAuthorize("hasAuthority('ADMIN')")
   @Transactional(readOnly = false)
-  public UserDTOPublic updateActive(Long id, boolean active) throws NotFoundException, OperationNotAllowed {
+  public UserDTOBase updateActive(Long id, boolean active) throws NotFoundException, OperationNotAllowed {
     User user = userDAO.findById(id);
     if (user == null) {
       throw new NotFoundException(id.toString(), User.class);
@@ -115,7 +162,7 @@ public class UserService {
 
     user.setActive(active);
     userDAO.update(user);
-    return new UserDTOPublic(user);
+    return new UserDTOBase(user);
   }
 
   public UserDTOPrivate getCurrentUserWithAuthority() {

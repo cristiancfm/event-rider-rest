@@ -32,13 +32,22 @@ public class User {
   private List<Post> posts = new ArrayList<>();
 
   @OneToMany(mappedBy = "host", cascade = CascadeType.REMOVE)
-  private List<Event> events = new ArrayList<>();
+  private List<Event> hostedEvents = new ArrayList<>();
 
   @ManyToMany(mappedBy = "subscribers", fetch = FetchType.LAZY)
   private List<Event> subscribedEvents = new ArrayList<>();
 
+  @ManyToMany(mappedBy = "saves", fetch = FetchType.LAZY)
+  private List<Event> savedEvents = new ArrayList<>();
+
   @ManyToMany(mappedBy = "subscribers", fetch = FetchType.LAZY)
   private List<EventCategory> subscribedEventCategories = new ArrayList<>();
+
+  @ManyToMany(fetch = FetchType.LAZY)
+  @JoinTable(name = "user_followers",
+    joinColumns = @JoinColumn(name = "user_id"),
+    inverseJoinColumns = @JoinColumn(name = "follower_id"))
+  private List<User> followers = new ArrayList<>();
 
   //el usuario está activo (no está suspendido)
   private boolean active = true;
@@ -118,12 +127,12 @@ public class User {
     this.posts = posts;
   }
 
-  public List<Event> getEvents() {
-    return events;
+  public List<Event> getHostedEvents() {
+    return hostedEvents;
   }
 
-  public void setEvents(List<Event> events) {
-    this.events = events;
+  public void setHostedEvents(List<Event> events) {
+    this.hostedEvents = events;
   }
 
   public List<Event> getSubscribedEvents() {
@@ -134,12 +143,28 @@ public class User {
     this.subscribedEvents = subscribedEvents;
   }
 
+  public List<Event> getSavedEvents() {
+    return savedEvents;
+  }
+
+  public void setSavedEvents(List<Event> savedEvents) {
+    this.savedEvents = savedEvents;
+  }
+
   public List<EventCategory> getSubscribedEventCategories() {
     return subscribedEventCategories;
   }
 
   public void setSubscribedEventCategories(List<EventCategory> subscribedEventCategories) {
     this.subscribedEventCategories = subscribedEventCategories;
+  }
+
+  public List<User> getFollowers() {
+    return followers;
+  }
+
+  public void setFollowers(List<User> followers) {
+    this.followers = followers;
   }
 
   public boolean isActive() {
