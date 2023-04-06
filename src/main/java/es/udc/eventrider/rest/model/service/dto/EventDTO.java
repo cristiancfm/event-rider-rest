@@ -13,9 +13,9 @@ public class EventDTO {
   @NotEmpty
   private String title;
   @NotNull
-  private UserDTOPublic host;
-  private List<UserDTOPublic> subscribers = new ArrayList<>();
-  private List<UserDTOPublic> saves = new ArrayList<>();
+  private UserDTOBase host;
+  private List<UserDTOBase> subscribers = new ArrayList<>();
+  private List<UserDTOBase> saves = new ArrayList<>();
   private LocalDateTime startingDate;
   private LocalDateTime endingDate;
   private double coordinateX;
@@ -34,12 +34,12 @@ public class EventDTO {
   public EventDTO(Event event) {
     this.id = event.getId();
     this.title = event.getTitle();
-    this.host = new UserDTOPublic(event.getHost());
+    this.host = new UserDTOBase(event.getHost());
     event.getSubscribers().forEach(s -> {
-      this.subscribers.add(new UserDTOPublic(s));
+      this.subscribers.add(new UserDTOBase(s));
     });
     event.getSaves().forEach(s -> {
-      this.saves.add(new UserDTOPublic(s));
+      this.saves.add(new UserDTOBase(s));
     });
     this.startingDate = event.getStartingDate();
     this.endingDate = event.getEndingDate();
@@ -70,27 +70,27 @@ public class EventDTO {
     this.title = title;
   }
 
-  public UserDTOPublic getHost() {
+  public UserDTOBase getHost() {
     return host;
   }
 
-  public void setHost(UserDTOPublic host) {
+  public void setHost(UserDTOBase host) {
     this.host = host;
   }
 
-  public List<UserDTOPublic> getSubscribers() {
+  public List<UserDTOBase> getSubscribers() {
     return subscribers;
   }
 
-  public void setSubscribers(List<UserDTOPublic> subscribers) {
+  public void setSubscribers(List<UserDTOBase> subscribers) {
     this.subscribers = subscribers;
   }
 
-  public List<UserDTOPublic> getSaves() {
+  public List<UserDTOBase> getSaves() {
     return saves;
   }
 
-  public void setSaves(List<UserDTOPublic> saves) {
+  public void setSaves(List<UserDTOBase> saves) {
     this.saves = saves;
   }
 

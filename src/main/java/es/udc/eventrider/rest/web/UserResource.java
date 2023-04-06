@@ -1,18 +1,19 @@
 package es.udc.eventrider.rest.web;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import es.udc.eventrider.rest.model.domain.Event;
 import es.udc.eventrider.rest.model.exception.ModelException;
 import es.udc.eventrider.rest.model.service.EventService;
 import es.udc.eventrider.rest.model.service.dto.*;
+import es.udc.eventrider.rest.web.exceptions.IdAndBodyNotMatchingOnUpdateException;
+import es.udc.eventrider.rest.web.exceptions.RequestBodyNotValidException;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 import es.udc.eventrider.rest.model.exception.NotFoundException;
@@ -21,6 +22,7 @@ import es.udc.eventrider.rest.model.service.UserService;
 
 import javax.management.InstanceNotFoundException;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/api/users")
@@ -32,9 +34,9 @@ public class UserResource {
   @Autowired
   private EventService eventService;
 
-  @GetMapping("/with-events")
-  public List<UserDTOWithEvents> findAllWithEvents() {
-    return userService.findAllWithEvents();
+  @GetMapping
+  public List<UserDTOPublic> findAll() {
+    return userService.findAll();
   }
 
   @GetMapping("/{id}")
@@ -42,9 +44,9 @@ public class UserResource {
     return userService.findById(id);
   }
 
-  @GetMapping("/{id}/with-events")
-  public UserDTOWithEvents findOneWithEvents(@PathVariable Long id) throws NotFoundException {
-    return userService.findByIdWithEvents(id);
+  @GetMapping("/{id}/base")
+  public UserDTOBase findOneBase(@PathVariable Long id) throws NotFoundException {
+    return userService.findByIdBase(id);
   }
 
   @GetMapping("/{id}/image")
@@ -67,23 +69,31 @@ public class UserResource {
     }
   }
 
-//  @GetMapping("/{id}/events")
-//  public List<EventDTO> findEvents(@PathVariable Long id) throws NotFoundException {
-//    UserDTOPublic userDTO = userService.findById(id);
-//    return eventService.findAll().stream()
-//      .filter(eventDTO -> Objects.equals(eventDTO.getHost().getEmail(), userDTO.getEmail()) &&
-//          eventDTO.getEventStatus() == Event.EventStatus.PUBLISHED &&
-//          !eventDTO.getStartingDate().isBefore(LocalDateTime.now()))
-//      .collect(Collectors.toList());
-//  }
+  @PostMapping
+  public UserDTOBase create(@RequestBody @Valid UserDTOBase user, Errors errors){
+    return null; //TODO
+  }
+
+  @PutMapping("/{id}")
+  public UserDTOPublic update(@PathVariable Long id, @RequestBody @Valid UserDTOPublic user, Errors errors)
+    throws IdAndBodyNotMatchingOnUpdateException, RequestBodyNotValidException, NotFoundException {
+    if (errors.hasErrors()){
+      throw new RequestBodyNotValidException(errors);
+    }
+
+    if (!Objects.equals(id, user.getId())){
+      throw new IdAndBodyNotMatchingOnUpdateException(Event.class);
+    }
+    return userService.update(user);
+  }
 
   @PutMapping("/{id}/active")
-  public UserDTOPublic activate(@PathVariable Long id) throws NotFoundException, OperationNotAllowed {
+  public UserDTOBase activate(@PathVariable Long id) throws NotFoundException, OperationNotAllowed {
     return userService.updateActive(id, true);
   }
 
   @DeleteMapping("/{id}/active")
-  public UserDTOPublic deactivate(@PathVariable Long id) throws NotFoundException, OperationNotAllowed {
+  public UserDTOBase deactivate(@PathVariable Long id) throws NotFoundException, OperationNotAllowed {
     return userService.updateActive(id, false);
   }
 

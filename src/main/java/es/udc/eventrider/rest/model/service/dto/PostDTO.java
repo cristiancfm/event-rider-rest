@@ -16,7 +16,7 @@ public class PostDTO {
   @NotEmpty
   private String body;
   @NotNull
-  private UserDTOPublic author;
+  private UserDTOBase author;
   private List<TagDTO> tags = new ArrayList<>();
   private Boolean hasImage = false;
   private LocalDateTime timestamp;
@@ -27,7 +27,7 @@ public class PostDTO {
   public PostDTO(Post post) {
     this.id = post.getId();
     this.body = post.getBody();
-    this.author = new UserDTOPublic(post.getAuthor());
+    this.author = new UserDTOBase(post.getAuthor());
     post.getTags().forEach(t -> {
       this.tags.add(new TagDTO(t));
     });
@@ -54,11 +54,11 @@ public class PostDTO {
     this.body = body;
   }
 
-  public UserDTOPublic getAuthor() {
+  public UserDTOBase getAuthor() {
     return author;
   }
 
-  public void setAuthor(UserDTOPublic author) {
+  public void setAuthor(UserDTOBase author) {
     this.author = author;
   }
 
