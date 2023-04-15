@@ -103,12 +103,13 @@ public class DatabaseLoader {
     eventImages.add("2.jpg");
 
     GeometryFactory geometryFactory = new GeometryFactory();
-    Point point = geometryFactory.createPoint(new Coordinate(43.371209, -8.395877));
+    Point point1 = geometryFactory.createPoint(new Coordinate(43.367308, -8.4021747));
+    Point point2 = geometryFactory.createPoint(new Coordinate(43.339062, -8.4095960));
 
     Event event = new Event("Meisel 93", userDAO.findByEmail("pepe@mail.com"),
       LocalDateTime.of(2022, 10, 20, 9, 0),
       LocalDateTime.of(2023, 05, 10, 22, 0),
-      point, "Puerto de A Coruña",
+      point1, "Puerto de A Coruña",
       String.format("Muestra de fotografías realizadas por Steven Meisel, centradas en el año 1993. " +
         "El evento podrá visitarse de forma gratuita en el puerto de A Coruña"),
       eventImages,
@@ -127,7 +128,7 @@ public class DatabaseLoader {
     event = new Event("Foo Fighters Tour", userDAO.findByEmail("pepe@mail.com"),
       LocalDateTime.of(2023, 10, 20, 22, 0),
       LocalDateTime.of(2023, 10, 20, 0, 0),
-      point, "Coliseum de A Coruña",
+      point2, "Coliseum de A Coruña",
       String.format("Foo Fighters Tour"),
       eventImages,
       Event.EventStatus.PUBLISHED,
