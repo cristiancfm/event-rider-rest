@@ -50,7 +50,7 @@ public class EventDaoJpa extends GenericDaoJpa implements EventDao {
           }
 
           if(Objects.equals(key, "category")) {
-            queryStr += "e." + key + " = " + value + " and ";
+            queryStr += "e." + key + "_id = " + value + " and ";
           }
         }
 
