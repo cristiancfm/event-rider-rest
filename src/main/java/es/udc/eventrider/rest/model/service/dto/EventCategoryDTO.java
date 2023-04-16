@@ -27,7 +27,7 @@ public class EventCategoryDTO {
     this.status = eventCategory.getStatus();
     this.upcomingEvents = eventCategory.getEvents()
       .stream().filter(event -> event.getStatus() == Event.EventStatus.PUBLISHED &&
-        !event.getStartingDate().isBefore(LocalDateTime.now()))
+        !event.getEndingDate().isBefore(LocalDateTime.now()))
       .collect(Collectors.toList()).size();
   }
 
