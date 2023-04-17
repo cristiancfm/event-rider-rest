@@ -151,7 +151,7 @@ public class DatabaseLoader {
 
     eventImages = new ArrayList<>();
     eventImages.add("aaa.jpg");
-    event = new Event("evento rechazado", userDAO.findByEmail("maria@mail.com"),
+    event = new Event("evento rechazado", userDAO.findByEmail("pepe@mail.com"),
       LocalDateTime.of(2023, 6, 20, 16, 0),
       LocalDateTime.of(2023, 6, 20, 20, 0),
       point4, "blablabla",
@@ -165,7 +165,7 @@ public class DatabaseLoader {
 
     eventImages = new ArrayList<>();
     eventImages.add("aaa.jpg");
-    event = new Event("evento cancelado", userDAO.findByEmail("maria@mail.com"),
+    event = new Event("evento cancelado", userDAO.findByEmail("pepe@mail.com"),
       LocalDateTime.of(2023, 6, 20, 16, 0),
       LocalDateTime.of(2023, 6, 20, 20, 0),
       point4, "blablabla",

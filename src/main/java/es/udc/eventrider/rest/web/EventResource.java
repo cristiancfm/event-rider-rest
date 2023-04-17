@@ -40,7 +40,7 @@ public class EventResource {
   }
 
   @GetMapping("/upcoming")
-  public List<EventDTO> findUpcoming(@RequestParam(required = false) Map<String, String> query) {
+  public List<EventDTO> findPublishedUpcoming(@RequestParam(required = false) Map<String, String> query) {
     List<EventDTO> events = eventService.findAll(query).stream().filter(
         eventDTO -> eventDTO.getStatus() == Event.EventStatus.PUBLISHED &&
           !eventDTO.getEndingDate().isBefore(LocalDateTime.now()))
