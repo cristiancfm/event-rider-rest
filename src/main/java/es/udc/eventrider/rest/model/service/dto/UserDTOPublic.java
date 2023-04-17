@@ -22,6 +22,7 @@ public class UserDTOPublic {
   private List<EventDTO> subscribedEvents = new ArrayList<>();
   private List<EventDTO> savedEvents = new ArrayList<>();
   private List<UserDTOBase> followers = new ArrayList<>();
+  private List<UserDTOBase> following = new ArrayList<>();
 
   public UserDTOPublic(){
   }
@@ -53,6 +54,9 @@ public class UserDTOPublic {
     });
     user.getFollowers().forEach(follower -> {
       this.followers.add(new UserDTOBase(follower));
+    });
+    user.getFollowing().forEach(following -> {
+      this.following.add(new UserDTOBase(following));
     });
   }
 
@@ -158,5 +162,13 @@ public class UserDTOPublic {
 
   public void setFollowers(List<UserDTOBase> followers) {
     this.followers = followers;
+  }
+
+  public List<UserDTOBase> getFollowing() {
+    return following;
+  }
+
+  public void setFollowing(List<UserDTOBase> following) {
+    this.following = following;
   }
 }

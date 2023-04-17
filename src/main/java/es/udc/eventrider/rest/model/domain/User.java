@@ -49,6 +49,12 @@ public class User {
     inverseJoinColumns = @JoinColumn(name = "follower_id"))
   private List<User> followers = new ArrayList<>();
 
+  @ManyToMany(fetch = FetchType.LAZY)
+  @JoinTable(name = "user_followers",
+    joinColumns = @JoinColumn(name = "follower_id"),
+    inverseJoinColumns = @JoinColumn(name = "user_id"))
+  private List<User> following = new ArrayList<>();
+
   //el usuario está activo (no está suspendido)
   private boolean active = true;
 
@@ -165,6 +171,14 @@ public class User {
 
   public void setFollowers(List<User> followers) {
     this.followers = followers;
+  }
+
+  public List<User> getFollowing() {
+    return following;
+  }
+
+  public void setFollowing(List<User> following) {
+    this.following = following;
   }
 
   public boolean isActive() {

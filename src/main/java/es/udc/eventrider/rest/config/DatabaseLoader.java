@@ -105,6 +105,8 @@ public class DatabaseLoader {
     GeometryFactory geometryFactory = new GeometryFactory();
     Point point1 = geometryFactory.createPoint(new Coordinate(43.367308, -8.4021747));
     Point point2 = geometryFactory.createPoint(new Coordinate(43.339062, -8.4095960));
+    Point point3 = geometryFactory.createPoint(new Coordinate(43.370922, -8.3959048));
+    Point point4 = geometryFactory.createPoint(new Coordinate(43.371816, -8.40451451));
 
     Event event = new Event("Meisel 93", userDAO.findByEmail("pepe@mail.com"),
       LocalDateTime.of(2022, 10, 20, 9, 0),
@@ -115,9 +117,7 @@ public class DatabaseLoader {
       eventImages,
       Event.EventStatus.PUBLISHED,
       exhibitionCategory);
-
     eventDao.create(event);
-
     event.getSubscribers().add(userDAO.findByEmail("maria@mail.com"));
     eventDao.update(event);
 
@@ -133,7 +133,47 @@ public class DatabaseLoader {
       eventImages,
       Event.EventStatus.PUBLISHED,
       concertCategory);
+    eventDao.create(event);
 
+
+    eventImages = new ArrayList<>();
+    eventImages.add("discs.jpg");
+    event = new Event("Feria del disco", userDAO.findByEmail("maria@mail.com"),
+      LocalDateTime.of(2023, 8, 20, 16, 0),
+      LocalDateTime.of(2023, 8, 20, 20, 0),
+      point3, "Plaza de María Pita",
+      String.format("Feria de discos anual en el centro de A Coruña"),
+      eventImages,
+      Event.EventStatus.PUBLISHED,
+      exhibitionCategory);
+    eventDao.create(event);
+
+
+    eventImages = new ArrayList<>();
+    eventImages.add("aaa.jpg");
+    event = new Event("evento rechazado", userDAO.findByEmail("maria@mail.com"),
+      LocalDateTime.of(2023, 6, 20, 16, 0),
+      LocalDateTime.of(2023, 6, 20, 20, 0),
+      point4, "blablabla",
+      String.format("Descripción del evento rechazado"),
+      eventImages,
+      Event.EventStatus.REJECTED,
+      exhibitionCategory);
+    event.setAdminComments("Este es el comentario del administrador.");
+    eventDao.create(event);
+
+
+    eventImages = new ArrayList<>();
+    eventImages.add("aaa.jpg");
+    event = new Event("evento cancelado", userDAO.findByEmail("maria@mail.com"),
+      LocalDateTime.of(2023, 6, 20, 16, 0),
+      LocalDateTime.of(2023, 6, 20, 20, 0),
+      point4, "blablabla",
+      String.format("Descripción del evento cancelado"),
+      eventImages,
+      Event.EventStatus.CANCELLED,
+      exhibitionCategory);
+    event.setCancellationReason("Este es el motivo de cancelación.");
     eventDao.create(event);
   }
 }
