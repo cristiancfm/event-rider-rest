@@ -1,18 +1,22 @@
 # event-rider-rest
 
-## Configuración
-(Se necesita tener PostgreSQL instalado). Abrir pgAdmin y crear una base de datos con el nombre `event_rider`.
-Crear un usuario con el nombre `event_rider_user` y la contraseña `1234` y darle todos los privilegios.
+## Dependecies
+Install the following dependencies:
+- Java JDK 17
+- PostgreSQL with the PostGIS extension
 
-Modificar el fichero `src/main/resources/application.yml` con las credenciales de la base de datos. Modificar
-en el mismo fichero
-la propiedad `imagesPath` con la ruta de la carpeta donde se guardan las imágenes (C:\\carpeta\\... en sistemas
-Windows o /carpeta/... en sistemas UNIX/Linux).
+## Configuration
+Open pgAdmin and create a database named `event_rider`.
+Create an user named `event_rider_user` with the password `1234` and grant it all privileges.
 
-Es posible que sea necesario ejecutar el comando `CREATE EXTENSION postgis;` abriendo pgAdmin, seleccionando la
-base de datos `event_rider` y haciendo click en el icono de "Query Tool".
+Modify file `src/main/resources/application.yml` with the database credentials. Modify also
+the `imagesPath` property with the path to the folder where the images are stored 
+(C:\folder\... on Windows systems or /folder/... on UNIX/Linux systems).
 
-## Ejecutar
+It may be necessary to execute the command `CREATE EXTENSION postgis;` by opening pgAdmin, selecting the
+database event_rider, and clicking on the "Query Tool" icon.
+
+## Running
 
 ```
  ./mvnw spring-boot:run
