@@ -34,6 +34,9 @@ public class UserResource {
   @Autowired
   private UserService userService;
 
+  @Autowired
+  private EventService eventService;
+
   @GetMapping
   public List<UserDTOPublic> findAll() {
     return userService.findAll();
@@ -73,11 +76,16 @@ public class UserResource {
   public List<EventDTO> findUserUpcomingEvents(@PathVariable Long id, @RequestParam(required = false) Map<String, String> query) {
     try {
       UserDTOPublic user = userService.findById(id);
-      List<EventDTO> events = user.getHostedEvents().stream().filter(
-          eventDTO -> (eventDTO.getStatus() == Event.EventStatus.PUBLISHED ||
-              eventDTO.getStatus() == Event.EventStatus.CANCELLED) &&
-            !eventDTO.getEndingDate().isBefore(LocalDateTime.now()))
+      List<EventDTO> events = eventService.findAll(query).stream().filter(
+        eventDTO -> Objects.equals(eventDTO.getHost().getId(), user.getId())
+      ).collect(Collectors.toList());
+
+      events = events.stream().filter(
+        eventDTO -> (eventDTO.getStatus() == Event.EventStatus.PUBLISHED ||
+            eventDTO.getStatus() == Event.EventStatus.CANCELLED) &&
+          !eventDTO.getEndingDate().isBefore(LocalDateTime.now()))
         .collect(Collectors.toList());
+
       return events;
     } catch (NotFoundException e) {
       throw new RuntimeException(e);
@@ -88,11 +96,16 @@ public class UserResource {
   public List<EventDTO> findUserPastEvents(@PathVariable Long id, @RequestParam(required = false) Map<String, String> query) {
     try {
       UserDTOPublic user = userService.findById(id);
-      List<EventDTO> events = user.getHostedEvents().stream().filter(
+      List<EventDTO> events = eventService.findAll(query).stream().filter(
+        eventDTO -> Objects.equals(eventDTO.getHost().getId(), user.getId())
+      ).collect(Collectors.toList());
+
+      events = events.stream().filter(
           eventDTO -> (eventDTO.getStatus() == Event.EventStatus.PUBLISHED ||
               eventDTO.getStatus() == Event.EventStatus.CANCELLED) &&
             eventDTO.getEndingDate().isBefore(LocalDateTime.now()))
         .collect(Collectors.toList());
+
       return events;
     } catch (NotFoundException e) {
       throw new RuntimeException(e);
@@ -103,9 +116,14 @@ public class UserResource {
   public List<EventDTO> findUserUnreviewedEvents(@PathVariable Long id, @RequestParam(required = false) Map<String, String> query) {
     try {
       UserDTOPublic user = userService.findById(id);
-      List<EventDTO> events = user.getHostedEvents().stream().filter(
+      List<EventDTO> events = eventService.findAll(query).stream().filter(
+        eventDTO -> Objects.equals(eventDTO.getHost().getId(), user.getId())
+      ).collect(Collectors.toList());
+
+      events = events.stream().filter(
           eventDTO -> eventDTO.getStatus() == Event.EventStatus.UNREVIEWED)
         .collect(Collectors.toList());
+
       return events;
     } catch (NotFoundException e) {
       throw new RuntimeException(e);
@@ -116,9 +134,14 @@ public class UserResource {
   public List<EventDTO> findUserRejectedEvents(@PathVariable Long id, @RequestParam(required = false) Map<String, String> query) {
     try {
       UserDTOPublic user = userService.findById(id);
-      List<EventDTO> events = user.getHostedEvents().stream().filter(
+      List<EventDTO> events = eventService.findAll(query).stream().filter(
+        eventDTO -> Objects.equals(eventDTO.getHost().getId(), user.getId())
+      ).collect(Collectors.toList());
+
+      events = events.stream().filter(
           eventDTO -> eventDTO.getStatus() == Event.EventStatus.REJECTED)
         .collect(Collectors.toList());
+
       return events;
     } catch (NotFoundException e) {
       throw new RuntimeException(e);
