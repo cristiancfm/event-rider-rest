@@ -138,13 +138,26 @@ public class DatabaseLoader {
 
     eventImages = new ArrayList<>();
     eventImages.add("discs.jpg");
-    event = new Event("Feria del disco", userDAO.findByEmail("maria@mail.com"),
-      LocalDateTime.of(2023, 8, 20, 16, 0),
-      LocalDateTime.of(2023, 8, 20, 20, 0),
+    event = new Event("Feria del disco", userDAO.findByEmail("pepe@mail.com"),
+      LocalDateTime.of(2022, 8, 20, 16, 0),
+      LocalDateTime.of(2022, 8, 20, 20, 0),
       point3, "Plaza de María Pita",
       String.format("Feria de discos anual en el centro de A Coruña"),
       eventImages,
       Event.EventStatus.PUBLISHED,
+      exhibitionCategory);
+    eventDao.create(event);
+
+
+    eventImages = new ArrayList<>();
+    eventImages.add("aaa.jpg");
+    event = new Event("evento sin revisar", userDAO.findByEmail("pepe@mail.com"),
+      LocalDateTime.of(2023, 6, 15, 16, 0),
+      LocalDateTime.of(2023, 6, 15, 20, 0),
+      point4, "blablabla",
+      String.format("Descripción del evento sin revisar"),
+      eventImages,
+      Event.EventStatus.UNREVIEWED,
       exhibitionCategory);
     eventDao.create(event);
 

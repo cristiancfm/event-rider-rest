@@ -2,7 +2,7 @@
 
 ## Dependecies
 Install the following dependencies:
-- Java JDK 17
+- JDK 17
 - PostgreSQL with the PostGIS extension
 
 ## Configuration
