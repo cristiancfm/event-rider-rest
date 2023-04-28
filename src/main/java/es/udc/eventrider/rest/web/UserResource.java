@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 import es.udc.eventrider.rest.model.domain.Event;
 import es.udc.eventrider.rest.model.exception.ModelException;
+import es.udc.eventrider.rest.model.service.EventCategoryService;
 import es.udc.eventrider.rest.model.service.EventService;
 import es.udc.eventrider.rest.model.service.dto.*;
 import es.udc.eventrider.rest.web.exceptions.IdAndBodyNotMatchingOnUpdateException;
@@ -36,6 +37,9 @@ public class UserResource {
 
   @Autowired
   private EventService eventService;
+
+  @Autowired
+  private EventCategoryService eventCategoryService;
 
   @GetMapping
   public List<UserDTOPublic> findAll() {
@@ -181,6 +185,69 @@ public class UserResource {
       events = events.stream().filter(
           eventDTO -> (eventDTO.getStatus() == Event.EventStatus.PUBLISHED ||
               eventDTO.getStatus() == Event.EventStatus.CANCELLED) &&
+            eventDTO.getEndingDate().isBefore(LocalDateTime.now()))
+        .collect(Collectors.toList());
+
+      return events;
+    } catch (NotFoundException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  @GetMapping("/{id}/events/subscribed/upcoming")
+  public List<EventDTO> findUserSubscribedUpcomingEvents(@PathVariable Long id, @RequestParam(required = false) Map<String, String> query) {
+    try {
+      UserDTOPublic user = userService.findById(id);
+      List<EventDTO> events = eventService.findAll(query).stream().filter(
+        eventDTO -> eventDTO.getSubscribers().stream()
+          .anyMatch(subscribedUser -> Objects.equals(subscribedUser.getId(), user.getId()))
+      ).collect(Collectors.toList());
+
+      events = events.stream().filter(
+          eventDTO -> (eventDTO.getStatus() == Event.EventStatus.PUBLISHED ||
+            eventDTO.getStatus() == Event.EventStatus.CANCELLED) &&
+            !eventDTO.getEndingDate().isBefore(LocalDateTime.now()))
+        .collect(Collectors.toList());
+
+      return events;
+    } catch (NotFoundException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  @GetMapping("/{id}/events/subscribed/past")
+  public List<EventDTO> findUserSubscribedPastEvents(@PathVariable Long id, @RequestParam(required = false) Map<String, String> query) {
+    try {
+      UserDTOPublic user = userService.findById(id);
+      List<EventDTO> events = eventService.findAll(query).stream().filter(
+        eventDTO -> eventDTO.getSubscribers().stream()
+          .anyMatch(subscribedUser -> Objects.equals(subscribedUser.getId(), user.getId()))
+      ).collect(Collectors.toList());
+
+      events = events.stream().filter(
+          eventDTO -> (eventDTO.getStatus() == Event.EventStatus.PUBLISHED ||
+            eventDTO.getStatus() == Event.EventStatus.CANCELLED) &&
+            eventDTO.getEndingDate().isBefore(LocalDateTime.now()))
+        .collect(Collectors.toList());
+
+      return events;
+    } catch (NotFoundException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  @GetMapping("/{id}/categories/subscribed")
+  public List<EventDTO> findUserSubscribedCategories(@PathVariable Long id, @RequestParam(required = false) Map<String, String> query) {
+    try {
+      UserDTOPublic user = userService.findById(id);
+      List<EventCategoryDTO> eventCategories = eventCategoryService.findAll(query).stream().filter(
+        eventCategoryDTO -> eventCategoryDTO.getSubscribers().stream()
+          .anyMatch(subscribedUser -> Objects.equals(subscribedUser.getId(), user.getId()))
+      ).collect(Collectors.toList());
+
+      events = events.stream().filter(
+          eventDTO -> (eventDTO.getStatus() == Event.EventStatus.PUBLISHED ||
+            eventDTO.getStatus() == Event.EventStatus.CANCELLED) &&
             eventDTO.getEndingDate().isBefore(LocalDateTime.now()))
         .collect(Collectors.toList());
 
