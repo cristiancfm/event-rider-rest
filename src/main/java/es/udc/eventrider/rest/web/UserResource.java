@@ -148,6 +148,48 @@ public class UserResource {
     }
   }
 
+  @GetMapping("/{id}/events/saved/upcoming")
+  public List<EventDTO> findUserSavedUpcomingEvents(@PathVariable Long id, @RequestParam(required = false) Map<String, String> query) {
+    try {
+      UserDTOPublic user = userService.findById(id);
+      List<EventDTO> events = eventService.findAll(query).stream().filter(
+        eventDTO -> eventDTO.getSaves().stream()
+          .anyMatch(savedUser -> Objects.equals(savedUser.getId(), user.getId()))
+      ).collect(Collectors.toList());
+
+      events = events.stream().filter(
+          eventDTO -> (eventDTO.getStatus() == Event.EventStatus.PUBLISHED ||
+              eventDTO.getStatus() == Event.EventStatus.CANCELLED) &&
+            !eventDTO.getEndingDate().isBefore(LocalDateTime.now()))
+        .collect(Collectors.toList());
+
+      return events;
+    } catch (NotFoundException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  @GetMapping("/{id}/events/saved/past")
+  public List<EventDTO> findUserSavedPastEvents(@PathVariable Long id, @RequestParam(required = false) Map<String, String> query) {
+    try {
+      UserDTOPublic user = userService.findById(id);
+      List<EventDTO> events = eventService.findAll(query).stream().filter(
+        eventDTO -> eventDTO.getSaves().stream()
+          .anyMatch(savedUser -> Objects.equals(savedUser.getId(), user.getId()))
+      ).collect(Collectors.toList());
+
+      events = events.stream().filter(
+          eventDTO -> (eventDTO.getStatus() == Event.EventStatus.PUBLISHED ||
+              eventDTO.getStatus() == Event.EventStatus.CANCELLED) &&
+            eventDTO.getEndingDate().isBefore(LocalDateTime.now()))
+        .collect(Collectors.toList());
+
+      return events;
+    } catch (NotFoundException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
   @PostMapping
   public UserDTOBase create(@RequestBody @Valid UserDTOBase user, Errors errors){
     return null; //TODO
