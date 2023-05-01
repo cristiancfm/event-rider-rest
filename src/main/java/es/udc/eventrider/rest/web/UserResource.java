@@ -237,21 +237,15 @@ public class UserResource {
   }
 
   @GetMapping("/{id}/categories/subscribed")
-  public List<EventDTO> findUserSubscribedCategories(@PathVariable Long id, @RequestParam(required = false) Map<String, String> query) {
+  public List<EventCategoryDTO> findUserSubscribedCategories(@PathVariable Long id, @RequestParam(required = false) Map<String, String> query) {
     try {
       UserDTOPublic user = userService.findById(id);
-      List<EventCategoryDTO> eventCategories = eventCategoryService.findAll(query).stream().filter(
+      List<EventCategoryDTO> eventCategories = eventCategoryService.findAll().stream().filter(
         eventCategoryDTO -> eventCategoryDTO.getSubscribers().stream()
           .anyMatch(subscribedUser -> Objects.equals(subscribedUser.getId(), user.getId()))
       ).collect(Collectors.toList());
 
-      events = events.stream().filter(
-          eventDTO -> (eventDTO.getStatus() == Event.EventStatus.PUBLISHED ||
-            eventDTO.getStatus() == Event.EventStatus.CANCELLED) &&
-            eventDTO.getEndingDate().isBefore(LocalDateTime.now()))
-        .collect(Collectors.toList());
-
-      return events;
+      return eventCategories;
     } catch (NotFoundException e) {
       throw new RuntimeException(e);
     }
