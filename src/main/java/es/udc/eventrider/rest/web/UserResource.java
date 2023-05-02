@@ -266,7 +266,7 @@ public class UserResource {
     if (!Objects.equals(id, user.getId())){
       throw new IdAndBodyNotMatchingOnUpdateException(Event.class);
     }
-    return userService.update(user);
+    return userService.updateUser(user);
   }
 
   @PutMapping("/{id}/active")

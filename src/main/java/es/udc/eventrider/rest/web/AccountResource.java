@@ -2,6 +2,7 @@ package es.udc.eventrider.rest.web;
 
 import javax.validation.Valid;
 
+import es.udc.eventrider.rest.model.exception.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,6 +77,13 @@ public class AccountResource {
       throw new RequestBodyNotValidException(errors);
     }
 
-    userService.registerUser(account.getName(), account.getSurname(), account.getEmail(), account.getPassword());
+    userService.registerAccount(account.getName(), account.getSurname(), account.getEmail(), account.getPassword());
+  }
+
+  @PostMapping("/account/update")
+  public void updateAccount(@Valid @RequestBody UserDTOPrivate account, Errors errors)
+    throws NotFoundException {
+
+    userService.updateAccount(account);
   }
 }

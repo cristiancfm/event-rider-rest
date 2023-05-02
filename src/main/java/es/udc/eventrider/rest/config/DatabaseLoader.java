@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 import es.udc.eventrider.rest.model.exception.UserEmailExistsException;
 import es.udc.eventrider.rest.model.service.UserService;
 
-import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -48,16 +47,16 @@ public class DatabaseLoader {
    */
   @Transactional(readOnly = false, rollbackFor = Exception.class)
   public void loadData() throws UserEmailExistsException {
-    userService.registerUser("pepe", "pérez", "pepe@mail.com", "pepe", true);
-    userService.registerUser("maría", "machado", "maria@mail.com", "maria", true);
-    userService.registerUser("laura", "lorenzo", "laura@mail.com", "laura");
-    userService.registerUser("pedro", "pascal", "pedro@mail.com", "pedro");
+    userService.registerAccount("pepe", "pérez", "pepe@mail.com", "pepe", true);
+    userService.registerAccount("maría", "machado", "maria@mail.com", "maria", true);
+    userService.registerAccount("laura", "lorenzo", "laura@mail.com", "laura");
+    userService.registerAccount("pedro", "pascal", "pedro@mail.com", "pedro");
     User pedro = userDAO.findByEmail("pepe@mail.com");
     pedro.setActive(true);
     pedro.setImagePath("profile.jpg");
     pedro.setBiography("Me llamo Pepe y organizo eventos");
     userDAO.update(pedro);
-    userService.registerUser("ramón", "rey", "ramon@mail.com", "ramon");
+    userService.registerAccount("ramón", "rey", "ramon@mail.com", "ramon");
 
     Tag news = new Tag("news");
     Tag podcast = new Tag("podcast");
