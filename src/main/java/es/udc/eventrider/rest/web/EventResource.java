@@ -21,9 +21,11 @@ import javax.management.InstanceNotFoundException;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/events")
@@ -35,6 +37,15 @@ public class EventResource {
   @GetMapping
   public List<EventDTO> findAll(@RequestParam(required = false) Map<String, String> query) {
     return eventService.findAll(query);
+  }
+
+  @GetMapping("/upcoming")
+  public List<EventDTO> findPublishedUpcoming(@RequestParam(required = false) Map<String, String> query) {
+    List<EventDTO> events = eventService.findAll(query).stream().filter(
+        eventDTO -> eventDTO.getStatus() == Event.EventStatus.PUBLISHED &&
+          !eventDTO.getEndingDate().isBefore(LocalDateTime.now()))
+      .collect(Collectors.toList());
+    return events;
   }
 
   @GetMapping("/{id}")

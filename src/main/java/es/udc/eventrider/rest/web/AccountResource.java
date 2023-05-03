@@ -1,21 +1,22 @@
 package es.udc.eventrider.rest.web;
 
+import javax.management.InstanceNotFoundException;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
+import es.udc.eventrider.rest.model.exception.ModelException;
+import es.udc.eventrider.rest.model.exception.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.Errors;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import es.udc.eventrider.rest.model.exception.UserEmailExistsException;
 import es.udc.eventrider.rest.model.service.UserService;
@@ -25,6 +26,7 @@ import es.udc.eventrider.rest.security.JWTToken;
 import es.udc.eventrider.rest.security.TokenProvider;
 import es.udc.eventrider.rest.web.exceptions.CredentialsAreNotValidException;
 import es.udc.eventrider.rest.web.exceptions.RequestBodyNotValidException;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * Este controlador va por separado que el UserResource porque se encarga de
@@ -76,6 +78,13 @@ public class AccountResource {
       throw new RequestBodyNotValidException(errors);
     }
 
-    userService.registerUser(account.getName(), account.getSurname(), account.getEmail(), account.getPassword());
+    userService.registerAccount(account.getName(), account.getSurname(), account.getEmail(), account.getPassword());
+  }
+
+  @PostMapping("/account")
+  public void updateAccount(@RequestBody UserDTOPrivate account)
+    throws NotFoundException {
+
+    userService.updateAccount(account);
   }
 }

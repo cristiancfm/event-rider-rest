@@ -1,5 +1,7 @@
 package es.udc.eventrider.rest.model.service.util;
 
+import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferByte;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -15,6 +17,8 @@ import org.springframework.web.multipart.MultipartFile;
 import es.udc.eventrider.rest.config.Properties;
 import es.udc.eventrider.rest.model.exception.ModelException;
 import es.udc.eventrider.rest.model.service.dto.ImageDTO;
+
+import javax.imageio.ImageIO;
 
 @Service
 public class ImageServiceFilesystem implements ImageService {
@@ -114,5 +118,37 @@ public class ImageServiceFilesystem implements ImageService {
     default:
       return MediaType.IMAGE_JPEG_VALUE;
     }
+  }
+
+  private BufferedImage cropImageToSquare(byte[] image) throws IOException {
+    // Get a BufferedImage object from a byte array
+    InputStream in = new ByteArrayInputStream(image);
+    BufferedImage originalImage = ImageIO.read(in);
+
+    // Get image dimensions
+    int height = originalImage.getHeight();
+    int width = originalImage.getWidth();
+
+    // The image is already a square
+    if (height == width) {
+      return originalImage;
+    }
+
+    // Compute the size of the square
+    int squareSize = (height > width ? width : height);
+
+    // Coordinates of the image's middle
+    int xc = width / 2;
+    int yc = height / 2;
+
+    // Crop
+    BufferedImage croppedImage = originalImage.getSubimage(
+      xc - (squareSize / 2), // x coordinate of the upper-left corner
+      yc - (squareSize / 2), // y coordinate of the upper-left corner
+      squareSize,            // widht
+      squareSize             // height
+    );
+
+    return croppedImage;
   }
 }

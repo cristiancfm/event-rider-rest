@@ -1,5 +1,6 @@
 package es.udc.eventrider.rest.model.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -15,9 +16,6 @@ import es.udc.eventrider.rest.model.repository.EventDao;
 import es.udc.eventrider.rest.model.repository.UserDao;
 import es.udc.eventrider.rest.model.service.dto.*;
 import es.udc.eventrider.rest.model.service.util.ImageService;
-import org.locationtech.jts.geom.Coordinate;
-import org.locationtech.jts.geom.GeometryFactory;
-import org.locationtech.jts.geom.Point;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -25,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import es.udc.eventrider.rest.security.SecurityUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.management.InstanceNotFoundException;
 
@@ -68,6 +67,17 @@ public class UserService {
     return new UserDTOBase(user);
   }
 
+  @Transactional(readOnly = false, rollbackFor = Exception.class)
+  public void saveUserImageById(Long id, MultipartFile file) throws InstanceNotFoundException, ModelException {
+    User user = userDAO.findById(id);
+    if (user == null)
+      throw new NotFoundException(id.toString(), Event.class);
+
+    String filePath = imageService.saveImage(ImageService.Entity.USER, file, user.getId());
+    user.setImagePath(filePath);
+    userDAO.update(user);
+  }
+
   public ImageDTO getUserImageById(Long id) throws InstanceNotFoundException, ModelException {
     User user = userDAO.findById(id);
     if(user == null) {
@@ -82,11 +92,12 @@ public class UserService {
 
   @PreAuthorize("isAuthenticated()")
   @Transactional(readOnly = false, rollbackFor = Exception.class)
-  public UserDTOPublic update(UserDTOPublic user) throws NotFoundException {
+  public UserDTOPublic updateUser(UserDTOPublic user) throws NotFoundException {
     User dbUser = userDAO.findById(user.getId());
     if (dbUser == null) {
       throw new NotFoundException(user.getId().toString(), Event.class);
     }
+
     dbUser.setName(user.getName());
     dbUser.setSurname(user.getSurname());
     dbUser.setBiography(user.getBiography());
@@ -122,12 +133,12 @@ public class UserService {
   }
 
   @Transactional(readOnly = false)
-  public void registerUser(String name, String surname, String email, String password) throws UserEmailExistsException {
-    registerUser(name, surname, email, password, false);
+  public void registerAccount(String name, String surname, String email, String password) throws UserEmailExistsException {
+    registerAccount(name, surname, email, password, false);
   }
 
   @Transactional(readOnly = false)
-  public void registerUser(String name, String surname, String email, String password, boolean isAdmin) throws UserEmailExistsException {
+  public void registerAccount(String name, String surname, String email, String password, boolean isAdmin) throws UserEmailExistsException {
     if (userDAO.findByEmail(email) != null) {
       throw new UserEmailExistsException(email);
     }
@@ -147,6 +158,20 @@ public class UserService {
     userDAO.create(user);
   }
 
+  @PreAuthorize("isAuthenticated()")
+  @Transactional(readOnly = false, rollbackFor = Exception.class)
+  public void updateAccount(UserDTOPrivate user) throws NotFoundException {
+    User dbUser = userDAO.findById(user.getId());
+    if (dbUser == null) {
+      throw new NotFoundException(user.getId().toString(), Event.class);
+    }
+    dbUser.setName(user.getName());
+    dbUser.setSurname(user.getSurname());
+    dbUser.setBiography(user.getBiography());
+
+    userDAO.update(dbUser);
+  }
+
   @PreAuthorize("hasAuthority('ADMIN')")
   @Transactional(readOnly = false)
   public UserDTOBase updateActive(Long id, boolean active) throws NotFoundException, OperationNotAllowed {
@@ -157,7 +182,7 @@ public class UserService {
 
     UserDTOPrivate currentUser = getCurrentUserWithAuthority();
     if (currentUser.getId().equals(user.getId())) {
-      throw new OperationNotAllowed("The user cannot activate/deactive itself");
+      throw new OperationNotAllowed("The user cannot activate/deactivate itself");
     }
 
     user.setActive(active);

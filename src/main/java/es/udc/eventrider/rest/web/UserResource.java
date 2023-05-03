@@ -1,11 +1,15 @@
 package es.udc.eventrider.rest.web;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import es.udc.eventrider.rest.model.domain.Event;
 import es.udc.eventrider.rest.model.exception.ModelException;
+import es.udc.eventrider.rest.model.service.EventCategoryService;
 import es.udc.eventrider.rest.model.service.EventService;
 import es.udc.eventrider.rest.model.service.dto.*;
 import es.udc.eventrider.rest.web.exceptions.IdAndBodyNotMatchingOnUpdateException;
@@ -19,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 import es.udc.eventrider.rest.model.exception.NotFoundException;
 import es.udc.eventrider.rest.model.exception.OperationNotAllowed;
 import es.udc.eventrider.rest.model.service.UserService;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.management.InstanceNotFoundException;
 import javax.servlet.http.HttpServletResponse;
@@ -33,6 +38,9 @@ public class UserResource {
 
   @Autowired
   private EventService eventService;
+
+  @Autowired
+  private EventCategoryService eventCategoryService;
 
   @GetMapping
   public List<UserDTOPublic> findAll() {
@@ -69,6 +77,189 @@ public class UserResource {
     }
   }
 
+  @PostMapping("/{id}/image")
+  @ResponseStatus(HttpStatus.OK)
+  public void saveUserImage(@PathVariable Long id, @RequestParam MultipartFile file, HttpServletResponse response)
+    throws InstanceNotFoundException, ModelException {
+
+    userService.saveUserImageById(id, file);
+  }
+
+  @GetMapping("/{id}/events/upcoming")
+  public List<EventDTO> findUserUpcomingEvents(@PathVariable Long id, @RequestParam(required = false) Map<String, String> query) {
+    try {
+      UserDTOPublic user = userService.findById(id);
+      List<EventDTO> events = eventService.findAll(query).stream().filter(
+        eventDTO -> Objects.equals(eventDTO.getHost().getId(), user.getId())
+      ).collect(Collectors.toList());
+
+      events = events.stream().filter(
+        eventDTO -> (eventDTO.getStatus() == Event.EventStatus.PUBLISHED ||
+            eventDTO.getStatus() == Event.EventStatus.CANCELLED) &&
+          !eventDTO.getEndingDate().isBefore(LocalDateTime.now()))
+        .collect(Collectors.toList());
+
+      return events;
+    } catch (NotFoundException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  @GetMapping("/{id}/events/past")
+  public List<EventDTO> findUserPastEvents(@PathVariable Long id, @RequestParam(required = false) Map<String, String> query) {
+    try {
+      UserDTOPublic user = userService.findById(id);
+      List<EventDTO> events = eventService.findAll(query).stream().filter(
+        eventDTO -> Objects.equals(eventDTO.getHost().getId(), user.getId())
+      ).collect(Collectors.toList());
+
+      events = events.stream().filter(
+          eventDTO -> (eventDTO.getStatus() == Event.EventStatus.PUBLISHED ||
+              eventDTO.getStatus() == Event.EventStatus.CANCELLED) &&
+            eventDTO.getEndingDate().isBefore(LocalDateTime.now()))
+        .collect(Collectors.toList());
+
+      return events;
+    } catch (NotFoundException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  @GetMapping("/{id}/events/unreviewed")
+  public List<EventDTO> findUserUnreviewedEvents(@PathVariable Long id, @RequestParam(required = false) Map<String, String> query) {
+    try {
+      UserDTOPublic user = userService.findById(id);
+      List<EventDTO> events = eventService.findAll(query).stream().filter(
+        eventDTO -> Objects.equals(eventDTO.getHost().getId(), user.getId())
+      ).collect(Collectors.toList());
+
+      events = events.stream().filter(
+          eventDTO -> eventDTO.getStatus() == Event.EventStatus.UNREVIEWED)
+        .collect(Collectors.toList());
+
+      return events;
+    } catch (NotFoundException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  @GetMapping("/{id}/events/rejected")
+  public List<EventDTO> findUserRejectedEvents(@PathVariable Long id, @RequestParam(required = false) Map<String, String> query) {
+    try {
+      UserDTOPublic user = userService.findById(id);
+      List<EventDTO> events = eventService.findAll(query).stream().filter(
+        eventDTO -> Objects.equals(eventDTO.getHost().getId(), user.getId())
+      ).collect(Collectors.toList());
+
+      events = events.stream().filter(
+          eventDTO -> eventDTO.getStatus() == Event.EventStatus.REJECTED)
+        .collect(Collectors.toList());
+
+      return events;
+    } catch (NotFoundException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  @GetMapping("/{id}/events/saved/upcoming")
+  public List<EventDTO> findUserSavedUpcomingEvents(@PathVariable Long id, @RequestParam(required = false) Map<String, String> query) {
+    try {
+      UserDTOPublic user = userService.findById(id);
+      List<EventDTO> events = eventService.findAll(query).stream().filter(
+        eventDTO -> eventDTO.getSaves().stream()
+          .anyMatch(savedUser -> Objects.equals(savedUser.getId(), user.getId()))
+      ).collect(Collectors.toList());
+
+      events = events.stream().filter(
+          eventDTO -> (eventDTO.getStatus() == Event.EventStatus.PUBLISHED ||
+              eventDTO.getStatus() == Event.EventStatus.CANCELLED) &&
+            !eventDTO.getEndingDate().isBefore(LocalDateTime.now()))
+        .collect(Collectors.toList());
+
+      return events;
+    } catch (NotFoundException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  @GetMapping("/{id}/events/saved/past")
+  public List<EventDTO> findUserSavedPastEvents(@PathVariable Long id, @RequestParam(required = false) Map<String, String> query) {
+    try {
+      UserDTOPublic user = userService.findById(id);
+      List<EventDTO> events = eventService.findAll(query).stream().filter(
+        eventDTO -> eventDTO.getSaves().stream()
+          .anyMatch(savedUser -> Objects.equals(savedUser.getId(), user.getId()))
+      ).collect(Collectors.toList());
+
+      events = events.stream().filter(
+          eventDTO -> (eventDTO.getStatus() == Event.EventStatus.PUBLISHED ||
+              eventDTO.getStatus() == Event.EventStatus.CANCELLED) &&
+            eventDTO.getEndingDate().isBefore(LocalDateTime.now()))
+        .collect(Collectors.toList());
+
+      return events;
+    } catch (NotFoundException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  @GetMapping("/{id}/events/subscribed/upcoming")
+  public List<EventDTO> findUserSubscribedUpcomingEvents(@PathVariable Long id, @RequestParam(required = false) Map<String, String> query) {
+    try {
+      UserDTOPublic user = userService.findById(id);
+      List<EventDTO> events = eventService.findAll(query).stream().filter(
+        eventDTO -> eventDTO.getSubscribers().stream()
+          .anyMatch(subscribedUser -> Objects.equals(subscribedUser.getId(), user.getId()))
+      ).collect(Collectors.toList());
+
+      events = events.stream().filter(
+          eventDTO -> (eventDTO.getStatus() == Event.EventStatus.PUBLISHED ||
+            eventDTO.getStatus() == Event.EventStatus.CANCELLED) &&
+            !eventDTO.getEndingDate().isBefore(LocalDateTime.now()))
+        .collect(Collectors.toList());
+
+      return events;
+    } catch (NotFoundException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  @GetMapping("/{id}/events/subscribed/past")
+  public List<EventDTO> findUserSubscribedPastEvents(@PathVariable Long id, @RequestParam(required = false) Map<String, String> query) {
+    try {
+      UserDTOPublic user = userService.findById(id);
+      List<EventDTO> events = eventService.findAll(query).stream().filter(
+        eventDTO -> eventDTO.getSubscribers().stream()
+          .anyMatch(subscribedUser -> Objects.equals(subscribedUser.getId(), user.getId()))
+      ).collect(Collectors.toList());
+
+      events = events.stream().filter(
+          eventDTO -> (eventDTO.getStatus() == Event.EventStatus.PUBLISHED ||
+            eventDTO.getStatus() == Event.EventStatus.CANCELLED) &&
+            eventDTO.getEndingDate().isBefore(LocalDateTime.now()))
+        .collect(Collectors.toList());
+
+      return events;
+    } catch (NotFoundException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  @GetMapping("/{id}/categories/subscribed")
+  public List<EventCategoryDTO> findUserSubscribedCategories(@PathVariable Long id, @RequestParam(required = false) Map<String, String> query) {
+    try {
+      UserDTOPublic user = userService.findById(id);
+      List<EventCategoryDTO> eventCategories = eventCategoryService.findAll().stream().filter(
+        eventCategoryDTO -> eventCategoryDTO.getSubscribers().stream()
+          .anyMatch(subscribedUser -> Objects.equals(subscribedUser.getId(), user.getId()))
+      ).collect(Collectors.toList());
+
+      return eventCategories;
+    } catch (NotFoundException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
   @PostMapping
   public UserDTOBase create(@RequestBody @Valid UserDTOBase user, Errors errors){
     return null; //TODO
@@ -84,7 +275,7 @@ public class UserResource {
     if (!Objects.equals(id, user.getId())){
       throw new IdAndBodyNotMatchingOnUpdateException(Event.class);
     }
-    return userService.update(user);
+    return userService.updateUser(user);
   }
 
   @PutMapping("/{id}/active")
@@ -101,4 +292,6 @@ public class UserResource {
   public void delete(@PathVariable Long id) throws NotFoundException, OperationNotAllowed {
     userService.deleteById(id);
   }
+
+
 }

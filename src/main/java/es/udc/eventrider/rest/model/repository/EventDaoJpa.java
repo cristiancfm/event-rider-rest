@@ -41,8 +41,8 @@ public class EventDaoJpa extends GenericDaoJpa implements EventDao {
           }
 
           if(Objects.equals(key, "date")) {
-            queryStr += "cast(e.startingDate as date) <= '" + value
-              + "' and cast(e.endingDate as date) >= '" + value + "' and ";
+            queryStr += "cast(e.starting_date as date) <= '" + value
+              + "' and cast(e.ending_date as date) >= '" + value + "' and ";
           }
 
           if(Objects.equals(key, "distance")) {
