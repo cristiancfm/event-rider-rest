@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 import es.udc.eventrider.rest.model.exception.NotFoundException;
 import es.udc.eventrider.rest.model.exception.OperationNotAllowed;
 import es.udc.eventrider.rest.model.service.UserService;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.management.InstanceNotFoundException;
 import javax.servlet.http.HttpServletResponse;
@@ -74,6 +75,14 @@ public class UserResource {
     } catch (IOException e) {
       e.printStackTrace();
     }
+  }
+
+  @PostMapping("/{id}/image")
+  @ResponseStatus(HttpStatus.OK)
+  public void saveUserImage(@PathVariable Long id, @RequestParam MultipartFile file, HttpServletResponse response)
+    throws InstanceNotFoundException, ModelException {
+
+    userService.saveUserImageById(id, file);
   }
 
   @GetMapping("/{id}/events/upcoming")

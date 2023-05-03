@@ -1,5 +1,6 @@
 package es.udc.eventrider.rest.model.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -22,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import es.udc.eventrider.rest.security.SecurityUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.management.InstanceNotFoundException;
 
@@ -63,6 +65,17 @@ public class UserService {
       throw new NotFoundException(id.toString(), User.class);
     }
     return new UserDTOBase(user);
+  }
+
+  @Transactional(readOnly = false, rollbackFor = Exception.class)
+  public void saveUserImageById(Long id, MultipartFile file) throws InstanceNotFoundException, ModelException {
+    User user = userDAO.findById(id);
+    if (user == null)
+      throw new NotFoundException(id.toString(), Event.class);
+
+    String filePath = imageService.saveImage(ImageService.Entity.USER, file, user.getId());
+    user.setImagePath(filePath);
+    userDAO.update(user);
   }
 
   public ImageDTO getUserImageById(Long id) throws InstanceNotFoundException, ModelException {
@@ -155,9 +168,6 @@ public class UserService {
     dbUser.setName(user.getName());
     dbUser.setSurname(user.getSurname());
     dbUser.setBiography(user.getBiography());
-    dbUser.setEmail(user.getEmail());
-    //TODO dbUser.setPassword
-    //TODO dbUser.setActive
 
     userDAO.update(dbUser);
   }
