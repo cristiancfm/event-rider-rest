@@ -3,10 +3,12 @@ package es.udc.eventrider.rest.model.service;
 import es.udc.eventrider.rest.model.domain.Event;
 import es.udc.eventrider.rest.model.exception.ModelException;
 import es.udc.eventrider.rest.model.exception.NotFoundException;
+import es.udc.eventrider.rest.model.exception.OperationNotAllowed;
 import es.udc.eventrider.rest.model.repository.EventCategoryDao;
 import es.udc.eventrider.rest.model.repository.EventDao;
 import es.udc.eventrider.rest.model.repository.UserDao;
 import es.udc.eventrider.rest.model.service.dto.EventDTO;
+import es.udc.eventrider.rest.model.service.dto.EventDTOCreate;
 import es.udc.eventrider.rest.model.service.dto.ImageDTO;
 import es.udc.eventrider.rest.model.service.util.EmailServiceImpl;
 import es.udc.eventrider.rest.model.service.util.ImageService;
@@ -21,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.management.InstanceNotFoundException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -34,16 +37,19 @@ public class EventService {
   private EventDao eventDAO;
 
   @Autowired
+  private UserDao userDAO;
+
+  @Autowired
+  private EventCategoryDao eventCategoryDao;
+
+  @Autowired
   private ImageService imageService;
 
   @Autowired
   private EmailServiceImpl emailService;
 
   @Autowired
-  private UserDao userDAO;
-
-  @Autowired
-  private EventCategoryDao eventCategoryDao;
+  private UserService userService;
 
   public List<EventDTO> findAll(Map<String, String> query) {
     Stream<Event> events = eventDAO.findAll(query).stream();
@@ -68,9 +74,14 @@ public class EventService {
       throw new NotFoundException(id.toString(), Event.class);
 
     String filePath = imageService.saveImage(ImageService.Entity.EVENT, file, event.getId());
-    List<String> imagePaths = new ArrayList<>();
+
+    List<String> imagePaths = event.getImagePaths();
+    if(event.getImagePaths() == null){
+      imagePaths = new ArrayList<>();
+    }
     imagePaths.add(filePath);
     event.setImagePaths(imagePaths);
+
     eventDAO.update(event);
   }
 
@@ -84,6 +95,46 @@ public class EventService {
     }
 
     return imageService.getImage(ImageService.Entity.EVENT, event.getImagePath(imgId), event.getId());
+  }
+
+  @PreAuthorize("isAuthenticated()")
+  @Transactional(readOnly = false, rollbackFor = Exception.class)
+  public EventDTO create(EventDTOCreate event) throws OperationNotAllowed {
+    Event dbEvent = new Event();
+
+    dbEvent.setTitle(event.getTitle());
+
+    Long userId = userService.getCurrentUserWithAuthority().getId();
+    dbEvent.setHost(userDAO.findById(userId));
+
+    //Check if starting & ending dates are not past dates
+    if(event.getStartingDate().isBefore(LocalDateTime.now()) ||
+    event.getEndingDate().isBefore(LocalDateTime.now())){
+      throw new OperationNotAllowed("The starting, ending or both dates are past dates");
+    }
+    //Check if ending date is after starting date
+    if(event.getEndingDate().isBefore(event.getStartingDate())){
+      throw new OperationNotAllowed("The ending date is before the starting date");
+    }
+    dbEvent.setStartingDate(event.getStartingDate());
+    dbEvent.setEndingDate(event.getEndingDate());
+
+    GeometryFactory geometryFactory = new GeometryFactory();
+    Point point = geometryFactory.createPoint(new Coordinate(event.getCoordinateX(), event.getCoordinateY()));
+    dbEvent.setPoint(point);
+
+    dbEvent.setLocationDetails(event.getLocationDetails());
+    dbEvent.setDescription(event.getDescription());
+
+    dbEvent.setStatus(Event.EventStatus.UNREVIEWED); //TODO verified user (no hace falta revisar los eventos)
+
+    if(event.getExistingCategoryChecked()){
+      dbEvent.setCategory(eventCategoryDao.findById(Long.parseLong(event.getExistingCategoryId())));
+    }
+    //TODO create category
+
+    eventDAO.create(dbEvent);
+    return new EventDTO(dbEvent);
   }
 
   @PreAuthorize("isAuthenticated()")
@@ -115,8 +166,6 @@ public class EventService {
 
     dbEvent.setLocationDetails(event.getLocationDetails());
     dbEvent.setDescription(event.getDescription());
-
-    //TODO dbEvent.imagePaths
 
     dbEvent.setAdminComments(event.getAdminComments());
     dbEvent.setCancellationReason(event.getCancellationReason());
