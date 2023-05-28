@@ -9,6 +9,7 @@ import es.udc.eventrider.rest.model.repository.EventDao;
 import es.udc.eventrider.rest.model.repository.UserDao;
 import es.udc.eventrider.rest.model.service.dto.EventDTO;
 import es.udc.eventrider.rest.model.service.dto.EventDTOCreate;
+import es.udc.eventrider.rest.model.service.dto.EventDTOEdit;
 import es.udc.eventrider.rest.model.service.dto.ImageDTO;
 import es.udc.eventrider.rest.model.service.util.EmailServiceImpl;
 import es.udc.eventrider.rest.model.service.util.ImageService;
@@ -139,23 +140,26 @@ public class EventService {
 
   @PreAuthorize("isAuthenticated()")
   @Transactional(readOnly = false, rollbackFor = Exception.class)
-  public EventDTO update(EventDTO event) throws NotFoundException {
+  public EventDTO update(EventDTOEdit event) throws NotFoundException {
     Event dbEvent = eventDAO.findById(event.getId());
     if (dbEvent == null) {
       throw new NotFoundException(event.getId().toString(), Event.class);
     }
     dbEvent.setTitle(event.getTitle());
-    dbEvent.setHost(userDAO.findById(event.getHost().getId()));
 
-    dbEvent.getSubscribers().clear();
-    event.getSubscribers().forEach(s -> {
-      dbEvent.getSubscribers().add(userDAO.findById(s.getId()));
-    });
+    if(event.getSubscribers() != null){
+      dbEvent.getSubscribers().clear();
+      event.getSubscribers().forEach(s -> {
+        dbEvent.getSubscribers().add(userDAO.findById(s.getId()));
+      });
+    }
 
-    dbEvent.getSaves().clear();
-    event.getSaves().forEach(s -> {
-      dbEvent.getSaves().add(userDAO.findById(s.getId()));
-    });
+    if(event.getSaves() != null){
+      dbEvent.getSaves().clear();
+      event.getSaves().forEach(s -> {
+        dbEvent.getSaves().add(userDAO.findById(s.getId()));
+      });
+    }
 
     dbEvent.setStartingDate(event.getStartingDate());
     dbEvent.setEndingDate(event.getEndingDate());
@@ -167,10 +171,22 @@ public class EventService {
     dbEvent.setLocationDetails(event.getLocationDetails());
     dbEvent.setDescription(event.getDescription());
 
-    dbEvent.setAdminComments(event.getAdminComments());
-    dbEvent.setCancellationReason(event.getCancellationReason());
-    dbEvent.setStatus(event.getStatus());
-    dbEvent.setCategory(eventCategoryDao.findById(event.getCategory().getId()));
+    if(event.getAdminComments() != null){
+      dbEvent.setAdminComments(event.getAdminComments());
+    }
+
+    if(event.getCancellationReason() != null){
+      dbEvent.setCancellationReason(event.getCancellationReason());
+    }
+
+    if(event.getStatus() != null){
+      dbEvent.setStatus(event.getStatus());
+    }
+
+    if(event.getExistingCategoryChecked()){
+      dbEvent.setCategory(eventCategoryDao.findById(Long.parseLong(event.getExistingCategoryId())));
+    }
+    //TODO create category
 
     //TODO send email updates
     //emailService.sendSimpleMessage("cristian.ferreiro@udc.es", "Prueba de Event Rider", "Esta es una prueba");

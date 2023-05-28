@@ -5,10 +5,7 @@ import es.udc.eventrider.rest.model.exception.ModelException;
 import es.udc.eventrider.rest.model.exception.NotFoundException;
 import es.udc.eventrider.rest.model.exception.OperationNotAllowed;
 import es.udc.eventrider.rest.model.service.EventService;
-import es.udc.eventrider.rest.model.service.dto.EventDTO;
-import es.udc.eventrider.rest.model.service.dto.EventDTOCreate;
-import es.udc.eventrider.rest.model.service.dto.ImageDTO;
-import es.udc.eventrider.rest.model.service.dto.PostDTO;
+import es.udc.eventrider.rest.model.service.dto.*;
 import es.udc.eventrider.rest.web.exceptions.IdAndBodyNotMatchingOnUpdateException;
 import es.udc.eventrider.rest.web.exceptions.RequestBodyNotValidException;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
@@ -93,7 +90,7 @@ public class EventResource {
   }
 
   @PutMapping("/{id}")
-  public EventDTO update(@PathVariable Long id, @RequestBody @Valid EventDTO event, Errors errors)
+  public EventDTO update(@PathVariable Long id, @RequestBody @Valid EventDTOEdit event, Errors errors)
       throws IdAndBodyNotMatchingOnUpdateException, RequestBodyNotValidException, NotFoundException {
     if (errors.hasErrors()){
       throw new RequestBodyNotValidException(errors);
