@@ -15,11 +15,16 @@ public class EventDTOEdit {
   private String title;
   private List<UserDTOBase> subscribers;
   private List<UserDTOBase> saves;
+  @NotNull
   private LocalDateTime startingDate;
+  @NotNull
   private LocalDateTime endingDate;
+  @NotNull
   private double coordinateX;
+  @NotNull
   private double coordinateY;
   private String locationDetails;
+  @NotEmpty
   private String description;
   private Boolean existingCategoryChecked;
   private String existingCategoryId;

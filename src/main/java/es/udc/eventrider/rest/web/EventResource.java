@@ -79,6 +79,13 @@ public class EventResource {
     eventService.saveEventImageById(id, file);
   }
 
+  @DeleteMapping("/{id}/image/{imgId}")
+  @ResponseStatus(HttpStatus.OK)
+  public void deleteEventImageById(@PathVariable Long id, HttpServletResponse response, @PathVariable Long imgId)
+    throws InstanceNotFoundException, ModelException {
+    eventService.deleteEventImageById(id, imgId);
+  }
+
   @PostMapping
   public EventDTO create(@RequestBody @Valid EventDTOCreate event, Errors errors)
     throws RequestBodyNotValidException, OperationNotAllowed {

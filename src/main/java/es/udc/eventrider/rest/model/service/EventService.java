@@ -1,5 +1,6 @@
 package es.udc.eventrider.rest.model.service;
 
+import es.udc.eventrider.rest.config.Properties;
 import es.udc.eventrider.rest.model.domain.Event;
 import es.udc.eventrider.rest.model.exception.ModelException;
 import es.udc.eventrider.rest.model.exception.NotFoundException;
@@ -24,6 +25,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.management.InstanceNotFoundException;
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -51,6 +55,11 @@ public class EventService {
 
   @Autowired
   private UserService userService;
+
+  @Autowired
+  Properties properties;
+
+  private Path rootLoc;
 
   public List<EventDTO> findAll(Map<String, String> query) {
     Stream<Event> events = eventDAO.findAll(query).stream();
@@ -96,6 +105,32 @@ public class EventService {
     }
 
     return imageService.getImage(ImageService.Entity.EVENT, event.getImagePath(imgId), event.getId());
+  }
+
+  @Transactional(readOnly = false, rollbackFor = Exception.class)
+  public void deleteEventImageById(Long id, Long imgId) throws InstanceNotFoundException, ModelException {
+    Event event = eventDAO.findById(id);
+    if (event == null)
+      throw new NotFoundException(id.toString(), Event.class);
+
+    imageService.deleteImage(ImageService.Entity.EVENT, event.getImagePath(imgId), event.getId());
+
+    Path folderPath = getRootLoc().resolve(  "events/" + id + "/" + "images");
+    File[] files = folderPath.toFile().listFiles();
+    List<String> imagePaths = new ArrayList<>();
+    for (int i = 0; i < files.length; i++) {
+      File file = files[i];
+      imagePaths.add(file.getName());
+    }
+    event.setImagePaths(imagePaths);
+
+    eventDAO.update(event);
+  }
+
+  private Path getRootLoc() {
+    if (rootLoc == null)
+      this.rootLoc = Paths.get(properties.getImagesPath());
+    return rootLoc;
   }
 
   @PreAuthorize("isAuthenticated()")

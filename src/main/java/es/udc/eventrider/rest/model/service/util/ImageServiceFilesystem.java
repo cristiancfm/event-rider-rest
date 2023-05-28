@@ -7,6 +7,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.Arrays;
+import java.util.Comparator;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -84,6 +86,37 @@ public class ImageServiceFilesystem implements ImageService {
     }
   }
 
+  @Override
+  public void deleteImage(Entity entity, String imagePath, Long id) throws ModelException {
+    try {
+
+      String entityFolder = getEntityFolder(entity);
+      if (entityFolder == null){
+        throw new ModelException("No se ha especificado el tipo de entidad para guardar la imagen");
+      }
+
+      Path folderPath = getRootLoc().resolve(entityFolder + "/" + id + "/" + "images");
+      Path deletedFilePath = folderPath.resolve(imagePath);
+      Files.delete(deletedFilePath);
+
+      // Obtener la lista de archivos restantes en la carpeta
+      File[] remainingFiles = folderPath.toFile().listFiles();
+
+      // Ordenar los archivos en orden ascendente
+      Arrays.sort(remainingFiles, Comparator.comparing(File::getName));
+
+      // Renombrar los archivos restantes en orden secuencial
+      for (int i = 0; i < remainingFiles.length; i++) {
+        File file = remainingFiles[i];
+        String newName = i + file.getName().substring(file.getName().lastIndexOf('.'));
+        file.renameTo(new File(folderPath.resolve(newName).toString()));
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
+      throw new ModelException("Problem while deleting the image");
+    }
+  }
+
   private String getEntityFolder(Entity entity) {
     if(entity == Entity.EVENT) {
       return "events";
@@ -118,37 +151,5 @@ public class ImageServiceFilesystem implements ImageService {
     default:
       return MediaType.IMAGE_JPEG_VALUE;
     }
-  }
-
-  private BufferedImage cropImageToSquare(byte[] image) throws IOException {
-    // Get a BufferedImage object from a byte array
-    InputStream in = new ByteArrayInputStream(image);
-    BufferedImage originalImage = ImageIO.read(in);
-
-    // Get image dimensions
-    int height = originalImage.getHeight();
-    int width = originalImage.getWidth();
-
-    // The image is already a square
-    if (height == width) {
-      return originalImage;
-    }
-
-    // Compute the size of the square
-    int squareSize = (height > width ? width : height);
-
-    // Coordinates of the image's middle
-    int xc = width / 2;
-    int yc = height / 2;
-
-    // Crop
-    BufferedImage croppedImage = originalImage.getSubimage(
-      xc - (squareSize / 2), // x coordinate of the upper-left corner
-      yc - (squareSize / 2), // y coordinate of the upper-left corner
-      squareSize,            // widht
-      squareSize             // height
-    );
-
-    return croppedImage;
   }
 }
