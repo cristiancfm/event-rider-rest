@@ -122,8 +122,8 @@ public class DatabaseLoader {
 
 
     eventImages = new ArrayList<>();
-    eventImages.add("foo0.jpg");
-    eventImages.add("foo1.jpg");
+    eventImages.add("0.jpg");
+    eventImages.add("1.jpg");
     event = new Event("Foo Fighters Tour", userDAO.findByEmail("pepe@mail.com"),
       LocalDateTime.of(2023, 10, 20, 22, 0),
       LocalDateTime.of(2023, 10, 20, 0, 0),
@@ -136,7 +136,7 @@ public class DatabaseLoader {
 
 
     eventImages = new ArrayList<>();
-    eventImages.add("discs.jpg");
+    eventImages.add("0.jpg");
     event = new Event("Feria del disco", userDAO.findByEmail("pepe@mail.com"),
       LocalDateTime.of(2022, 8, 20, 16, 0),
       LocalDateTime.of(2022, 8, 20, 20, 0),
@@ -149,7 +149,6 @@ public class DatabaseLoader {
 
 
     eventImages = new ArrayList<>();
-    eventImages.add("aaa.jpg");
     event = new Event("evento sin revisar", userDAO.findByEmail("pepe@mail.com"),
       LocalDateTime.of(2023, 6, 15, 16, 0),
       LocalDateTime.of(2023, 6, 15, 20, 0),
@@ -162,7 +161,6 @@ public class DatabaseLoader {
 
 
     eventImages = new ArrayList<>();
-    eventImages.add("aaa.jpg");
     event = new Event("evento rechazado", userDAO.findByEmail("pepe@mail.com"),
       LocalDateTime.of(2023, 6, 20, 16, 0),
       LocalDateTime.of(2023, 6, 20, 20, 0),
@@ -176,7 +174,6 @@ public class DatabaseLoader {
 
 
     eventImages = new ArrayList<>();
-    eventImages.add("aaa.jpg");
     event = new Event("evento cancelado", userDAO.findByEmail("pepe@mail.com"),
       LocalDateTime.of(2023, 6, 20, 16, 0),
       LocalDateTime.of(2023, 6, 20, 20, 0),

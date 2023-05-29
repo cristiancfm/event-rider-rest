@@ -11,11 +11,16 @@ import java.util.List;
 public class EventDTOCreate {
   @NotEmpty
   private String title;
+  @NotNull
   private LocalDateTime startingDate;
+  @NotNull
   private LocalDateTime endingDate;
+  @NotNull
   private double coordinateX;
+  @NotNull
   private double coordinateY;
   private String locationDetails;
+  @NotEmpty
   private String description;
   private Boolean existingCategoryChecked;
   private String existingCategoryId;
