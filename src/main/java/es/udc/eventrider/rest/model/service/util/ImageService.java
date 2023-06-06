@@ -16,4 +16,6 @@ public interface ImageService {
   String saveImage(Entity entity, MultipartFile file, Long id) throws ModelException;
 
   ImageDTO getImage(Entity entity, String imagePath, Long id) throws ModelException;
+
+  void deleteImage(Entity entity, String imagePath, Long id) throws ModelException;
 }

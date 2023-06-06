@@ -8,9 +8,13 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EventDTOCreate {
+public class EventDTOEdit {
+  @NotNull
+  private Long id;
   @NotEmpty
   private String title;
+  private List<UserDTOBase> subscribers;
+  private List<UserDTOBase> saves;
   @NotNull
   private LocalDateTime startingDate;
   @NotNull
@@ -25,12 +29,18 @@ public class EventDTOCreate {
   private Boolean existingCategoryChecked;
   private String existingCategoryId;
   private String newCategory;
+  private String adminComments;
+  private String cancellationReason;
+  private Event.EventStatus status;
 
-  public EventDTOCreate() {
+  public EventDTOEdit() {
   }
 
-  public EventDTOCreate(String title, LocalDateTime startingDate, LocalDateTime endingDate, double coordinateX, double coordinateY, String locationDetails, String description, Boolean existingCategoryChecked, String existingCategoryId, String newCategory) {
+  public EventDTOEdit(Long id, String title, List<UserDTOBase> subscribers, List<UserDTOBase> saves, LocalDateTime startingDate, LocalDateTime endingDate, double coordinateX, double coordinateY, String locationDetails, String description, Boolean existingCategoryChecked, String existingCategoryId, String newCategory, String adminComments, String cancellationReason, Event.EventStatus status) {
+    this.id = id;
     this.title = title;
+    this.subscribers = subscribers;
+    this.saves = saves;
     this.startingDate = startingDate;
     this.endingDate = endingDate;
     this.coordinateX = coordinateX;
@@ -40,6 +50,17 @@ public class EventDTOCreate {
     this.existingCategoryChecked = existingCategoryChecked;
     this.existingCategoryId = existingCategoryId;
     this.newCategory = newCategory;
+    this.adminComments = adminComments;
+    this.cancellationReason = cancellationReason;
+    this.status = status;
+  }
+
+  public Long getId() {
+    return id;
+  }
+
+  public void setId(Long id) {
+    this.id = id;
   }
 
   public String getTitle() {
@@ -48,6 +69,22 @@ public class EventDTOCreate {
 
   public void setTitle(String title) {
     this.title = title;
+  }
+
+  public List<UserDTOBase> getSubscribers() {
+    return subscribers;
+  }
+
+  public void setSubscribers(List<UserDTOBase> subscribers) {
+    this.subscribers = subscribers;
+  }
+
+  public List<UserDTOBase> getSaves() {
+    return saves;
+  }
+
+  public void setSaves(List<UserDTOBase> saves) {
+    this.saves = saves;
   }
 
   public LocalDateTime getStartingDate() {
@@ -120,5 +157,29 @@ public class EventDTOCreate {
 
   public void setNewCategory(String newCategory) {
     this.newCategory = newCategory;
+  }
+
+  public String getAdminComments() {
+    return adminComments;
+  }
+
+  public void setAdminComments(String adminComments) {
+    this.adminComments = adminComments;
+  }
+
+  public String getCancellationReason() {
+    return cancellationReason;
+  }
+
+  public void setCancellationReason(String cancellationReason) {
+    this.cancellationReason = cancellationReason;
+  }
+
+  public Event.EventStatus getStatus() {
+    return status;
+  }
+
+  public void setStatus(Event.EventStatus status) {
+    this.status = status;
   }
 }
