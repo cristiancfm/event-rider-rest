@@ -2,6 +2,7 @@ package es.udc.eventrider.rest.model.service;
 
 import es.udc.eventrider.rest.config.Properties;
 import es.udc.eventrider.rest.model.domain.Event;
+import es.udc.eventrider.rest.model.domain.User;
 import es.udc.eventrider.rest.model.exception.ModelException;
 import es.udc.eventrider.rest.model.exception.NotFoundException;
 import es.udc.eventrider.rest.model.exception.OperationNotAllowed;
@@ -28,10 +29,8 @@ import javax.management.InstanceNotFoundException;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.time.ZonedDateTime;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -144,8 +143,8 @@ public class EventService {
     dbEvent.setHost(userDAO.findById(userId));
 
     //Check if starting & ending dates are not past dates
-    if(event.getStartingDate().isBefore(LocalDateTime.now()) ||
-    event.getEndingDate().isBefore(LocalDateTime.now())){
+    if(event.getStartingDate().isBefore(ZonedDateTime.now()) ||
+    event.getEndingDate().isBefore(ZonedDateTime.now())){
       throw new OperationNotAllowed("The starting, ending or both dates are past dates");
     }
     //Check if ending date is after starting date
@@ -180,7 +179,13 @@ public class EventService {
     if (dbEvent == null) {
       throw new NotFoundException(event.getId().toString(), Event.class);
     }
-    dbEvent.setTitle(event.getTitle());
+
+    Map<String, String> updatedFields = new HashMap<>();
+
+    if(!Objects.equals(event.getTitle(), dbEvent.getTitle())){
+      dbEvent.setTitle(event.getTitle());
+      updatedFields.put("Title: ", dbEvent.getTitle());
+    }
 
     if(event.getSubscribers() != null){
       dbEvent.getSubscribers().clear();
@@ -196,35 +201,71 @@ public class EventService {
       });
     }
 
-    dbEvent.setStartingDate(event.getStartingDate());
-    dbEvent.setEndingDate(event.getEndingDate());
+    if(event.getStartingDate().compareTo(dbEvent.getStartingDate()) != 0){
+      dbEvent.setStartingDate(event.getStartingDate());
+      updatedFields.put("Starting Date: ", dbEvent.getStartingDate().toString());
+    }
 
-    GeometryFactory geometryFactory = new GeometryFactory();
-    Point point = geometryFactory.createPoint(new Coordinate(event.getCoordinateX(), event.getCoordinateY()));
-    dbEvent.setPoint(point);
+    if(event.getEndingDate().compareTo(dbEvent.getEndingDate()) != 0){
+      dbEvent.setEndingDate(event.getEndingDate());
+      updatedFields.put("Ending Date: ", dbEvent.getEndingDate().toString());
+    }
 
-    dbEvent.setLocationDetails(event.getLocationDetails());
-    dbEvent.setDescription(event.getDescription());
+    if(event.getCoordinateX() != dbEvent.getPoint().getX() ||
+      event.getCoordinateY() != dbEvent.getPoint().getY()){
+      GeometryFactory geometryFactory = new GeometryFactory();
+      Point point = geometryFactory.createPoint(new Coordinate(event.getCoordinateX(), event.getCoordinateY()));
+      dbEvent.setPoint(point);
+      updatedFields.put("Coordinates: ", dbEvent.getPoint().getX() + ", " + dbEvent.getPoint().getY());
+    }
+
+    if(!Objects.equals(event.getLocationDetails(), dbEvent.getLocationDetails())){
+      dbEvent.setLocationDetails(event.getLocationDetails());
+      updatedFields.put("Location Details: ", dbEvent.getLocationDetails());
+    }
+
+    if(!Objects.equals(event.getDescription(), dbEvent.getDescription())){
+      dbEvent.setDescription(event.getDescription());
+      updatedFields.put("Description: ", dbEvent.getDescription());
+    }
+
 
     if(event.getAdminComments() != null){
       dbEvent.setAdminComments(event.getAdminComments());
+      //TODO email notification
     }
 
     if(event.getCancellationReason() != null){
       dbEvent.setCancellationReason(event.getCancellationReason());
+      //TODO email notification
     }
 
     if(event.getStatus() != null){
       dbEvent.setStatus(event.getStatus());
+      //TODO email notification
     }
 
-    if(event.getExistingCategoryChecked()){
-      dbEvent.setCategory(eventCategoryDao.findById(Long.parseLong(event.getExistingCategoryId())));
-    }
-    //TODO create category
+    if(event.getExistingCategoryChecked() != null){
+      if(event.getExistingCategoryChecked()){
+        dbEvent.setCategory(eventCategoryDao.findById(Long.parseLong(event.getExistingCategoryId())));
+      }
+    } //TODO create category
 
-    //TODO send email updates
-    //emailService.sendSimpleMessage("cristian.ferreiro@udc.es", "Prueba de Event Rider", "Esta es una prueba");
+
+    //Send email to subscribers
+    if(!updatedFields.isEmpty()){
+      for (User user: dbEvent.getSubscribers()) {
+        StringBuilder emailText = new StringBuilder("The event " + dbEvent.getTitle() +
+          " was updated with new information:\n");
+        for (Map.Entry<String, String> entry : updatedFields.entrySet()) {
+          emailText.append(entry.getKey()).append(entry.getValue()).append("\n");
+        }
+        emailService.sendSimpleMessage(
+          "cristian.ferreiro@udc.es",
+          "Event Rider: " + dbEvent.getTitle() + " was updated",
+          emailText.toString());
+      }
+    }
 
     eventDAO.update(dbEvent);
     return new EventDTO(dbEvent);

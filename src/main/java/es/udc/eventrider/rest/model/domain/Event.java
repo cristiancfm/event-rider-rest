@@ -3,7 +3,7 @@ package es.udc.eventrider.rest.model.domain;
 import org.locationtech.jts.geom.Point;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,9 +25,11 @@ public class Event {
   @ManyToMany(fetch = FetchType.LAZY)
   private List<User> saves = new ArrayList<>();
 
-  private LocalDateTime startingDate;
+  @Column(columnDefinition = "timestamp with time zone")
+  private ZonedDateTime startingDate;
 
-  private LocalDateTime endingDate;
+  @Column(columnDefinition = "timestamp with time zone")
+  private ZonedDateTime endingDate;
 
   private Point point;
 
@@ -58,7 +60,7 @@ public class Event {
   public Event(){
   }
 
-  public Event(String title, User host, LocalDateTime startingDate, LocalDateTime endingDate,
+  public Event(String title, User host, ZonedDateTime startingDate, ZonedDateTime endingDate,
                Point point, String locationDetails, String description,
                List<String> imagePaths, EventStatus status, EventCategory category) {
     this.title = title;
@@ -113,19 +115,19 @@ public class Event {
     this.saves = saves;
   }
 
-  public LocalDateTime getStartingDate() {
+  public ZonedDateTime getStartingDate() {
     return startingDate;
   }
 
-  public void setStartingDate(LocalDateTime startingDate) {
+  public void setStartingDate(ZonedDateTime startingDate) {
     this.startingDate = startingDate;
   }
 
-  public LocalDateTime getEndingDate() {
+  public ZonedDateTime getEndingDate() {
     return endingDate;
   }
 
-  public void setEndingDate(LocalDateTime endingDate) {
+  public void setEndingDate(ZonedDateTime endingDate) {
     this.endingDate = endingDate;
   }
 

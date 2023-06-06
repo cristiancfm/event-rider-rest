@@ -20,7 +20,7 @@ import javax.management.InstanceNotFoundException;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -42,7 +42,7 @@ public class EventResource {
   public List<EventDTO> findPublishedUpcoming(@RequestParam(required = false) Map<String, String> query) {
     List<EventDTO> events = eventService.findAll(query).stream().filter(
         eventDTO -> eventDTO.getStatus() == Event.EventStatus.PUBLISHED &&
-          !eventDTO.getEndingDate().isBefore(LocalDateTime.now()))
+          !eventDTO.getEndingDate().isBefore(ZonedDateTime.now()))
       .collect(Collectors.toList());
     return events;
   }
