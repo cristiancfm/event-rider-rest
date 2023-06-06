@@ -2,6 +2,7 @@ package es.udc.eventrider.rest.web;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -255,6 +256,34 @@ public class UserResource {
       ).collect(Collectors.toList());
 
       return eventCategories;
+    } catch (NotFoundException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  @GetMapping("/{id}/followers")
+  public List<UserDTOPublic> findUserFollowers(@PathVariable Long id, @RequestParam(required = false) Map<String, String> query) {
+    try {
+      UserDTOPublic user = userService.findById(id);
+      List<UserDTOPublic> followers = new ArrayList<>();
+      for (UserDTOBase followerBase: user.getFollowers()) {
+        followers.add(userService.findById(followerBase.getId()));
+      }
+      return followers;
+    } catch (NotFoundException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  @GetMapping("/{id}/following")
+  public List<UserDTOPublic> findUserFollowing(@PathVariable Long id, @RequestParam(required = false) Map<String, String> query) {
+    try {
+      UserDTOPublic user = userService.findById(id);
+      List<UserDTOPublic> following = new ArrayList<>();
+      for (UserDTOBase followingBase: user.getFollowing()) {
+        following.add(userService.findById(followingBase.getId()));
+      }
+      return following;
     } catch (NotFoundException e) {
       throw new RuntimeException(e);
     }
