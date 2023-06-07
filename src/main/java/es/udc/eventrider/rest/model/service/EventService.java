@@ -187,6 +187,23 @@ public class EventService {
     }
     executorService.shutdown();
 
+    //Send email to category subscribers using parallel threads
+    executorService = Executors.newFixedThreadPool(10);
+    for (User user : dbEvent.getCategory().getSubscribers()) {
+      StringBuilder emailText = new StringBuilder("The category " + dbEvent.getCategory().getName() +
+        " was updated with a new event:\n");
+      emailText.append("Title: ").append(dbEvent.getTitle());
+
+      executorService.execute(() -> {
+        emailService.sendSimpleMessage(
+          "cristian.ferreiro@udc.es", // TODO cambiar a user.getEmail()
+          "Event Rider: The category " + dbEvent.getCategory().getName() +
+            " was updated",
+          emailText.toString());
+      });
+    }
+    executorService.shutdown();
+
 
     eventDAO.create(dbEvent);
     return new EventDTO(dbEvent);
@@ -276,7 +293,7 @@ public class EventService {
     } //TODO create category
 
 
-    //Send email to subscribers using parallel threads
+    //Send email to event subscribers using parallel threads
     if(!updatedFields.isEmpty()){
       ExecutorService executorService = Executors.newFixedThreadPool(10);
       for (User user: dbEvent.getSubscribers()) {
