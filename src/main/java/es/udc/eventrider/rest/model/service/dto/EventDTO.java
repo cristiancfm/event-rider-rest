@@ -4,7 +4,7 @@ import es.udc.eventrider.rest.model.domain.Event;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,8 +16,8 @@ public class EventDTO {
   private UserDTOBase host;
   private List<UserDTOBase> subscribers = new ArrayList<>();
   private List<UserDTOBase> saves = new ArrayList<>();
-  private ZonedDateTime startingDate;
-  private ZonedDateTime endingDate;
+  private LocalDateTime startingDate;
+  private LocalDateTime endingDate;
   private double coordinateX;
   private double coordinateY;
   private String locationDetails;
@@ -94,19 +94,19 @@ public class EventDTO {
     this.saves = saves;
   }
 
-  public ZonedDateTime getStartingDate() {
+  public LocalDateTime getStartingDate() {
     return startingDate;
   }
 
-  public void setStartingDate(ZonedDateTime startingDate) {
+  public void setStartingDate(LocalDateTime startingDate) {
     this.startingDate = startingDate;
   }
 
-  public ZonedDateTime getEndingDate() {
+  public LocalDateTime getEndingDate() {
     return endingDate;
   }
 
-  public void setEndingDate(ZonedDateTime endingDate) {
+  public void setEndingDate(LocalDateTime endingDate) {
     this.endingDate = endingDate;
   }
 

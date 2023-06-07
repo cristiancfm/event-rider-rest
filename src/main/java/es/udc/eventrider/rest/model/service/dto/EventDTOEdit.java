@@ -4,7 +4,7 @@ import es.udc.eventrider.rest.model.domain.Event;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,9 +16,9 @@ public class EventDTOEdit {
   private List<UserDTOBase> subscribers;
   private List<UserDTOBase> saves;
   @NotNull
-  private ZonedDateTime startingDate;
+  private LocalDateTime startingDate;
   @NotNull
-  private ZonedDateTime endingDate;
+  private LocalDateTime endingDate;
   @NotNull
   private double coordinateX;
   @NotNull
@@ -36,7 +36,7 @@ public class EventDTOEdit {
   public EventDTOEdit() {
   }
 
-  public EventDTOEdit(Long id, String title, List<UserDTOBase> subscribers, List<UserDTOBase> saves, ZonedDateTime startingDate, ZonedDateTime endingDate, double coordinateX, double coordinateY, String locationDetails, String description, Boolean existingCategoryChecked, String existingCategoryId, String newCategory, String adminComments, String cancellationReason, Event.EventStatus status) {
+  public EventDTOEdit(Long id, String title, List<UserDTOBase> subscribers, List<UserDTOBase> saves, LocalDateTime startingDate, LocalDateTime endingDate, double coordinateX, double coordinateY, String locationDetails, String description, Boolean existingCategoryChecked, String existingCategoryId, String newCategory, String adminComments, String cancellationReason, Event.EventStatus status) {
     this.id = id;
     this.title = title;
     this.subscribers = subscribers;
@@ -87,19 +87,19 @@ public class EventDTOEdit {
     this.saves = saves;
   }
 
-  public ZonedDateTime getStartingDate() {
+  public LocalDateTime getStartingDate() {
     return startingDate;
   }
 
-  public void setStartingDate(ZonedDateTime startingDate) {
+  public void setStartingDate(LocalDateTime startingDate) {
     this.startingDate = startingDate;
   }
 
-  public ZonedDateTime getEndingDate() {
+  public LocalDateTime getEndingDate() {
     return endingDate;
   }
 
-  public void setEndingDate(ZonedDateTime endingDate) {
+  public void setEndingDate(LocalDateTime endingDate) {
     this.endingDate = endingDate;
   }
 

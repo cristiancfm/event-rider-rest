@@ -3,7 +3,7 @@ package es.udc.eventrider.rest.model.service.dto;
 import es.udc.eventrider.rest.model.domain.Event;
 import es.udc.eventrider.rest.model.domain.EventCategory;
 
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -27,7 +27,7 @@ public class EventCategoryDTO {
     this.status = eventCategory.getStatus();
     this.upcomingEvents = eventCategory.getEvents()
       .stream().filter(event -> event.getStatus() == Event.EventStatus.PUBLISHED &&
-        !event.getEndingDate().isBefore(ZonedDateTime.now()))
+        !event.getEndingDate().isBefore(LocalDateTime.now()))
       .collect(Collectors.toList()).size();
   }
 

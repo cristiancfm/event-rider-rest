@@ -4,8 +4,8 @@ import es.udc.eventrider.rest.model.domain.Event;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import java.time.ZonedDateTime;
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,9 +13,9 @@ public class EventDTOCreate {
   @NotEmpty
   private String title;
   @NotNull
-  private ZonedDateTime startingDate;
+  private LocalDateTime startingDate;
   @NotNull
-  private ZonedDateTime endingDate;
+  private LocalDateTime endingDate;
   @NotNull
   private double coordinateX;
   @NotNull
@@ -30,7 +30,7 @@ public class EventDTOCreate {
   public EventDTOCreate() {
   }
 
-  public EventDTOCreate(String title, ZonedDateTime startingDate, ZonedDateTime endingDate, double coordinateX, double coordinateY, String locationDetails, String description, Boolean existingCategoryChecked, String existingCategoryId, String newCategory) {
+  public EventDTOCreate(String title, LocalDateTime startingDate, LocalDateTime endingDate, double coordinateX, double coordinateY, String locationDetails, String description, Boolean existingCategoryChecked, String existingCategoryId, String newCategory) {
     this.title = title;
     this.startingDate = startingDate;
     this.endingDate = endingDate;
@@ -51,19 +51,19 @@ public class EventDTOCreate {
     this.title = title;
   }
 
-  public ZonedDateTime getStartingDate() {
+  public LocalDateTime getStartingDate() {
     return startingDate;
   }
 
-  public void setStartingDate(ZonedDateTime startingDate) {
+  public void setStartingDate(LocalDateTime startingDate) {
     this.startingDate = startingDate;
   }
 
-  public ZonedDateTime getEndingDate() {
+  public LocalDateTime getEndingDate() {
     return endingDate;
   }
 
-  public void setEndingDate(ZonedDateTime endingDate) {
+  public void setEndingDate(LocalDateTime endingDate) {
     this.endingDate = endingDate;
   }
 

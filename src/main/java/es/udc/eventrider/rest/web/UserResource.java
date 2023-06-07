@@ -1,7 +1,7 @@
 package es.udc.eventrider.rest.web;
 
 import java.io.IOException;
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -97,7 +97,7 @@ public class UserResource {
       events = events.stream().filter(
         eventDTO -> (eventDTO.getStatus() == Event.EventStatus.PUBLISHED ||
             eventDTO.getStatus() == Event.EventStatus.CANCELLED) &&
-          !eventDTO.getEndingDate().isBefore(ZonedDateTime.now()))
+          !eventDTO.getEndingDate().isBefore(LocalDateTime.now()))
         .collect(Collectors.toList());
 
       return events;
@@ -117,7 +117,7 @@ public class UserResource {
       events = events.stream().filter(
           eventDTO -> (eventDTO.getStatus() == Event.EventStatus.PUBLISHED ||
               eventDTO.getStatus() == Event.EventStatus.CANCELLED) &&
-            eventDTO.getEndingDate().isBefore(ZonedDateTime.now()))
+            eventDTO.getEndingDate().isBefore(LocalDateTime.now()))
         .collect(Collectors.toList());
 
       return events;
@@ -174,7 +174,7 @@ public class UserResource {
       events = events.stream().filter(
           eventDTO -> (eventDTO.getStatus() == Event.EventStatus.PUBLISHED ||
               eventDTO.getStatus() == Event.EventStatus.CANCELLED) &&
-            !eventDTO.getEndingDate().isBefore(ZonedDateTime.now()))
+            !eventDTO.getEndingDate().isBefore(LocalDateTime.now()))
         .collect(Collectors.toList());
 
       return events;
@@ -195,7 +195,7 @@ public class UserResource {
       events = events.stream().filter(
           eventDTO -> (eventDTO.getStatus() == Event.EventStatus.PUBLISHED ||
               eventDTO.getStatus() == Event.EventStatus.CANCELLED) &&
-            eventDTO.getEndingDate().isBefore(ZonedDateTime.now()))
+            eventDTO.getEndingDate().isBefore(LocalDateTime.now()))
         .collect(Collectors.toList());
 
       return events;
@@ -216,7 +216,7 @@ public class UserResource {
       events = events.stream().filter(
           eventDTO -> (eventDTO.getStatus() == Event.EventStatus.PUBLISHED ||
             eventDTO.getStatus() == Event.EventStatus.CANCELLED) &&
-            !eventDTO.getEndingDate().isBefore(ZonedDateTime.now()))
+            !eventDTO.getEndingDate().isBefore(LocalDateTime.now()))
         .collect(Collectors.toList());
 
       return events;
@@ -237,7 +237,7 @@ public class UserResource {
       events = events.stream().filter(
           eventDTO -> (eventDTO.getStatus() == Event.EventStatus.PUBLISHED ||
             eventDTO.getStatus() == Event.EventStatus.CANCELLED) &&
-            eventDTO.getEndingDate().isBefore(ZonedDateTime.now()))
+            eventDTO.getEndingDate().isBefore(LocalDateTime.now()))
         .collect(Collectors.toList());
 
       return events;
