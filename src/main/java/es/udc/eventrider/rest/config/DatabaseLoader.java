@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import es.udc.eventrider.rest.model.exception.UserEmailExistsException;
 import es.udc.eventrider.rest.model.service.UserService;
 
-import java.time.LocalDateTime;
+import java.time.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -108,8 +108,14 @@ public class DatabaseLoader {
     Point point4 = geometryFactory.createPoint(new Coordinate(43.371816, -8.40451451));
 
     Event event = new Event("Meisel 93", userDAO.findByEmail("pepe@mail.com"),
-      LocalDateTime.of(2022, 10, 20, 9, 0),
-      LocalDateTime.of(2023, 05, 10, 22, 0),
+      ZonedDateTime.of(
+        LocalDate.of(2022, 10, 20),
+        LocalTime.of(9, 0),
+        ZoneId.of("Europe/Madrid")),
+      ZonedDateTime.of(
+        LocalDate.of(2023, 05, 10),
+        LocalTime.of(22, 0),
+        ZoneId.of("Europe/Madrid")),
       point1, "Puerto de A Coruña",
       String.format("Muestra de fotografías realizadas por Steven Meisel, centradas en el año 1993. " +
         "El evento podrá visitarse de forma gratuita en el puerto de A Coruña"),
@@ -125,8 +131,14 @@ public class DatabaseLoader {
     eventImages.add("0.jpg");
     eventImages.add("1.jpg");
     event = new Event("Foo Fighters Tour", userDAO.findByEmail("pepe@mail.com"),
-      LocalDateTime.of(2023, 10, 20, 22, 0),
-      LocalDateTime.of(2023, 10, 20, 0, 0),
+      ZonedDateTime.of(
+        LocalDate.of(2023, 10, 20),
+        LocalTime.of(22, 0),
+        ZoneId.of("Europe/Madrid")),
+      ZonedDateTime.of(
+        LocalDate.of(2023, 10, 20),
+        LocalTime.of(0, 0),
+        ZoneId.of("Europe/Madrid")),
       point2, "Coliseum de A Coruña",
       String.format("Foo Fighters Tour"),
       eventImages,
@@ -138,8 +150,14 @@ public class DatabaseLoader {
     eventImages = new ArrayList<>();
     eventImages.add("0.jpg");
     event = new Event("Feria del disco", userDAO.findByEmail("pepe@mail.com"),
-      LocalDateTime.of(2022, 8, 20, 16, 0),
-      LocalDateTime.of(2022, 8, 20, 20, 0),
+      ZonedDateTime.of(
+        LocalDate.of(2022, 8, 20),
+        LocalTime.of(16, 0),
+        ZoneId.of("Europe/Madrid")),
+      ZonedDateTime.of(
+        LocalDate.of(2022, 8, 20),
+        LocalTime.of(20, 0),
+        ZoneId.of("Europe/Madrid")),
       point3, "Plaza de María Pita",
       String.format("Feria de discos anual en el centro de A Coruña"),
       eventImages,
@@ -150,8 +168,14 @@ public class DatabaseLoader {
 
     eventImages = new ArrayList<>();
     event = new Event("evento sin revisar", userDAO.findByEmail("pepe@mail.com"),
-      LocalDateTime.of(2023, 6, 15, 16, 0),
-      LocalDateTime.of(2023, 6, 15, 20, 0),
+      ZonedDateTime.of(
+        LocalDate.of(2022, 6, 15),
+        LocalTime.of(16, 0),
+        ZoneId.of("Europe/Madrid")),
+      ZonedDateTime.of(
+        LocalDate.of(2022, 6, 15),
+        LocalTime.of(20, 0),
+        ZoneId.of("Europe/Madrid")),
       point4, "blablabla",
       String.format("Descripción del evento sin revisar"),
       eventImages,
@@ -162,8 +186,14 @@ public class DatabaseLoader {
 
     eventImages = new ArrayList<>();
     event = new Event("evento rechazado", userDAO.findByEmail("pepe@mail.com"),
-      LocalDateTime.of(2023, 6, 20, 16, 0),
-      LocalDateTime.of(2023, 6, 20, 20, 0),
+      ZonedDateTime.of(
+        LocalDate.of(2022, 6, 20),
+        LocalTime.of(16, 0),
+        ZoneId.of("Europe/Madrid")),
+      ZonedDateTime.of(
+        LocalDate.of(2022, 6, 20),
+        LocalTime.of(20, 0),
+        ZoneId.of("Europe/Madrid")),
       point4, "blablabla",
       String.format("Descripción del evento rechazado"),
       eventImages,
@@ -175,8 +205,14 @@ public class DatabaseLoader {
 
     eventImages = new ArrayList<>();
     event = new Event("evento cancelado", userDAO.findByEmail("pepe@mail.com"),
-      LocalDateTime.of(2023, 6, 20, 16, 0),
-      LocalDateTime.of(2023, 6, 20, 20, 0),
+      ZonedDateTime.of(
+        LocalDate.of(2022, 6, 20),
+        LocalTime.of(16, 0),
+        ZoneId.of("Europe/Madrid")),
+      ZonedDateTime.of(
+        LocalDate.of(2022, 6, 20),
+        LocalTime.of(20, 0),
+        ZoneId.of("Europe/Madrid")),
       point4, "blablabla",
       String.format("Descripción del evento cancelado"),
       eventImages,
