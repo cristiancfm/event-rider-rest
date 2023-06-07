@@ -29,7 +29,7 @@ import javax.management.InstanceNotFoundException;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -143,8 +143,8 @@ public class EventService {
     dbEvent.setHost(userDAO.findById(userId));
 
     //Check if starting & ending dates are not past dates
-    if(event.getStartingDate().isBefore(ZonedDateTime.now()) ||
-    event.getEndingDate().isBefore(ZonedDateTime.now())){
+    if(event.getStartingDate().isBefore(LocalDateTime.now()) ||
+      event.getEndingDate().isBefore(LocalDateTime.now())){
       throw new OperationNotAllowed("The starting, ending or both dates are past dates");
     }
     //Check if ending date is after starting date
@@ -203,12 +203,16 @@ public class EventService {
 
     if(event.getStartingDate().compareTo(dbEvent.getStartingDate()) != 0){
       dbEvent.setStartingDate(event.getStartingDate());
-      updatedFields.put("Starting Date: ", dbEvent.getStartingDate().toString());
+      updatedFields.put("Starting Date: ",
+        dbEvent.getStartingDate().toLocalDate().toString() + " " +
+        dbEvent.getStartingDate().toLocalTime().toString());
     }
 
     if(event.getEndingDate().compareTo(dbEvent.getEndingDate()) != 0){
       dbEvent.setEndingDate(event.getEndingDate());
-      updatedFields.put("Ending Date: ", dbEvent.getEndingDate().toString());
+      updatedFields.put("Ending Date: ",
+        dbEvent.getEndingDate().toLocalDate().toString() + " " +
+        dbEvent.getEndingDate().toLocalTime().toString());
     }
 
     if(event.getCoordinateX() != dbEvent.getPoint().getX() ||
@@ -261,7 +265,7 @@ public class EventService {
           emailText.append(entry.getKey()).append(entry.getValue()).append("\n");
         }
         emailService.sendSimpleMessage(
-          "cristian.ferreiro@udc.es",
+          "cristian.ferreiro@udc.es", //TODO cambiar a user.getEmail()
           "Event Rider: " + dbEvent.getTitle() + " was updated",
           emailText.toString());
       }
