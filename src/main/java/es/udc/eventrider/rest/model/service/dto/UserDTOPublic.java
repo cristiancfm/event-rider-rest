@@ -3,7 +3,7 @@ package es.udc.eventrider.rest.model.service.dto;
 import es.udc.eventrider.rest.model.domain.Event;
 import es.udc.eventrider.rest.model.domain.User;
 
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -40,11 +40,11 @@ public class UserDTOPublic {
     });
     this.upcomingHostedEvents = this.hostedEvents.stream().filter(
         eventDTO -> eventDTO.getStatus() == Event.EventStatus.PUBLISHED &&
-        !eventDTO.getEndingDate().isBefore(ZonedDateTime.now()))
+        !eventDTO.getEndingDate().isBefore(LocalDateTime.now()))
       .collect(Collectors.toList());
     this.pastHostedEvents = this.hostedEvents.stream().filter(
         eventDTO -> eventDTO.getStatus() == Event.EventStatus.PUBLISHED &&
-        eventDTO.getEndingDate().isBefore(ZonedDateTime.now()))
+        eventDTO.getEndingDate().isBefore(LocalDateTime.now()))
       .collect(Collectors.toList());
     user.getSubscribedEvents().forEach(event -> {
       this.subscribedEvents.add(new EventDTO(event));

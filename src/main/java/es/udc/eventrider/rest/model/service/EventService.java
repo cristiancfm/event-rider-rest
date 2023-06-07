@@ -31,6 +31,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -168,6 +170,24 @@ public class EventService {
     }
     //TODO create category
 
+    //Send email to user followers using parallel threads
+    ExecutorService executorService = Executors.newFixedThreadPool(10);
+    for (User user : dbEvent.getHost().getFollowers()) {
+      StringBuilder emailText = new StringBuilder("The user " + dbEvent.getHost().getName() + " " +
+        dbEvent.getHost().getSurname() + " created a new event:\n");
+      emailText.append("Title: ").append(dbEvent.getTitle());
+
+      executorService.execute(() -> {
+        emailService.sendSimpleMessage(
+          "cristian.ferreiro@udc.es", // TODO cambiar a user.getEmail()
+          "Event Rider: " + dbEvent.getHost().getName() + " " + dbEvent.getHost().getSurname()
+            + " created a new event",
+          emailText.toString());
+      });
+    }
+    executorService.shutdown();
+
+
     eventDAO.create(dbEvent);
     return new EventDTO(dbEvent);
   }
@@ -256,19 +276,23 @@ public class EventService {
     } //TODO create category
 
 
-    //Send email to subscribers
+    //Send email to subscribers using parallel threads
     if(!updatedFields.isEmpty()){
+      ExecutorService executorService = Executors.newFixedThreadPool(10);
       for (User user: dbEvent.getSubscribers()) {
         StringBuilder emailText = new StringBuilder("The event " + dbEvent.getTitle() +
           " was updated with new information:\n");
         for (Map.Entry<String, String> entry : updatedFields.entrySet()) {
           emailText.append(entry.getKey()).append(entry.getValue()).append("\n");
         }
-        emailService.sendSimpleMessage(
-          "cristian.ferreiro@udc.es", //TODO cambiar a user.getEmail()
-          "Event Rider: " + dbEvent.getTitle() + " was updated",
-          emailText.toString());
+        executorService.execute(() -> {
+          emailService.sendSimpleMessage(
+            "cristian.ferreiro@udc.es", //TODO cambiar a user.getEmail()
+            "Event Rider: " + dbEvent.getTitle() + " was updated",
+            emailText.toString());
+        });
       }
+      executorService.shutdown();
     }
 
     eventDAO.update(dbEvent);
