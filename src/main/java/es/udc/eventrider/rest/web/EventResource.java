@@ -47,6 +47,31 @@ public class EventResource {
     return events;
   }
 
+  @GetMapping("/past")
+  public List<EventDTO> findPublishedPast(@RequestParam(required = false) Map<String, String> query) {
+    List<EventDTO> events = eventService.findAll(query).stream().filter(
+        eventDTO -> eventDTO.getStatus() == Event.EventStatus.PUBLISHED &&
+          eventDTO.getEndingDate().isBefore(LocalDateTime.now()))
+      .collect(Collectors.toList());
+    return events;
+  }
+
+  @GetMapping("/unreviewed")
+  public List<EventDTO> findUnreviewed(@RequestParam(required = false) Map<String, String> query) {
+    List<EventDTO> events = eventService.findAll(query).stream().filter(
+        eventDTO -> eventDTO.getStatus() == Event.EventStatus.UNREVIEWED)
+      .collect(Collectors.toList());
+    return events;
+  }
+
+  @GetMapping("/rejected")
+  public List<EventDTO> findRejected(@RequestParam(required = false) Map<String, String> query) {
+    List<EventDTO> events = eventService.findAll(query).stream().filter(
+        eventDTO -> eventDTO.getStatus() == Event.EventStatus.REJECTED)
+      .collect(Collectors.toList());
+    return events;
+  }
+
   @GetMapping("/{id}")
   public EventDTO findOne(@PathVariable Long id) throws NotFoundException {
     return eventService.findById(id);
