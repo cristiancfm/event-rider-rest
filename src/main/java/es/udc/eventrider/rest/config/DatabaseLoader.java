@@ -121,8 +121,6 @@ public class DatabaseLoader {
       Event.EventStatus.PUBLISHED,
       exhibitionCategory);
     eventDao.create(event);
-    event.getSubscribers().add(userDAO.findByEmail("maria@mail.com"));
-    eventDao.update(event);
 
 
     eventImages = new ArrayList<>();
@@ -130,10 +128,10 @@ public class DatabaseLoader {
     eventImages.add("1.jpg");
     event = new Event("Foo Fighters Tour", userDAO.findByEmail("pepe@mail.com"),
       LocalDateTime.of(
-        LocalDate.of(2023, 10, 20),
+        LocalDate.of(2023, 6, 9),
         LocalTime.of(22, 0)),
       LocalDateTime.of(
-        LocalDate.of(2023, 10, 20),
+        LocalDate.of(2023, 6, 9),
         LocalTime.of(0, 0)),
       point2, "Coliseum de A Coruña",
       String.format("Foo Fighters Tour"),
@@ -141,16 +139,18 @@ public class DatabaseLoader {
       Event.EventStatus.PUBLISHED,
       concertCategory);
     eventDao.create(event);
+    event.getSubscribers().add(userDAO.findByEmail("pepe@mail.com"));
+    eventDao.update(event);
 
 
     eventImages = new ArrayList<>();
     eventImages.add("0.jpg");
     event = new Event("Feria del disco", userDAO.findByEmail("pepe@mail.com"),
       LocalDateTime.of(
-        LocalDate.of(2022, 8, 20),
+        LocalDate.of(2022, 6, 8),
         LocalTime.of(16, 0)),
       LocalDateTime.of(
-        LocalDate.of(2022, 8, 20),
+        LocalDate.of(2022, 6, 8),
         LocalTime.of(20, 0)),
       point3, "Plaza de María Pita",
       String.format("Feria de discos anual en el centro de A Coruña"),

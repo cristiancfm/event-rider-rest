@@ -20,6 +20,9 @@ import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -314,5 +317,38 @@ public class EventService {
 
     eventDAO.update(dbEvent);
     return new EventDTO(dbEvent);
+  }
+
+  @Scheduled(cron = "0 0 0 * * *") // Daily midnight execution
+  //@EventListener(ApplicationReadyEvent.class)
+  public void sendEmailsWithUpcomingEvents(){
+    //Send email with events happening tomorrow to event subscribers using parallel threads
+    ExecutorService executorService = Executors.newFixedThreadPool(10);
+    List<User> dbUsers = userDAO.findAll();
+    for (User dbUser : dbUsers) {
+      boolean tomorrowEvents = false;
+      StringBuilder emailText = new StringBuilder("The following events are happening tomorrow:\n\n");
+      for (Event subscribedEvent : dbUser.getSubscribedEvents()){
+        if(subscribedEvent.getStartingDate().toLocalDate().isEqual(
+          LocalDateTime.now().toLocalDate().plusDays(1))) {
+          //startingDate is tomorrow
+          tomorrowEvents = true;
+          emailText.append("Title: ").append(subscribedEvent.getTitle()).append("\n");
+          emailText.append("Starting Date: ").append(subscribedEvent.getStartingDate().toLocalDate().toString())
+            .append(" ").append(subscribedEvent.getStartingDate().toLocalTime().toString()).append("\n");
+          emailText.append("Ending Date: ").append(subscribedEvent.getEndingDate().toLocalDate().toString())
+            .append(" ").append(subscribedEvent.getEndingDate().toLocalTime().toString()).append("\n\n");
+        }
+      }
+      if(tomorrowEvents){
+        executorService.execute(() -> {
+          emailService.sendSimpleMessage(
+            "cristian.ferreiro@udc.es", //TODO cambiar a user.getEmail()
+            "Event Rider: Subscribed events about to happen",
+            emailText.toString());
+        });
+      }
+    }
+    executorService.shutdown();
   }
 }
