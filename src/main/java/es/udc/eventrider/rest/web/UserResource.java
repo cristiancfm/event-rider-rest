@@ -86,6 +86,20 @@ public class UserResource {
     userService.saveUserImageById(id, file);
   }
 
+  @GetMapping("/{id}/events")
+  public List<EventDTO> findUserEvents(@PathVariable Long id, @RequestParam(required = false) Map<String, String> query) {
+    try {
+      UserDTOPublic user = userService.findById(id);
+      List<EventDTO> events = eventService.findAll(query).stream().filter(
+        eventDTO -> Objects.equals(eventDTO.getHost().getId(), user.getId())
+      ).collect(Collectors.toList());
+
+      return events;
+    } catch (NotFoundException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
   @GetMapping("/{id}/events/upcoming")
   public List<EventDTO> findUserUpcomingEvents(@PathVariable Long id, @RequestParam(required = false) Map<String, String> query) {
     try {
