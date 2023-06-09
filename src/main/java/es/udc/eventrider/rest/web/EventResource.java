@@ -41,8 +41,35 @@ public class EventResource {
   @GetMapping("/upcoming")
   public List<EventDTO> findPublishedUpcoming(@RequestParam(required = false) Map<String, String> query) {
     List<EventDTO> events = eventService.findAll(query).stream().filter(
-        eventDTO -> eventDTO.getStatus() == Event.EventStatus.PUBLISHED &&
+        eventDTO -> (eventDTO.getStatus() == Event.EventStatus.PUBLISHED ||
+          eventDTO.getStatus() == Event.EventStatus.CANCELLED) &&
           !eventDTO.getEndingDate().isBefore(LocalDateTime.now()))
+      .collect(Collectors.toList());
+    return events;
+  }
+
+  @GetMapping("/past")
+  public List<EventDTO> findPublishedPast(@RequestParam(required = false) Map<String, String> query) {
+    List<EventDTO> events = eventService.findAll(query).stream().filter(
+        eventDTO -> (eventDTO.getStatus() == Event.EventStatus.PUBLISHED ||
+          eventDTO.getStatus() == Event.EventStatus.CANCELLED) &&
+          eventDTO.getEndingDate().isBefore(LocalDateTime.now()))
+      .collect(Collectors.toList());
+    return events;
+  }
+
+  @GetMapping("/unreviewed")
+  public List<EventDTO> findUnreviewed(@RequestParam(required = false) Map<String, String> query) {
+    List<EventDTO> events = eventService.findAll(query).stream().filter(
+        eventDTO -> eventDTO.getStatus() == Event.EventStatus.UNREVIEWED)
+      .collect(Collectors.toList());
+    return events;
+  }
+
+  @GetMapping("/rejected")
+  public List<EventDTO> findRejected(@RequestParam(required = false) Map<String, String> query) {
+    List<EventDTO> events = eventService.findAll(query).stream().filter(
+        eventDTO -> eventDTO.getStatus() == Event.EventStatus.REJECTED)
       .collect(Collectors.toList());
     return events;
   }
@@ -107,5 +134,10 @@ public class EventResource {
       throw new IdAndBodyNotMatchingOnUpdateException(Event.class);
     }
     return eventService.update(event);
+  }
+
+  @DeleteMapping("/{id}")
+  public void delete(@PathVariable Long id) {
+    eventService.delete(id);
   }
 }
