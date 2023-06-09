@@ -41,7 +41,8 @@ public class EventResource {
   @GetMapping("/upcoming")
   public List<EventDTO> findPublishedUpcoming(@RequestParam(required = false) Map<String, String> query) {
     List<EventDTO> events = eventService.findAll(query).stream().filter(
-        eventDTO -> eventDTO.getStatus() == Event.EventStatus.PUBLISHED &&
+        eventDTO -> (eventDTO.getStatus() == Event.EventStatus.PUBLISHED ||
+          eventDTO.getStatus() == Event.EventStatus.CANCELLED) &&
           !eventDTO.getEndingDate().isBefore(LocalDateTime.now()))
       .collect(Collectors.toList());
     return events;
@@ -50,7 +51,8 @@ public class EventResource {
   @GetMapping("/past")
   public List<EventDTO> findPublishedPast(@RequestParam(required = false) Map<String, String> query) {
     List<EventDTO> events = eventService.findAll(query).stream().filter(
-        eventDTO -> eventDTO.getStatus() == Event.EventStatus.PUBLISHED &&
+        eventDTO -> (eventDTO.getStatus() == Event.EventStatus.PUBLISHED ||
+          eventDTO.getStatus() == Event.EventStatus.CANCELLED) &&
           eventDTO.getEndingDate().isBefore(LocalDateTime.now()))
       .collect(Collectors.toList());
     return events;
@@ -132,5 +134,10 @@ public class EventResource {
       throw new IdAndBodyNotMatchingOnUpdateException(Event.class);
     }
     return eventService.update(event);
+  }
+
+  @DeleteMapping("/{id}")
+  public void delete(@PathVariable Long id) {
+    eventService.delete(id);
   }
 }

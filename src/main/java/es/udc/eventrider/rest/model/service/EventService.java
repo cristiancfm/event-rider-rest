@@ -273,28 +273,35 @@ public class EventService {
       updatedFields.put("Description: ", dbEvent.getDescription());
     }
 
-
-    if(event.getAdminComments() != null){
-      dbEvent.setAdminComments(event.getAdminComments());
-      //TODO email notification
-    }
-
-    if(event.getCancellationReason() != null){
-      dbEvent.setCancellationReason(event.getCancellationReason());
-      //TODO email notification
-    }
-
-    if(event.getStatus() != null){
-      dbEvent.setStatus(event.getStatus());
-      //TODO email notification
-    }
-
     if(event.getExistingCategoryChecked() != null){
       if(event.getExistingCategoryChecked()){
         dbEvent.setCategory(eventCategoryDao.findById(Long.parseLong(event.getExistingCategoryId())));
       }
     } //TODO create category
 
+    if(!Objects.equals(event.getCancellationReason(), dbEvent.getCancellationReason())){
+      dbEvent.setCancellationReason(event.getCancellationReason());
+    }
+
+    if(!Objects.equals(event.getAdminComments(), dbEvent.getAdminComments())){
+      dbEvent.setAdminComments(event.getAdminComments());
+    }
+
+    if(!Objects.equals(event.getStatus(), dbEvent.getStatus())){
+      dbEvent.setStatus(event.getStatus());
+
+      if(dbEvent.getStatus() == Event.EventStatus.CANCELLED){
+        //TODO email notification to event subscribers
+      }
+
+      if(dbEvent.getStatus() == Event.EventStatus.PUBLISHED){
+        //TODO email notification to event host
+      }
+
+      if(dbEvent.getStatus() == Event.EventStatus.REJECTED){
+        //TODO email notification to event host
+      }
+    }
 
     //Send email to event subscribers using parallel threads
     if(!updatedFields.isEmpty()){
@@ -317,6 +324,12 @@ public class EventService {
 
     eventDAO.update(dbEvent);
     return new EventDTO(dbEvent);
+  }
+
+  @PreAuthorize("isAuthenticated()")
+  @Transactional(readOnly = false, rollbackFor = Exception.class)
+  public void delete(Long id) {
+    eventDAO.deleteById(id);
   }
 
   @Scheduled(cron = "0 0 0 * * *") // Daily midnight execution
