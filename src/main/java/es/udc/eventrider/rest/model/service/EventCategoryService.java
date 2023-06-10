@@ -2,12 +2,16 @@ package es.udc.eventrider.rest.model.service;
 
 import es.udc.eventrider.rest.model.domain.Event;
 import es.udc.eventrider.rest.model.domain.EventCategory;
+import es.udc.eventrider.rest.model.domain.User;
 import es.udc.eventrider.rest.model.exception.NotFoundException;
+import es.udc.eventrider.rest.model.exception.OperationNotAllowed;
 import es.udc.eventrider.rest.model.repository.EventCategoryDao;
 import es.udc.eventrider.rest.model.repository.EventDao;
 import es.udc.eventrider.rest.model.repository.UserDao;
 import es.udc.eventrider.rest.model.service.dto.EventCategoryDTO;
+import es.udc.eventrider.rest.model.service.dto.EventCategoryDTOCreate;
 import es.udc.eventrider.rest.model.service.dto.EventDTO;
+import es.udc.eventrider.rest.model.service.dto.EventDTOCreate;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
@@ -16,7 +20,11 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -44,6 +52,27 @@ public class EventCategoryService {
       throw new NotFoundException(id.toString(), Event.class);
     }
     return new EventCategoryDTO(eventCategory);
+  }
+
+  @PreAuthorize("isAuthenticated()")
+  @Transactional(readOnly = false, rollbackFor = Exception.class)
+  public EventCategoryDTO create(EventCategoryDTOCreate category) throws OperationNotAllowed {
+    List<EventCategory> existingCategories = eventCategoryDAO.findAll();
+    for (EventCategory existingCategory : existingCategories) {
+      if(Objects.equals(existingCategory.getName(), category.getName())) {
+        throw new OperationNotAllowed("The event category already exists");
+      }
+    }
+
+    EventCategory dbCategory = new EventCategory();
+    dbCategory.setName(category.getName());
+
+    //This method is used only by administrators, hence the categories
+    //are marked as published directly
+    dbCategory.setStatus(EventCategory.EventCategoryStatus.PUBLISHED);
+
+    eventCategoryDAO.create(dbCategory);
+    return new EventCategoryDTO(dbCategory);
   }
 
   @PreAuthorize("isAuthenticated()")

@@ -3,8 +3,10 @@ package es.udc.eventrider.rest.web;
 import es.udc.eventrider.rest.model.domain.Event;
 import es.udc.eventrider.rest.model.domain.EventCategory;
 import es.udc.eventrider.rest.model.exception.NotFoundException;
+import es.udc.eventrider.rest.model.exception.OperationNotAllowed;
 import es.udc.eventrider.rest.model.service.EventCategoryService;
 import es.udc.eventrider.rest.model.service.dto.EventCategoryDTO;
+import es.udc.eventrider.rest.model.service.dto.EventCategoryDTOCreate;
 import es.udc.eventrider.rest.model.service.dto.EventDTO;
 import es.udc.eventrider.rest.web.exceptions.IdAndBodyNotMatchingOnUpdateException;
 import es.udc.eventrider.rest.web.exceptions.RequestBodyNotValidException;
@@ -58,8 +60,13 @@ public class EventCategoryResource {
   }
 
   @PostMapping
-  public EventCategoryDTO create(@RequestBody @Valid EventCategoryDTO eventCategory, Errors errors){
-    return null; //TODO
+  public EventCategoryDTO create(@RequestBody @Valid EventCategoryDTOCreate eventCategory, Errors errors)
+    throws RequestBodyNotValidException, OperationNotAllowed {
+    if (errors.hasErrors()){
+      throw new RequestBodyNotValidException(errors);
+    }
+
+    return eventCategoryService.create(eventCategory);
   }
 
   @PutMapping("/{id}")
