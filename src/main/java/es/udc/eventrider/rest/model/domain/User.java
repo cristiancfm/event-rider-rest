@@ -55,9 +55,6 @@ public class User {
     inverseJoinColumns = @JoinColumn(name = "user_id"))
   private List<User> following = new ArrayList<>();
 
-  //el usuario está activo (no está suspendido)
-  private boolean active = true;
-
   public User() {
   }
 
@@ -179,13 +176,5 @@ public class User {
 
   public void setFollowing(List<User> following) {
     this.following = following;
-  }
-
-  public boolean isActive() {
-    return active;
-  }
-
-  public void setActive(boolean active) {
-    this.active = active;
   }
 }

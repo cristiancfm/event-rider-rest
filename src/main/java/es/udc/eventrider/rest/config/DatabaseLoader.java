@@ -47,13 +47,12 @@ public class DatabaseLoader {
    */
   @Transactional(readOnly = false, rollbackFor = Exception.class)
   public void loadData() throws UserEmailExistsException {
-    userService.registerAccount("admin", "", "admin@eventrider.com", "admin", true);
+    userService.registerAccount("admin", null, "admin@eventrider.com", "admin", true);
     userService.registerAccount("pepe", "pérez", "pepe@mail.com", "pepe");
     userService.registerAccount("maría", "machado", "maria@mail.com", "maria");
     userService.registerAccount("laura", "lorenzo", "laura@mail.com", "laura");
     userService.registerAccount("pedro", "pascal", "pedro@mail.com", "pedro");
     User pedro = userDAO.findByEmail("pepe@mail.com");
-    pedro.setActive(true);
     pedro.setImagePath("profile.jpg");
     pedro.setBiography("Me llamo Pepe y organizo eventos");
     userDAO.update(pedro);

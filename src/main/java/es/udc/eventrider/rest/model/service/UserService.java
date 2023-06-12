@@ -1,7 +1,7 @@
 package es.udc.eventrider.rest.model.service;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -48,7 +48,7 @@ public class UserService {
     if (SecurityUtils.getCurrentUserIsAdmin()) {
       return users.collect(Collectors.toList());
     }
-    return users.filter(user -> user.isActive()).collect(Collectors.toList());
+    return users.collect(Collectors.toList());
   }
 
   public UserDTOPublic findById(Long id) throws NotFoundException {
@@ -132,6 +132,22 @@ public class UserService {
     return new UserDTOPublic(dbUser);
   }
 
+  @PreAuthorize("hasAuthority('ADMIN')")
+  @Transactional(readOnly = false)
+  public UserDTOPublic updateUserAuthority(UserDTOBase user) throws NotFoundException, OperationNotAllowed {
+    User dbUser = userDAO.findById(user.getId());
+    if (dbUser == null) {
+      throw new NotFoundException(user.getId().toString(), User.class);
+    }
+
+    if(!Objects.equals(user.getAuthority(), dbUser.getAuthority().name())){
+      dbUser.setAuthority(UserAuthority.valueOf(user.getAuthority()));
+    }
+
+    userDAO.update(dbUser);
+    return new UserDTOPublic(dbUser);
+  }
+
   @Transactional(readOnly = false)
   public void registerAccount(String name, String surname, String email, String password) throws UserEmailExistsException {
     registerAccount(name, surname, email, password, false);
@@ -172,45 +188,11 @@ public class UserService {
     userDAO.update(dbUser);
   }
 
-  @PreAuthorize("hasAuthority('ADMIN')")
-  @Transactional(readOnly = false)
-  public UserDTOBase updateActive(Long id, boolean active) throws NotFoundException, OperationNotAllowed {
-    User user = userDAO.findById(id);
-    if (user == null) {
-      throw new NotFoundException(id.toString(), User.class);
-    }
-
-    UserDTOPrivate currentUser = getCurrentUserWithAuthority();
-    if (currentUser.getId().equals(user.getId())) {
-      throw new OperationNotAllowed("The user cannot activate/deactivate itself");
-    }
-
-    user.setActive(active);
-    userDAO.update(user);
-    return new UserDTOBase(user);
-  }
-
   public UserDTOPrivate getCurrentUserWithAuthority() {
     String currentUserEmail = SecurityUtils.getCurrentUserLogin();
     if (currentUserEmail != null) {
       return new UserDTOPrivate(userDAO.findByEmail(currentUserEmail));
     }
     return null;
-  }
-
-  @PreAuthorize("hasAuthority('ADMIN')")
-  @Transactional(readOnly = false)
-  public void deleteById(Long id) throws NotFoundException, OperationNotAllowed {
-    User user = userDAO.findById(id);
-    if (user == null) {
-      throw new NotFoundException(id.toString(), User.class);
-    }
-
-    UserDTOPrivate currentUser = getCurrentUserWithAuthority();
-    if (currentUser.getId().equals(user.getId())) {
-      throw new OperationNotAllowed("The user cannot delete itself");
-    }
-
-    userDAO.deleteById(id);
   }
 }

@@ -22,10 +22,9 @@ public class UserDTOPrivate {
   private String password;
 
   private String biography;
+  private String authority;
 
   private String image;
-
-  private String authority;
 
   public UserDTOPrivate() {
   }
@@ -37,8 +36,8 @@ public class UserDTOPrivate {
     this.email = user.getEmail();
     // la contraseña no se rellena, nunca se envía al cliente
     this.biography = user.getBiography();
-    this.image = user.getImagePath();
     this.authority = user.getAuthority().name();
+    this.image = user.getImagePath();
   }
 
   public Long getId() {
@@ -89,19 +88,19 @@ public class UserDTOPrivate {
     this.biography = biography;
   }
 
-  public String getImage() {
-    return image;
-  }
-
-  public void setImage(String image) {
-    this.image = image;
-  }
-
   public String getAuthority() {
     return authority;
   }
 
   public void setAuthority(String authority) {
     this.authority = authority;
+  }
+
+  public String getImage() {
+    return image;
+  }
+
+  public void setImage(String image) {
+    this.image = image;
   }
 }

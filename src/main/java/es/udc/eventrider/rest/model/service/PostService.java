@@ -47,15 +47,13 @@ public class PostService {
 
   public List<PostDTO> findAll(String filter, String tag, PostSortType sort) {
     Stream<Post> posts = postDAO.findAll(filter, tag, sort).stream();
-    if (!SecurityUtils.getCurrentUserIsAdmin()) {
-      posts = posts.filter(p -> p.getAuthor().isActive());
-    }
+
     return posts.map(post -> new PostDTO(post)).collect(Collectors.toList());
   }
 
   public PostDTO findById(Long id) throws NotFoundException {
     Post post = postDAO.findById(id);
-    if (post == null || !SecurityUtils.getCurrentUserIsAdmin() && !post.getAuthor().isActive()) {
+    if (post == null) {
       throw new NotFoundException(id.toString(), Post.class);
     }
     return new PostDTO(post);
@@ -68,14 +66,9 @@ public class PostService {
   public PostDTO create(PostDTO post) throws OperationNotAllowed {
     Post bdPost = new Post(post.getBody());
     UserDTOPrivate currentUser = userService.getCurrentUserWithAuthority();
-    if (currentUser.getAuthority().equals("ADMIN")) {
-      bdPost.setAuthor(userDAO.findById(post.getAuthor().getId()));
-    } else {
-      if (post.getAuthor() != null) {
-        throw new OperationNotAllowed("Non admin users cannot set the author of a post (property author should be null)");
-      }
-      bdPost.setAuthor(userDAO.findById(currentUser.getId()));
-    }
+
+    bdPost.setAuthor(userDAO.findById(post.getAuthor().getId()));
+
     if (post.getTags() != null) {
       post.getTags().forEach(tag -> {
         bdPost.getTags().add(tagDAO.findById(tag.getId()));
@@ -137,7 +130,7 @@ public class PostService {
 
   public ImageDTO getPostImageById(Long id) throws InstanceNotFoundException, ModelException {
     Post post = postDAO.findById(id);
-    if (post == null || !SecurityUtils.getCurrentUserIsAdmin() && !post.getAuthor().isActive()) {
+    if (post == null) {
       throw new NotFoundException(id.toString(), Post.class);
     }
     if (post.getImagePath() == null) {
