@@ -8,10 +8,7 @@ import es.udc.eventrider.rest.model.exception.OperationNotAllowed;
 import es.udc.eventrider.rest.model.repository.EventCategoryDao;
 import es.udc.eventrider.rest.model.repository.EventDao;
 import es.udc.eventrider.rest.model.repository.UserDao;
-import es.udc.eventrider.rest.model.service.dto.EventCategoryDTO;
-import es.udc.eventrider.rest.model.service.dto.EventCategoryDTOCreate;
-import es.udc.eventrider.rest.model.service.dto.EventDTO;
-import es.udc.eventrider.rest.model.service.dto.EventDTOCreate;
+import es.udc.eventrider.rest.model.service.dto.*;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
@@ -77,24 +74,42 @@ public class EventCategoryService {
 
   @PreAuthorize("isAuthenticated()")
   @Transactional(readOnly = false, rollbackFor = Exception.class)
-  public EventCategoryDTO update(EventCategoryDTO eventCategory) throws NotFoundException {
+  public EventCategoryDTO update(EventCategoryDTOEdit eventCategory) throws NotFoundException {
     EventCategory dbEventCategory = eventCategoryDAO.findById(eventCategory.getId());
     if (dbEventCategory == null) {
       throw new NotFoundException(eventCategory.getId().toString(), Event.class);
     }
-    dbEventCategory.setName(eventCategory.getName());
 
-    dbEventCategory.getSubscribers().clear();
-    eventCategory.getSubscribers().forEach(s -> {
-      dbEventCategory.getSubscribers().add(userDAO.findById(s.getId()));
-    });
+    if(!Objects.equals(eventCategory.getName(), dbEventCategory.getName())){
+      dbEventCategory.setName(eventCategory.getName());
+    }
 
-    dbEventCategory.setStatus(eventCategory.getStatus());
+    if(eventCategory.getSubscribers() != null){
+      dbEventCategory.getSubscribers().clear();
+      eventCategory.getSubscribers().forEach(s -> {
+        dbEventCategory.getSubscribers().add(userDAO.findById(s.getId()));
+      });
+    }
+
+    if(!Objects.equals(eventCategory.getStatus(), dbEventCategory.getStatus())){
+      dbEventCategory.setStatus(eventCategory.getStatus());
+    }
 
     //TODO send email updates
     //emailService.sendSimpleMessage("cristian.ferreiro@udc.es", "Prueba de Event Rider", "Esta es una prueba");
 
     eventCategoryDAO.update(dbEventCategory);
     return new EventCategoryDTO(dbEventCategory);
+  }
+
+  @PreAuthorize("isAuthenticated()")
+  @Transactional(readOnly = false, rollbackFor = Exception.class)
+  public void delete(Long id) throws OperationNotAllowed {
+    // Check if the category contains events
+    if(!eventCategoryDAO.findById(id).getEvents().isEmpty()){
+      throw new OperationNotAllowed("This category contains events");
+    }
+
+    eventCategoryDAO.deleteById(id);
   }
 }

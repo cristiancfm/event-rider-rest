@@ -7,6 +7,7 @@ import es.udc.eventrider.rest.model.exception.OperationNotAllowed;
 import es.udc.eventrider.rest.model.service.EventCategoryService;
 import es.udc.eventrider.rest.model.service.dto.EventCategoryDTO;
 import es.udc.eventrider.rest.model.service.dto.EventCategoryDTOCreate;
+import es.udc.eventrider.rest.model.service.dto.EventCategoryDTOEdit;
 import es.udc.eventrider.rest.model.service.dto.EventDTO;
 import es.udc.eventrider.rest.web.exceptions.IdAndBodyNotMatchingOnUpdateException;
 import es.udc.eventrider.rest.web.exceptions.RequestBodyNotValidException;
@@ -70,7 +71,7 @@ public class EventCategoryResource {
   }
 
   @PutMapping("/{id}")
-  public EventCategoryDTO update(@PathVariable Long id, @RequestBody @Valid EventCategoryDTO eventCategory, Errors errors)
+  public EventCategoryDTO update(@PathVariable Long id, @RequestBody @Valid EventCategoryDTOEdit eventCategory, Errors errors)
     throws IdAndBodyNotMatchingOnUpdateException, RequestBodyNotValidException, NotFoundException {
     if (errors.hasErrors()){
       throw new RequestBodyNotValidException(errors);
@@ -80,5 +81,10 @@ public class EventCategoryResource {
       throw new IdAndBodyNotMatchingOnUpdateException(Event.class);
     }
     return eventCategoryService.update(eventCategory);
+  }
+
+  @DeleteMapping("/{id}")
+  public void delete(@PathVariable Long id) throws OperationNotAllowed {
+    eventCategoryService.delete(id);
   }
 }
