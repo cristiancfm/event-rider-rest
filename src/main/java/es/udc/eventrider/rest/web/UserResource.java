@@ -9,6 +9,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import es.udc.eventrider.rest.model.domain.Event;
+import es.udc.eventrider.rest.model.domain.UserAuthority;
 import es.udc.eventrider.rest.model.exception.ModelException;
 import es.udc.eventrider.rest.model.service.EventCategoryService;
 import es.udc.eventrider.rest.model.service.EventService;
@@ -46,6 +47,43 @@ public class UserResource {
   @GetMapping
   public List<UserDTOPublic> findAll() {
     return userService.findAll();
+  }
+
+  @GetMapping("/active")
+  public List<UserDTOPublic> findActive() {
+    List<UserDTOPublic> users = userService.findAll().stream().filter(
+      userDTO -> (Objects.equals(userDTO.getAuthority(), UserAuthority.USER.name()) ||
+                  Objects.equals(userDTO.getAuthority(), UserAuthority.USER_VERIFIED.name())) ||
+                  Objects.equals(userDTO.getAuthority(), UserAuthority.ADMIN.name())).toList();
+    return users;
+  }
+
+  @GetMapping("/unverified")
+  public List<UserDTOPublic> findUnverified() {
+    List<UserDTOPublic> users = userService.findAll().stream().filter(
+      userDTO -> (Objects.equals(userDTO.getAuthority(), UserAuthority.USER.name()))).toList();
+    return users;
+  }
+
+  @GetMapping("/verified")
+  public List<UserDTOPublic> findVerified() {
+    List<UserDTOPublic> users = userService.findAll().stream().filter(
+      userDTO -> (Objects.equals(userDTO.getAuthority(), UserAuthority.USER_VERIFIED.name()))).toList();
+    return users;
+  }
+
+  @GetMapping("/admin")
+  public List<UserDTOPublic> findAdmin() {
+    List<UserDTOPublic> users = userService.findAll().stream().filter(
+      userDTO -> (Objects.equals(userDTO.getAuthority(), UserAuthority.ADMIN.name()))).toList();
+    return users;
+  }
+
+  @GetMapping("/suspended")
+  public List<UserDTOPublic> findSuspended() {
+    List<UserDTOPublic> users = userService.findAll().stream().filter(
+      userDTO -> (Objects.equals(userDTO.getAuthority(), UserAuthority.USER_SUSPENDED.name()))).toList();
+    return users;
   }
 
   @GetMapping("/{id}")
@@ -303,11 +341,6 @@ public class UserResource {
     }
   }
 
-  @PostMapping
-  public UserDTOBase create(@RequestBody @Valid UserDTOBase user, Errors errors){
-    return null; //TODO
-  }
-
   @PutMapping("/{id}")
   public UserDTOPublic update(@PathVariable Long id, @RequestBody @Valid UserDTOPublic user, Errors errors)
     throws IdAndBodyNotMatchingOnUpdateException, RequestBodyNotValidException, NotFoundException {
@@ -321,20 +354,10 @@ public class UserResource {
     return userService.updateUser(user);
   }
 
-  @PutMapping("/{id}/active")
-  public UserDTOBase activate(@PathVariable Long id) throws NotFoundException, OperationNotAllowed {
-    return userService.updateActive(id, true);
+  @PutMapping("/{id}/authority")
+  public UserDTOPublic updateAuthority(@RequestBody @Valid UserDTOBase user)
+    throws NotFoundException, OperationNotAllowed {
+    return userService.updateUserAuthority(user);
   }
-
-  @DeleteMapping("/{id}/active")
-  public UserDTOBase deactivate(@PathVariable Long id) throws NotFoundException, OperationNotAllowed {
-    return userService.updateActive(id, false);
-  }
-
-  @DeleteMapping("/{id}")
-  public void delete(@PathVariable Long id) throws NotFoundException, OperationNotAllowed {
-    userService.deleteById(id);
-  }
-
 
 }

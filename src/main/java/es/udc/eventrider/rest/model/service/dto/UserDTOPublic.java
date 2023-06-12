@@ -2,6 +2,7 @@ package es.udc.eventrider.rest.model.service.dto;
 
 import es.udc.eventrider.rest.model.domain.Event;
 import es.udc.eventrider.rest.model.domain.User;
+import es.udc.eventrider.rest.model.domain.UserAuthority;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -14,8 +15,8 @@ public class UserDTOPublic {
   private String surname;
   private String email;
   private String biography;
+  private String authority;
   private String image;
-  private boolean active = true;
   private List<EventDTO> hostedEvents = new ArrayList<>();
   private List<EventDTO> upcomingHostedEvents = new ArrayList<>();
   private List<EventDTO> pastHostedEvents = new ArrayList<>();
@@ -33,8 +34,8 @@ public class UserDTOPublic {
     this.surname = user.getSurname();
     this.email = user.getEmail();
     this.biography = user.getBiography();
+    this.authority = user.getAuthority().name();
     this.image = user.getImagePath();
-    this.setActive(user.isActive());
     user.getHostedEvents().forEach(event -> {
       this.hostedEvents.add(new EventDTO(event));
     });
@@ -100,20 +101,20 @@ public class UserDTOPublic {
     this.biography = biography;
   }
 
+  public String getAuthority() {
+    return authority;
+  }
+
+  public void setAuthority(String authority) {
+    this.authority = authority;
+  }
+
   public String getImage() {
     return image;
   }
 
   public void setImage(String image) {
     this.image = image;
-  }
-
-  public boolean isActive() {
-    return active;
-  }
-
-  public void setActive(boolean active) {
-    this.active = active;
   }
 
   public List<EventDTO> getHostedEvents() {

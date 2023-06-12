@@ -3,6 +3,7 @@ package es.udc.eventrider.rest.model.service;
 import es.udc.eventrider.rest.config.Properties;
 import es.udc.eventrider.rest.model.domain.Event;
 import es.udc.eventrider.rest.model.domain.User;
+import es.udc.eventrider.rest.model.domain.UserAuthority;
 import es.udc.eventrider.rest.model.exception.ModelException;
 import es.udc.eventrider.rest.model.exception.NotFoundException;
 import es.udc.eventrider.rest.model.exception.OperationNotAllowed;
@@ -67,15 +68,16 @@ public class EventService {
 
   public List<EventDTO> findAll(Map<String, String> query) {
     Stream<Event> events = eventDAO.findAll(query).stream();
-    if(!SecurityUtils.getCurrentUserIsAdmin()) {
-      events = events.filter(e -> e.getHost().isActive());
-    }
+    //events created by suspended users should not be available
+    events = events.filter(e -> e.getHost().getAuthority() != UserAuthority.USER_SUSPENDED);
+
     return events.map(event -> new EventDTO(event)).collect(Collectors.toList());
   }
 
   public EventDTO findById(Long id) throws NotFoundException {
     Event event = eventDAO.findById(id);
-    if(event == null || !SecurityUtils.getCurrentUserIsAdmin() && !event.getHost().isActive()){
+    if(event == null || event.getHost().getAuthority() == UserAuthority.USER_SUSPENDED){
+      //events created by suspended users should not be available
       throw new NotFoundException(id.toString(), Event.class);
     }
     return new EventDTO(event);
@@ -84,8 +86,9 @@ public class EventService {
   @Transactional(readOnly = false, rollbackFor = Exception.class)
   public void saveEventImageById(Long id, MultipartFile file) throws InstanceNotFoundException, ModelException {
     Event event = eventDAO.findById(id);
-    if (event == null)
+    if (event == null){
       throw new NotFoundException(id.toString(), Event.class);
+    }
 
     String filePath = imageService.saveImage(ImageService.Entity.EVENT, file, event.getId());
 
@@ -101,7 +104,7 @@ public class EventService {
 
   public ImageDTO getEventImageById(Long id, Long imgId) throws InstanceNotFoundException, ModelException {
     Event event = eventDAO.findById(id);
-    if(event == null || !SecurityUtils.getCurrentUserIsAdmin() && !event.getHost().isActive()) {
+    if(event == null) {
       throw new NotFoundException(id.toString(), Event.class);
     }
     if(event.getImagePaths() == null) {
@@ -114,8 +117,9 @@ public class EventService {
   @Transactional(readOnly = false, rollbackFor = Exception.class)
   public void deleteEventImageById(Long id, Long imgId) throws InstanceNotFoundException, ModelException {
     Event event = eventDAO.findById(id);
-    if (event == null)
+    if (event == null){
       throw new NotFoundException(id.toString(), Event.class);
+    }
 
     imageService.deleteImage(ImageService.Entity.EVENT, event.getImagePath(imgId), event.getId());
 

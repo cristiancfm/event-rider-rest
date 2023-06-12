@@ -8,7 +8,6 @@ import es.udc.eventrider.rest.model.domain.User;
 public class UserDTOWithPosts {
   private Long id;
   private String login;
-  private boolean active = true;
   private List<PostDTO> posts = new ArrayList<>();
 
   public UserDTOWithPosts() {
@@ -17,7 +16,6 @@ public class UserDTOWithPosts {
   public UserDTOWithPosts(User user) {
     this.id = user.getId();
     this.login = user.getEmail();
-    this.setActive(user.isActive());
     user.getPosts().forEach(p -> {
       this.posts.add(new PostDTO(p));
     });
@@ -37,14 +35,6 @@ public class UserDTOWithPosts {
 
   public void setLogin(String login) {
     this.login = login;
-  }
-
-  public boolean isActive() {
-    return active;
-  }
-
-  public void setActive(boolean active) {
-    this.active = active;
   }
 
   public List<PostDTO> getPosts() {
