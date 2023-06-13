@@ -4,6 +4,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
 import es.udc.eventrider.rest.model.domain.User;
+import es.udc.eventrider.rest.model.domain.UserAuthority;
 
 public class UserDTOPrivate {
   private Long id;
@@ -22,7 +23,7 @@ public class UserDTOPrivate {
   private String password;
 
   private String biography;
-  private String authority;
+  private UserAuthority authority;
 
   private String image;
 
@@ -36,7 +37,7 @@ public class UserDTOPrivate {
     this.email = user.getEmail();
     // la contraseña no se rellena, nunca se envía al cliente
     this.biography = user.getBiography();
-    this.authority = user.getAuthority().name();
+    this.authority = user.getAuthority();
     this.image = user.getImagePath();
   }
 
@@ -88,11 +89,11 @@ public class UserDTOPrivate {
     this.biography = biography;
   }
 
-  public String getAuthority() {
+  public UserAuthority getAuthority() {
     return authority;
   }
 
-  public void setAuthority(String authority) {
+  public void setAuthority(UserAuthority authority) {
     this.authority = authority;
   }
 

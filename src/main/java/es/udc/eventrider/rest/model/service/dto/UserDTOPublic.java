@@ -15,7 +15,7 @@ public class UserDTOPublic {
   private String surname;
   private String email;
   private String biography;
-  private String authority;
+  private UserAuthority authority;
   private String image;
   private List<EventDTO> hostedEvents = new ArrayList<>();
   private List<EventDTO> upcomingHostedEvents = new ArrayList<>();
@@ -34,7 +34,7 @@ public class UserDTOPublic {
     this.surname = user.getSurname();
     this.email = user.getEmail();
     this.biography = user.getBiography();
-    this.authority = user.getAuthority().name();
+    this.authority = user.getAuthority();
     this.image = user.getImagePath();
     user.getHostedEvents().forEach(event -> {
       this.hostedEvents.add(new EventDTO(event));
@@ -101,11 +101,11 @@ public class UserDTOPublic {
     this.biography = biography;
   }
 
-  public String getAuthority() {
+  public UserAuthority getAuthority() {
     return authority;
   }
 
-  public void setAuthority(String authority) {
+  public void setAuthority(UserAuthority authority) {
     this.authority = authority;
   }
 

@@ -146,13 +146,19 @@ public class UserService {
       throw new NotFoundException(user.getId().toString(), User.class);
     }
 
+    boolean isReactivated = false;
     if(!Objects.equals(user.getAuthority(), dbUser.getAuthority().name())){
+      if(dbUser.getAuthority() == UserAuthority.USER_SUSPENDED){
+        //the user is being reactivated
+        isReactivated = true;
+      }
       dbUser.setAuthority(user.getAuthority());
     }
 
     //Send email to user using parallel threads
     if(dbUser.getAuthority() == UserAuthority.USER_SUSPENDED ||
-      dbUser.getAuthority() == UserAuthority.USER_VERIFIED) {
+      dbUser.getAuthority() == UserAuthority.USER_VERIFIED ||
+      isReactivated) {
       ExecutorService executorService = Executors.newFixedThreadPool(10);
       String emailSubject = "";
       String emailText = "";
@@ -168,11 +174,16 @@ public class UserService {
           "and they will be published without reviewing.</p>";
       }
 
+      if(isReactivated){
+        emailSubject = "Event Rider: Your account was reactivated";
+        emailText = "<p>Your account was <b>reactivated</b>. Now you can create events again.</p>";
+      }
+
       String finalEmailSubject = emailSubject;
       String finalEmailText = emailText;
       executorService.execute(() -> {
         emailService.sendSimpleMessage(
-          user.getEmail(),
+          dbUser.getEmail(),
           finalEmailSubject,
           finalEmailText);
       });
