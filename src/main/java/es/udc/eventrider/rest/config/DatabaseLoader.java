@@ -48,15 +48,15 @@ public class DatabaseLoader {
   @Transactional(readOnly = false, rollbackFor = Exception.class)
   public void loadData() throws UserEmailExistsException {
     userService.registerAccount("admin", null, "admin@eventrider.com", "admin", true);
-    userService.registerAccount("pepe", "pérez", "pepe@mail.com", "pepe");
+    userService.registerAccount("cristian", "ferreiro", "cristian.ferreiro@udc.es", "cristian");
     userService.registerAccount("maría", "machado", "maria@mail.com", "maria");
     userService.registerAccount("laura", "lorenzo", "laura@mail.com", "laura");
     userService.registerAccount("pedro", "pascal", "pedro@mail.com", "pedro");
-    User pedro = userDAO.findByEmail("pepe@mail.com");
-    pedro.setImagePath("profile.jpg");
-    pedro.setBiography("Me llamo Pepe y organizo eventos");
-    userDAO.update(pedro);
     userService.registerAccount("ramón", "rey", "ramon@mail.com", "ramon");
+    User cristian = userDAO.findByEmail("cristian.ferreiro@udc.es");
+    cristian.setImagePath("profile.jpg");
+    cristian.setBiography("Me llamo Cristian y organizo eventos");
+    userDAO.update(cristian);
 
     Tag news = new Tag("news");
     Tag podcast = new Tag("podcast");
@@ -66,7 +66,7 @@ public class DatabaseLoader {
     tagDAO.create(podcast);
     tagDAO.create(tech);
 
-    Post post = new Post("Texto del primer post", userDAO.findByEmail("pepe@mail.com"));
+    Post post = new Post("Texto del primer post", userDAO.findByEmail("cristian.ferreiro@udc.es"));
     post.getTags().add(news);
     post.getTags().add(podcast);
     postDAO.create(post);
@@ -82,11 +82,6 @@ public class DatabaseLoader {
     post = new Post("Texto del cuarto post", userDAO.findByEmail("maria@mail.com"));
     postDAO.create(post);
     //Thread.sleep(2000);
-    post = new Post("Texto del quinto post", userDAO.findByEmail("pepe@mail.com"));
-    postDAO.create(post);
-    //Thread.sleep(2000);
-    post = new Post("Texto del sexto post", userDAO.findByEmail("pepe@mail.com"));
-    postDAO.create(post);
 
     // Create event categories
     EventCategory exhibitionCategory = new EventCategory("Exhibition", EventCategory.EventCategoryStatus.PUBLISHED);
@@ -107,12 +102,12 @@ public class DatabaseLoader {
     Point point3 = geometryFactory.createPoint(new Coordinate(43.370922, -8.3959048));
     Point point4 = geometryFactory.createPoint(new Coordinate(43.371816, -8.40451451));
 
-    Event event = new Event("Meisel 93", userDAO.findByEmail("pepe@mail.com"),
+    Event event = new Event("Meisel 93", userDAO.findByEmail("cristian.ferreiro@udc.es"),
       LocalDateTime.of(
         LocalDate.of(2022, 10, 20),
         LocalTime.of(9, 0)),
       LocalDateTime.of(
-        LocalDate.of(2023, 05, 10),
+        LocalDate.of(2023, 10, 10),
         LocalTime.of(22, 0)),
       point1, "Puerto de A Coruña",
       String.format("Muestra de fotografías realizadas por Steven Meisel, centradas en el año 1993. " +
@@ -126,12 +121,12 @@ public class DatabaseLoader {
     eventImages = new ArrayList<>();
     eventImages.add("0.jpg");
     eventImages.add("1.jpg");
-    event = new Event("Foo Fighters Tour", userDAO.findByEmail("pepe@mail.com"),
+    event = new Event("Foo Fighters Tour", userDAO.findByEmail("cristian.ferreiro@udc.es"),
       LocalDateTime.of(
-        LocalDate.of(2023, 6, 9),
+        LocalDate.of(2023, 10, 9),
         LocalTime.of(22, 0)),
       LocalDateTime.of(
-        LocalDate.of(2023, 6, 9),
+        LocalDate.of(2023, 10, 9),
         LocalTime.of(0, 0)),
       point2, "Coliseum de A Coruña",
       String.format("Foo Fighters Tour"),
@@ -145,12 +140,12 @@ public class DatabaseLoader {
 
     eventImages = new ArrayList<>();
     eventImages.add("0.jpg");
-    event = new Event("Feria del disco", userDAO.findByEmail("pepe@mail.com"),
+    event = new Event("Feria del disco", userDAO.findByEmail("cristian.ferreiro@udc.es"),
       LocalDateTime.of(
-        LocalDate.of(2022, 6, 8),
+        LocalDate.of(2022, 12, 8),
         LocalTime.of(16, 0)),
       LocalDateTime.of(
-        LocalDate.of(2022, 6, 8),
+        LocalDate.of(2022, 12, 8),
         LocalTime.of(20, 0)),
       point3, "Plaza de María Pita",
       String.format("Feria de discos anual en el centro de A Coruña"),
@@ -161,12 +156,12 @@ public class DatabaseLoader {
 
 
     eventImages = new ArrayList<>();
-    event = new Event("evento sin revisar", userDAO.findByEmail("pepe@mail.com"),
+    event = new Event("evento sin revisar", userDAO.findByEmail("cristian.ferreiro@udc.es"),
       LocalDateTime.of(
-        LocalDate.of(2022, 6, 15),
+        LocalDate.of(2022, 12, 15),
         LocalTime.of(16, 0)),
       LocalDateTime.of(
-        LocalDate.of(2022, 6, 15),
+        LocalDate.of(2022, 12, 15),
         LocalTime.of(20, 0)),
       point4, "blablabla",
       String.format("Descripción del evento sin revisar"),
@@ -177,12 +172,12 @@ public class DatabaseLoader {
 
 
     eventImages = new ArrayList<>();
-    event = new Event("evento rechazado", userDAO.findByEmail("pepe@mail.com"),
+    event = new Event("evento rechazado", userDAO.findByEmail("cristian.ferreiro@udc.es"),
       LocalDateTime.of(
-        LocalDate.of(2022, 6, 20),
+        LocalDate.of(2022, 12, 20),
         LocalTime.of(16, 0)),
       LocalDateTime.of(
-        LocalDate.of(2022, 6, 20),
+        LocalDate.of(2022, 12, 20),
         LocalTime.of(20, 0)),
       point4, "blablabla",
       String.format("Descripción del evento rechazado"),
@@ -194,12 +189,12 @@ public class DatabaseLoader {
 
 
     eventImages = new ArrayList<>();
-    event = new Event("evento cancelado", userDAO.findByEmail("pepe@mail.com"),
+    event = new Event("evento cancelado", userDAO.findByEmail("cristian.ferreiro@udc.es"),
       LocalDateTime.of(
-        LocalDate.of(2022, 6, 20),
+        LocalDate.of(2022, 12, 20),
         LocalTime.of(16, 0)),
       LocalDateTime.of(
-        LocalDate.of(2022, 6, 20),
+        LocalDate.of(2022, 12, 20),
         LocalTime.of(20, 0)),
       point4, "blablabla",
       String.format("Descripción del evento cancelado"),

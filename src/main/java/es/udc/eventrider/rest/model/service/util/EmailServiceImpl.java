@@ -24,7 +24,7 @@ public class EmailServiceImpl implements EmailService {
       helper.setFrom("noreply@eventrider.com");
       helper.setTo(to);
       helper.setSubject(subject);
-      helper.setText(text);
+      helper.setText(text, true);
 
       emailSender.send(message);
 
