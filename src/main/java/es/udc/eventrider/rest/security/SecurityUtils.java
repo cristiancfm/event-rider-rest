@@ -35,4 +35,13 @@ public class SecurityUtils {
     }
     return false;
   }
+
+  public static boolean getCurrentUserIsVerified() {
+    SecurityContext securityContext = SecurityContextHolder.getContext();
+    Authentication authentication = securityContext.getAuthentication();
+    if (authentication != null) {
+      return authentication.getAuthorities().stream().anyMatch(r -> r.getAuthority().equals("USER_VERIFIED"));
+    }
+    return false;
+  }
 }

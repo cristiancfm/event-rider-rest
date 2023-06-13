@@ -17,6 +17,7 @@ import es.udc.eventrider.rest.model.service.dto.ImageDTO;
 import es.udc.eventrider.rest.model.service.util.EmailServiceImpl;
 import es.udc.eventrider.rest.model.service.util.ImageService;
 import es.udc.eventrider.rest.security.SecurityUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
@@ -170,7 +171,12 @@ public class EventService {
     dbEvent.setLocationDetails(event.getLocationDetails());
     dbEvent.setDescription(event.getDescription());
 
-    dbEvent.setStatus(Event.EventStatus.UNREVIEWED); //TODO verified user (no hace falta revisar los eventos)
+    //Mark event as published if it is created by a verified member or an admin
+    if(SecurityUtils.getCurrentUserIsVerified() || SecurityUtils.getCurrentUserIsAdmin()){
+      dbEvent.setStatus(Event.EventStatus.PUBLISHED);
+    } else {
+      dbEvent.setStatus(Event.EventStatus.UNREVIEWED);
+    }
 
     if(event.getExistingCategoryChecked()){
       dbEvent.setCategory(eventCategoryDao.findById(Long.parseLong(event.getExistingCategoryId())));
@@ -180,13 +186,13 @@ public class EventService {
     //Send email to user followers using parallel threads
     ExecutorService executorService = Executors.newFixedThreadPool(10);
     for (User user : dbEvent.getHost().getFollowers()) {
-      StringBuilder emailText = new StringBuilder("The user " + dbEvent.getHost().getName() + " " +
-        dbEvent.getHost().getSurname() + " created a new event:\n");
-      emailText.append("Title: ").append(dbEvent.getTitle());
+      StringBuilder emailText = new StringBuilder("<p>The user <b>" + dbEvent.getHost().getName() + " " +
+        Objects.toString(dbEvent.getHost().getSurname(), "") + "</b> created a new event:</p>");
+      emailText.append("<p>").append("Title: ").append(dbEvent.getTitle()).append("</p>");
 
       executorService.execute(() -> {
         emailService.sendSimpleMessage(
-          "cristian.ferreiro@udc.es", // TODO cambiar a user.getEmail()
+          user.getEmail(),
           "Event Rider: " + dbEvent.getHost().getName() + " " + dbEvent.getHost().getSurname()
             + " created a new event",
           emailText.toString());
@@ -197,13 +203,13 @@ public class EventService {
     //Send email to category subscribers using parallel threads
     executorService = Executors.newFixedThreadPool(10);
     for (User user : dbEvent.getCategory().getSubscribers()) {
-      StringBuilder emailText = new StringBuilder("The category " + dbEvent.getCategory().getName() +
-        " was updated with a new event:\n");
-      emailText.append("Title: ").append(dbEvent.getTitle());
+      StringBuilder emailText = new StringBuilder("<p>The category <b>" + dbEvent.getCategory().getName() +
+        "</b> was updated with a new event:</p>");
+      emailText.append("<p>").append("Title: ").append(dbEvent.getTitle()).append("</p>");
 
       executorService.execute(() -> {
         emailService.sendSimpleMessage(
-          "cristian.ferreiro@udc.es", // TODO cambiar a user.getEmail()
+          user.getEmail(),
           "Event Rider: The category " + dbEvent.getCategory().getName() +
             " was updated",
           emailText.toString());
@@ -269,7 +275,8 @@ public class EventService {
 
     if(!Objects.equals(event.getLocationDetails(), dbEvent.getLocationDetails())){
       dbEvent.setLocationDetails(event.getLocationDetails());
-      updatedFields.put("Location Details: ", dbEvent.getLocationDetails());
+      updatedFields.put("Location details: ",
+        StringUtils.isBlank(dbEvent.getLocationDetails()) ? "(empty)" : dbEvent.getLocationDetails());
     }
 
     if(!Objects.equals(event.getDescription(), dbEvent.getDescription())){
@@ -283,27 +290,44 @@ public class EventService {
       }
     } //TODO create category
 
+    //Mark event as unreviewed if the status is REJECTED and if it is not being updated by an admin
+    if(event.getStatus() == Event.EventStatus.REJECTED && !SecurityUtils.getCurrentUserIsAdmin()){
+      dbEvent.setStatus(Event.EventStatus.UNREVIEWED);
+    }
+    else if(!Objects.equals(event.getStatus(), dbEvent.getStatus())){
+      dbEvent.setStatus(event.getStatus());
+      updatedFields.put("Status: ", dbEvent.getStatus().name());
+    }
+
     if(!Objects.equals(event.getCancellationReason(), dbEvent.getCancellationReason())){
       dbEvent.setCancellationReason(event.getCancellationReason());
+      updatedFields.put("Cancellation reason: ",
+        StringUtils.isBlank(dbEvent.getCancellationReason()) ? "(empty)" : dbEvent.getCancellationReason());
     }
 
     if(!Objects.equals(event.getAdminComments(), dbEvent.getAdminComments())){
       dbEvent.setAdminComments(event.getAdminComments());
+      updatedFields.put("Administrator comments: ",
+        StringUtils.isBlank(dbEvent.getAdminComments()) ? "(empty)" : dbEvent.getAdminComments());
     }
 
-    if(!Objects.equals(event.getStatus(), dbEvent.getStatus())){
-      dbEvent.setStatus(event.getStatus());
+    //Send email to event host using parallel threads
+    if(SecurityUtils.getCurrentUserIsAdmin()){
+      if(!updatedFields.isEmpty()){
+        ExecutorService executorService = Executors.newFixedThreadPool(10);
+        StringBuilder emailText = new StringBuilder("<p>Your event <b>" + dbEvent.getTitle() +
+          "</b> was updated:</p>");
+        for (Map.Entry<String, String> entry : updatedFields.entrySet()) {
+          emailText.append("<p>").append(entry.getKey()).append(entry.getValue()).append("</p>");
+        }
+        executorService.execute(() -> {
+          emailService.sendSimpleMessage(
+            dbEvent.getHost().getEmail(),
+            "Event Rider: " + dbEvent.getTitle() + " was updated",
+            emailText.toString());
+        });
 
-      if(dbEvent.getStatus() == Event.EventStatus.CANCELLED){
-        //TODO email notification to event subscribers
-      }
-
-      if(dbEvent.getStatus() == Event.EventStatus.PUBLISHED){
-        //TODO email notification to event host
-      }
-
-      if(dbEvent.getStatus() == Event.EventStatus.REJECTED){
-        //TODO email notification to event host
+        executorService.shutdown();
       }
     }
 
@@ -311,14 +335,18 @@ public class EventService {
     if(!updatedFields.isEmpty()){
       ExecutorService executorService = Executors.newFixedThreadPool(10);
       for (User user: dbEvent.getSubscribers()) {
-        StringBuilder emailText = new StringBuilder("The event " + dbEvent.getTitle() +
-          " was updated with new information:\n");
+        StringBuilder emailText = new StringBuilder("<p>The event <b>" + dbEvent.getTitle() +
+          "</b> was updated:</p>");
         for (Map.Entry<String, String> entry : updatedFields.entrySet()) {
-          emailText.append(entry.getKey()).append(entry.getValue()).append("\n");
+          if(!Objects.equals(entry.getKey(), "Administrator comments: ")) {
+            //admin comments are not included
+            emailText.append("<p>").append(entry.getKey()).append(entry.getValue()).append("</p>");
+          }
         }
+        emailText.append("<br/><p>To stop receiving notifications about this event, unsubscribe from it</p>");
         executorService.execute(() -> {
           emailService.sendSimpleMessage(
-            "cristian.ferreiro@udc.es", //TODO cambiar a user.getEmail()
+            user.getEmail(),
             "Event Rider: " + dbEvent.getTitle() + " was updated",
             emailText.toString());
         });
@@ -344,23 +372,24 @@ public class EventService {
     List<User> dbUsers = userDAO.findAll();
     for (User dbUser : dbUsers) {
       boolean tomorrowEvents = false;
-      StringBuilder emailText = new StringBuilder("The following events are happening tomorrow:\n\n");
+      StringBuilder emailText = new StringBuilder("<p>The following events are happening tomorrow:</p><br/>");
       for (Event subscribedEvent : dbUser.getSubscribedEvents()){
         if(subscribedEvent.getStartingDate().toLocalDate().isEqual(
           LocalDateTime.now().toLocalDate().plusDays(1))) {
           //startingDate is tomorrow
           tomorrowEvents = true;
-          emailText.append("Title: ").append(subscribedEvent.getTitle()).append("\n");
-          emailText.append("Starting Date: ").append(subscribedEvent.getStartingDate().toLocalDate().toString())
-            .append(" ").append(subscribedEvent.getStartingDate().toLocalTime().toString()).append("\n");
-          emailText.append("Ending Date: ").append(subscribedEvent.getEndingDate().toLocalDate().toString())
-            .append(" ").append(subscribedEvent.getEndingDate().toLocalTime().toString()).append("\n\n");
+          emailText.append("<p>").append("Title: <b>").append(subscribedEvent.getTitle()).append("</b></p>");
+          emailText.append("<p>").append("Starting Date: ").append(subscribedEvent.getStartingDate().toLocalDate().toString())
+            .append(" ").append(subscribedEvent.getStartingDate().toLocalTime().toString()).append("</p>");
+          emailText.append("<p>").append("Ending Date: ").append(subscribedEvent.getEndingDate().toLocalDate().toString())
+            .append(" ").append(subscribedEvent.getEndingDate().toLocalTime().toString()).append("</p>");
+          emailText.append("<br/>");
         }
       }
       if(tomorrowEvents){
         executorService.execute(() -> {
           emailService.sendSimpleMessage(
-            "cristian.ferreiro@udc.es", //TODO cambiar a user.getEmail()
+            dbUser.getEmail(),
             "Event Rider: Subscribed events about to happen",
             emailText.toString());
         });
