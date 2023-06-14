@@ -1,6 +1,7 @@
 package es.udc.eventrider.rest.model.service.dto;
 
 import es.udc.eventrider.rest.model.domain.User;
+import es.udc.eventrider.rest.model.domain.UserAuthority;
 
 public class UserDTOBase {
   private Long id;
@@ -8,7 +9,7 @@ public class UserDTOBase {
   private String surname;
   private String email;
   private String biography;
-  private String authority;
+  private UserAuthority authority;
   private String image;
 
   public UserDTOBase() {
@@ -20,7 +21,7 @@ public class UserDTOBase {
     this.surname = user.getSurname();
     this.email = user.getEmail();
     this.biography = user.getBiography();
-    this.authority = user.getAuthority().name();
+    this.authority = user.getAuthority();
     this.image = user.getImagePath();
   }
 
@@ -64,11 +65,11 @@ public class UserDTOBase {
     this.biography = biography;
   }
 
-  public String getAuthority() {
+  public UserAuthority getAuthority() {
     return authority;
   }
 
-  public void setAuthority(String authority) {
+  public void setAuthority(UserAuthority authority) {
     this.authority = authority;
   }
 

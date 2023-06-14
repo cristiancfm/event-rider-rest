@@ -52,37 +52,37 @@ public class UserResource {
   @GetMapping("/active")
   public List<UserDTOPublic> findActive() {
     List<UserDTOPublic> users = userService.findAll().stream().filter(
-      userDTO -> (Objects.equals(userDTO.getAuthority(), UserAuthority.USER.name()) ||
-                  Objects.equals(userDTO.getAuthority(), UserAuthority.USER_VERIFIED.name())) ||
-                  Objects.equals(userDTO.getAuthority(), UserAuthority.ADMIN.name())).toList();
+      userDTO -> (userDTO.getAuthority() == UserAuthority.USER ||
+                  userDTO.getAuthority() == UserAuthority.USER_VERIFIED ||
+                  userDTO.getAuthority() == UserAuthority.ADMIN)).toList();
     return users;
   }
 
   @GetMapping("/unverified")
   public List<UserDTOPublic> findUnverified() {
     List<UserDTOPublic> users = userService.findAll().stream().filter(
-      userDTO -> (Objects.equals(userDTO.getAuthority(), UserAuthority.USER.name()))).toList();
+      userDTO -> (userDTO.getAuthority() == UserAuthority.USER)).toList();
     return users;
   }
 
   @GetMapping("/verified")
   public List<UserDTOPublic> findVerified() {
     List<UserDTOPublic> users = userService.findAll().stream().filter(
-      userDTO -> (Objects.equals(userDTO.getAuthority(), UserAuthority.USER_VERIFIED.name()))).toList();
+      userDTO -> (userDTO.getAuthority() == UserAuthority.USER_VERIFIED)).toList();
     return users;
   }
 
   @GetMapping("/admin")
   public List<UserDTOPublic> findAdmin() {
     List<UserDTOPublic> users = userService.findAll().stream().filter(
-      userDTO -> (Objects.equals(userDTO.getAuthority(), UserAuthority.ADMIN.name()))).toList();
+      userDTO -> (userDTO.getAuthority() == UserAuthority.ADMIN)).toList();
     return users;
   }
 
   @GetMapping("/suspended")
   public List<UserDTOPublic> findSuspended() {
     List<UserDTOPublic> users = userService.findAll().stream().filter(
-      userDTO -> (Objects.equals(userDTO.getAuthority(), UserAuthority.USER_SUSPENDED.name()))).toList();
+      userDTO -> (userDTO.getAuthority() == UserAuthority.USER_SUSPENDED)).toList();
     return users;
   }
 

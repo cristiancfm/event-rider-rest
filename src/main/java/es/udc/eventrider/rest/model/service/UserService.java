@@ -2,6 +2,8 @@ package es.udc.eventrider.rest.model.service;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -15,6 +17,7 @@ import es.udc.eventrider.rest.model.exception.UserEmailExistsException;
 import es.udc.eventrider.rest.model.repository.EventDao;
 import es.udc.eventrider.rest.model.repository.UserDao;
 import es.udc.eventrider.rest.model.service.dto.*;
+import es.udc.eventrider.rest.model.service.util.EmailServiceImpl;
 import es.udc.eventrider.rest.model.service.util.ImageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -39,6 +42,9 @@ public class UserService {
 
   @Autowired
   private ImageService imageService;
+
+  @Autowired
+  private EmailServiceImpl emailService;
 
   @Autowired
   private PasswordEncoder passwordEncoder;
@@ -140,8 +146,48 @@ public class UserService {
       throw new NotFoundException(user.getId().toString(), User.class);
     }
 
+    boolean isReactivated = false;
     if(!Objects.equals(user.getAuthority(), dbUser.getAuthority().name())){
-      dbUser.setAuthority(UserAuthority.valueOf(user.getAuthority()));
+      if(dbUser.getAuthority() == UserAuthority.USER_SUSPENDED){
+        //the user is being reactivated
+        isReactivated = true;
+      }
+      dbUser.setAuthority(user.getAuthority());
+    }
+
+    //Send email to user using parallel threads
+    if(dbUser.getAuthority() == UserAuthority.USER_SUSPENDED ||
+      dbUser.getAuthority() == UserAuthority.USER_VERIFIED ||
+      isReactivated) {
+      ExecutorService executorService = Executors.newFixedThreadPool(10);
+      String emailSubject = "";
+      String emailText = "";
+
+      if(dbUser.getAuthority() == UserAuthority.USER_SUSPENDED){
+        emailSubject = "Event Rider: Your account was suspended";
+        emailText = "<p>Your account was <b>suspended</b>. Event creation is no longer permitted.</p>";
+      }
+
+      if(dbUser.getAuthority() == UserAuthority.USER_VERIFIED){
+        emailSubject = "Event Rider: Your account was verified";
+        emailText = "<p>Your account was <b>verified</b>. Now you can create events " +
+          "and they will be published without reviewing.</p>";
+      }
+
+      if(isReactivated){
+        emailSubject = "Event Rider: Your account was reactivated";
+        emailText = "<p>Your account was <b>reactivated</b>. Now you can create events again.</p>";
+      }
+
+      String finalEmailSubject = emailSubject;
+      String finalEmailText = emailText;
+      executorService.execute(() -> {
+        emailService.sendSimpleMessage(
+          dbUser.getEmail(),
+          finalEmailSubject,
+          finalEmailText);
+      });
+      executorService.shutdown();
     }
 
     userDAO.update(dbUser);
