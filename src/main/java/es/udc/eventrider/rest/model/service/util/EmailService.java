@@ -1,5 +1,5 @@
 package es.udc.eventrider.rest.model.service.util;
 
 public interface EmailService {
-  //TODO
+  public void sendSimpleMessage(String to, String subject, String text);
 }
