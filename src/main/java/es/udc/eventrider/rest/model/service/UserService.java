@@ -108,8 +108,6 @@ public class UserService {
     dbUser.setSurname(user.getSurname());
     dbUser.setBiography(user.getBiography());
     dbUser.setEmail(user.getEmail());
-    //TODO dbUser.setPassword
-    //TODO dbUser.setActive
 
     dbUser.getHostedEvents().clear();
     user.getHostedEvents().forEach(e -> {
@@ -130,9 +128,6 @@ public class UserService {
     user.getFollowers().forEach(f -> {
       dbUser.getFollowers().add(userDAO.findById(f.getId()));
     });
-
-    //TODO send email updates
-    //emailService.sendSimpleMessage("cristian.ferreiro@udc.es", "Prueba de Event Rider", "Esta es una prueba");
 
     userDAO.update(dbUser);
     return new UserDTOPublic(dbUser);

@@ -217,6 +217,28 @@ public class EventService {
     }
     executorService.shutdown();
 
+    //Send email to administrators using parallel threads
+    if(dbEvent.getStatus() == Event.EventStatus.UNREVIEWED) {
+      executorService = Executors.newFixedThreadPool(10);
+      List<User> admins = userDAO.findAll().stream().filter(
+        user -> user.getAuthority() == UserAuthority.ADMIN).toList();
+
+      for (User user : admins) {
+        StringBuilder emailText = new StringBuilder("<p>The user <b>" + dbEvent.getHost().getName() + " " +
+          Objects.toString(dbEvent.getHost().getSurname(), "") + "</b> created a new event that " +
+          "is pending approval:</p>");
+        emailText.append("<p>").append("Title: ").append(dbEvent.getTitle()).append("</p>");
+
+        executorService.execute(() -> {
+          emailService.sendSimpleMessage(
+            "cristian.ferreiro@udc.es", //user.getEmail(),
+            "Event Rider: " + dbEvent.getHost().getName() + " " + dbEvent.getHost().getSurname()
+              + " created a new event",
+            emailText.toString());
+        });
+      }
+      executorService.shutdown();
+    }
 
     eventDAO.create(dbEvent);
     return new EventDTO(dbEvent);

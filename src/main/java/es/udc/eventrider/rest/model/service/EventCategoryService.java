@@ -95,9 +95,6 @@ public class EventCategoryService {
       dbEventCategory.setStatus(eventCategory.getStatus());
     }
 
-    //TODO send email updates
-    //emailService.sendSimpleMessage("cristian.ferreiro@udc.es", "Prueba de Event Rider", "Esta es una prueba");
-
     eventCategoryDAO.update(dbEventCategory);
     return new EventCategoryDTO(dbEventCategory);
   }
