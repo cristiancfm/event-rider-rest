@@ -54,7 +54,7 @@ public class DatabaseLoader {
     userService.registerAccount("pedro", "pascal", "pedro@mail.com", "pedro");
     userService.registerAccount("ramón", "rey", "ramon@mail.com", "ramon");
     User cristian = userDAO.findByEmail("cristian.ferreiro@udc.es");
-    cristian.setImagePath("profile.jpg");
+    cristian.setImagePath("0.jpg");
     cristian.setBiography("Me llamo Cristian y organizo eventos");
     userDAO.update(cristian);
 
