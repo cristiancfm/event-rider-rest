@@ -21,55 +21,57 @@ public class EventDaoJpa extends GenericDaoJpa implements EventDao {
 
     if (hasFilter) {
       queryStr += " where ";
-      if (hasFilter) {
-        String latitude = null;
-        String longitude = null;
-        String distance = null;
-        for (String key : query.keySet()) {
-          String value = query.get(key);
+      String latitude = null;
+      String longitude = null;
+      String distance = null;
+      for (String key : query.keySet()) {
+        String value = query.get(key);
 
-          if(Objects.equals(key, "title")) {
-            queryStr += "lower(e." + key + ") like lower('%" + value + "%') and ";
-          }
-
-          if(Objects.equals(key, "latitude")) {
-            latitude = value;
-          }
-
-          if(Objects.equals(key, "longitude")) {
-            longitude = value;
-          }
-
-          if(Objects.equals(key, "date")) {
-            queryStr += "cast(e.starting_date as date) <= '" + value
-              + "' and cast(e.ending_date as date) >= '" + value + "' and ";
-          }
-
-          if(Objects.equals(key, "distance")) {
-            distance = value;
-          }
-
-          if(Objects.equals(key, "category")) {
-            queryStr += "e." + key + "_id = " + value + " and ";
-          }
+        if(Objects.equals(key, "title")) {
+          queryStr += "lower(e." + key + ") like lower('%" + value + "%') and ";
         }
 
-        // apply location and distance filters
-        if(latitude != null && longitude != null && distance != null){
-          queryStr += "st_dwithin(e.point, " +
-            "st_geogfromtext('POINT(" + latitude + " " + longitude + ")'), " + distance + ") = true and ";
+        if(Objects.equals(key, "latitude")) {
+          latitude = value;
         }
 
-        if(queryStr.equals("select * from Event e where ")){  //no filters were applied
-          // delete the " WHERE "
-          queryStr = queryStr.substring(0, queryStr.length() - 7);
-        } else {
-          // delete the last " AND "
-          queryStr = queryStr.substring(0, queryStr.length() - 5);
+        if(Objects.equals(key, "longitude")) {
+          longitude = value;
         }
 
+        if(Objects.equals(key, "date")) {
+          queryStr += "cast(e.starting_date as date) <= '" + value
+            + "' and cast(e.ending_date as date) >= '" + value + "' and ";
+        }
+
+        if(Objects.equals(key, "distance")) {
+          distance = value;
+        }
+
+        if(Objects.equals(key, "category")) {
+          queryStr += "e." + key + "_id = " + value + " and ";
+        }
       }
+
+      // apply location and distance filters
+      if(latitude != null && longitude != null && distance != null){
+        queryStr += "st_dwithin(e.point, " +
+          "st_geogfromtext('POINT(" + latitude + " " + longitude + ")'), " + distance + ") = true and ";
+      }
+
+      if(queryStr.equals("select * from Event e where ")){  //no filters were applied
+        // delete the " WHERE "
+        queryStr = queryStr.substring(0, queryStr.length() - 7);
+      } else {
+        // delete the last " AND "
+        queryStr = queryStr.substring(0, queryStr.length() - 5);
+      }
+
+    } else {
+      // cancelled events are not shown by default
+      queryStr += " where e.status != 'CANCELLED' ";
     }
+
 
     // order results by event title
     queryStr += " order by e.title";
