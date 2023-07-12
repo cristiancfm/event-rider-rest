@@ -13,15 +13,15 @@ import org.springframework.context.annotation.Lazy;
 import es.udc.eventrider.rest.config.DatabaseLoader;
 
 @SpringBootApplication
-public class RestExampleApplication {
-  private final Logger logger = LoggerFactory.getLogger(RestExampleApplication.class);
+public class RestApplication {
+  private final Logger logger = LoggerFactory.getLogger(RestApplication.class);
 
   @Autowired
   @Lazy
   private DatabaseLoader databaseLoader;
 
   public static void main(String[] args) {
-    SpringApplication.run(RestExampleApplication.class, args);
+    SpringApplication.run(RestApplication.class, args);
   }
 
   @PostConstruct
