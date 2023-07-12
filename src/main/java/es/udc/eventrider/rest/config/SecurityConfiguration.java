@@ -62,7 +62,10 @@ public class SecurityConfiguration {
       .antMatchers(HttpMethod.GET, "/api/events/**").permitAll()
       .antMatchers(HttpMethod.GET, "/api/event-categories/**").permitAll()
       .antMatchers(HttpMethod.GET, "/api/users/**").permitAll()
-      .antMatchers(HttpMethod.GET, "/api/tags").permitAll()
+      .antMatchers(HttpMethod.GET, "/swagger-resources/**").permitAll()
+      .antMatchers(HttpMethod.GET, "/swagger-ui/**").permitAll()
+      .antMatchers(HttpMethod.GET, "/v2/api-docs/**").permitAll()
+      .antMatchers(HttpMethod.GET, "/webjars/**").permitAll()
       .antMatchers("/**").authenticated().and()
       .apply(securityConfigurerAdapter());
     // @formatter:on
