@@ -50,7 +50,7 @@ properties:
   clientHost: http://localhost:1234
   jwtSecretKey: sdfgsdgsdfgsdfgdsfgdfgsdfgsdgs23458h234242352amoq348agfasdf
   jwtValidity: 7200
-  mailUsername: cristiancfm123@gmail.com
-  mailPassword: fzrdzutpidknhzfs
+  mailUsername: cristian.ferreiro.montoiro@gmail.com
+  mailPassword: nsccivhafmclozhz
 # imagesPath: /tmp/images/event-rider/
   imagesPath: C:\\Users\\Public\\Pictures\\event-rider\\
