@@ -154,7 +154,7 @@ public class DatabaseLoader {
         LocalDate.of(2023, 8, 26),
         LocalTime.of(16, 0)),
       LocalDateTime.of(
-        LocalDate.of(2023, 8, 3),
+        LocalDate.of(2023, 9, 3),
         LocalTime.of(20, 0)),
       point5, "Playa de Pantín (Ferrol)",
       String.format("Competición anual de la World Surf League. Este año vamos a subir el precio de las sudaderas!"),
