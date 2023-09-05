@@ -32,9 +32,6 @@ spring:
     port: 587
     username: ${mailUsername}
     password: ${mailPassword}
-    properties:
-      mail.smtp.auth: true
-      mail.smtp.starttls.enable: true
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher

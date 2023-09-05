@@ -193,8 +193,9 @@ public class EventService {
       executorService.execute(() -> {
         emailService.sendSimpleMessage(
           user.getEmail(),
-          "Event Rider: " + dbEvent.getHost().getName() + " " + dbEvent.getHost().getSurname()
-            + " created a new event",
+          "Event Rider: " + dbEvent.getHost().getName() + " " +
+            Objects.toString(dbEvent.getHost().getSurname(), "") +
+            " created a new event",
           emailText.toString());
       });
     }
@@ -232,8 +233,9 @@ public class EventService {
         executorService.execute(() -> {
           emailService.sendSimpleMessage(
             "cristian.ferreiro@udc.es", //user.getEmail(),
-            "Event Rider: " + dbEvent.getHost().getName() + " " + dbEvent.getHost().getSurname()
-              + " created a new event",
+            "Event Rider: " + dbEvent.getHost().getName() + " " +
+              Objects.toString(dbEvent.getHost().getSurname(), "") +
+              " created a new event",
             emailText.toString());
         });
       }
