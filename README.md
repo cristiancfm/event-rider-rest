@@ -1,5 +1,17 @@
 # event-rider-rest
 
+## Introduction
+**Event Rider** is a web application to manage and visualize events, which allows
+users to create and find events happening at a specific place in a simple way.
+
+Users may filter events or view them using an interactive map, and also save events
+into their profiles or get email notifications by subscribing to events and categories or
+following other users.
+
+Administrators can manage users, events and categories using a separate section of the
+application. They can approve or reject events created by users, create or remove
+categories, suspend or mark users as verified, designate new administrators, etc.
+
 ## Dependecies
 Install the following dependencies:
 - JDK 17
@@ -13,8 +25,8 @@ Modify file `src/main/resources/application.yml` with the database credentials. 
 the `imagesPath` property with the path to the folder where the images are stored 
 (C:\folder\... on Windows systems or /folder/... on UNIX/Linux systems).
 
-It may be necessary to execute the command `CREATE EXTENSION postgis;` by opening pgAdmin, selecting the
-database event_rider, and clicking on the "Query Tool" icon.
+It may be necessary to execute the command `CREATE EXTENSION postgis;` by opening pgAdmin, 
+selecting the database event_rider, and clicking on the "Query Tool" icon.
 
 ## Running
 
