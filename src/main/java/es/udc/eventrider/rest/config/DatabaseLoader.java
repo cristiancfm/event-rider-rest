@@ -94,7 +94,7 @@ public class DatabaseLoader {
     Point point4 = geometryFactory.createPoint(new Coordinate(43.371816, -8.40451451));
     Point point5 = geometryFactory.createPoint(new Coordinate(43.639811, -8.11439908));
 
-    Event event = new Event("Meisel 93", userDAO.findByEmail("cristian.ferreiro@udc.es"),
+    Event event = new Event("Meisel 93", userDAO.findByEmail("concello@acoruna.gal"),
       LocalDateTime.of(
         LocalDate.of(2022, 10, 20),
         LocalTime.of(9, 0)),
@@ -149,7 +149,7 @@ public class DatabaseLoader {
     eventImages = new ArrayList<>();
     eventImages.add("0.jpg");
     eventImages.add("1.jpg");
-    event = new Event("Pantín Classic WSL", userDAO.findByEmail("cristian.ferreiro@udc.es"),
+    event = new Event("Pantín Classic WSL", userDAO.findByEmail("concello@acoruna.gal"),
       LocalDateTime.of(
         LocalDate.of(2023, 8, 26),
         LocalTime.of(16, 0)),
