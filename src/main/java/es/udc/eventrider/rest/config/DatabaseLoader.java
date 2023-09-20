@@ -44,6 +44,7 @@ public class DatabaseLoader {
     userService.registerAccount("admin", null, "admin@eventrider.com", "admin", true);
     userService.registerAccount("Cristian", "Ferreiro", "cristian.ferreiro@udc.es", "cristian");
     userService.registerAccount("Concello de A Coruña", null, "concello@acoruna.gal", "acoruna");
+    userService.registerAccount("Foo Fighters", null, "staff@foofighters.com", "staff");
     userService.registerAccount("María", "Machado", "maria@mail.com", "maria");
     userService.registerAccount("Laura", "Lorenzo", "laura@mail.com", "laura");
     userService.registerAccount("Pedro", "Pascal", "pedro@mail.com", "pedro");
@@ -58,6 +59,12 @@ public class DatabaseLoader {
     concelloCoruna.setBiography("Cuenta oficial del ayuntamiento de A Coruña");
     concelloCoruna.setAuthority(UserAuthority.USER_VERIFIED);
     userDAO.update(concelloCoruna);
+
+    User fooFighters = userDAO.findByEmail("staff@foofighters.com");
+    fooFighters.setImagePath("0.jpg");
+    fooFighters.setBiography("Foo Fighters Official Account");
+    fooFighters.setAuthority(UserAuthority.USER_VERIFIED);
+    userDAO.update(fooFighters);
 
     // Create event categories
     EventCategory competitionCategory = new EventCategory("Competition", EventCategory.EventCategoryStatus.PUBLISHED);
@@ -93,6 +100,8 @@ public class DatabaseLoader {
     Point point3 = geometryFactory.createPoint(new Coordinate(43.370922, -8.3959048));
     Point point4 = geometryFactory.createPoint(new Coordinate(43.371816, -8.40451451));
     Point point5 = geometryFactory.createPoint(new Coordinate(43.639811, -8.11439908));
+    Point point6 = geometryFactory.createPoint(new Coordinate(43.364466, -8.40345839));
+    Point point7 = geometryFactory.createPoint(new Coordinate(43.371893, -8.40445061));
 
     Event event = new Event("Meisel 93", userDAO.findByEmail("concello@acoruna.gal"),
       LocalDateTime.of(
@@ -112,7 +121,7 @@ public class DatabaseLoader {
 
     eventImages = new ArrayList<>();
     eventImages.add("0.jpg");
-    event = new Event("Foo Fighters Tour", userDAO.findByEmail("cristian.ferreiro@udc.es"),
+    event = new Event("Foo Fighters Tour", userDAO.findByEmail("staff@foofighters.com"),
       LocalDateTime.of(
         LocalDate.of(2023, 10, 9),
         LocalTime.of(22, 0)),
@@ -134,10 +143,10 @@ public class DatabaseLoader {
     eventImages.add("0.jpg");
     event = new Event("Feria del disco", userDAO.findByEmail("concello@acoruna.gal"),
       LocalDateTime.of(
-        LocalDate.of(2022, 12, 8),
+        LocalDate.of(2023, 11, 8),
         LocalTime.of(16, 0)),
       LocalDateTime.of(
-        LocalDate.of(2022, 12, 8),
+        LocalDate.of(2023, 11, 8),
         LocalTime.of(20, 0)),
       point3, "Plaza de María Pita",
       String.format("Feria de discos anual en el centro de A Coruña."),
@@ -163,6 +172,37 @@ public class DatabaseLoader {
       competitionCategory);
     eventDao.create(event);
 
+    eventImages = new ArrayList<>();
+    eventImages.add("0.jpg");
+    event = new Event("Noites do Porto", userDAO.findByEmail("concello@acoruna.gal"),
+      LocalDateTime.of(
+        LocalDate.of(2023, 9, 19),
+        LocalTime.of(22, 0)),
+      LocalDateTime.of(
+        LocalDate.of(2023, 9, 24),
+        LocalTime.of(0, 0)),
+      point6, "Puerto de A Coruña",
+      String.format("Conciertos en el puerto de A Coruña"),
+      eventImages,
+      Event.EventStatus.PUBLISHED,
+      concertCategory);
+    eventDao.create(event);
+
+    eventImages = new ArrayList<>();
+    eventImages.add("0.jpg");
+    event = new Event("Competición de voleibol", userDAO.findByEmail("cristian.ferreiro@udc.es"),
+      LocalDateTime.of(
+        LocalDate.of(2023, 10, 15),
+        LocalTime.of(16, 0)),
+      LocalDateTime.of(
+        LocalDate.of(2023, 10, 15),
+        LocalTime.of(22, 0)),
+      point7, "Playa del Orzán",
+      String.format("Competición amateur de voleibol"),
+      eventImages,
+      Event.EventStatus.PUBLISHED,
+      competitionCategory);
+    eventDao.create(event);
 
     eventImages = new ArrayList<>();
     event = new Event("evento sin revisar", userDAO.findByEmail("cristian.ferreiro@udc.es"),
