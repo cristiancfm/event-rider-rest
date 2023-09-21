@@ -25,7 +25,10 @@ Create an user named `event_rider_user` with the password `1234` and grant it al
 
 Modify file `src/main/resources/application.yml` with the database credentials. Modify also
 the `imagesPath` property with the path to the folder where the images are stored 
-(C:\folder\... on Windows systems or /folder/... on UNIX/Linux systems).
+(C:\folder\... on Windows systems or /folder/... on UNIX/Linux systems). 
+
+If you want the application to send email notifications, you need to set up the `mailUsername`
+and `mailPassword` properties as well.
 
 It may be necessary to execute the command `CREATE EXTENSION postgis;` by opening pgAdmin, 
 selecting the database event_rider, and clicking on the "Query Tool" icon.
