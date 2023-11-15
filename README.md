@@ -14,6 +14,8 @@ Administrators can manage users, events and categories using a separate section 
 application. They can approve or reject events created by users, create or remove
 categories, suspend or mark users as verified, designate new administrators, etc.
 
+Developed for my Bachelor's Final Project at the University of A Coruña (UDC).
+
 ## Dependecies
 Install the following dependencies:
 - JDK 17
