@@ -45,7 +45,7 @@ logging:
    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
 properties:
   clientHost: http://localhost:1234
-  jwtSecretKey: sdfgsdgsdfgsdfgdsfgdfgsdfgsdgs23458h234242352amoq348agfasdf
+  jwtSecretKey: y6UWGd3OtKCFP9X3M90mO5IQI9kcqNuj
   jwtValidity: 7200
   mailUsername: my-email@mail.com
   mailPassword: mailpassword123
