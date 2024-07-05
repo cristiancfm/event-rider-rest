@@ -22,8 +22,8 @@ Install the following dependencies:
 - PostgreSQL with the PostGIS extension
 
 ## Configuration
-Open pgAdmin and create a database named `event_rider`.
-Create an user named `event_rider_user` with the password `1234` and grant it all privileges.
+Open pgAdmin and create a database named `event_rider`. By default, the username and password
+used to access the database are `postgres`.
 
 Modify file `src/main/resources/application.yml` with the database credentials. Modify also
 the `imagesPath` property with the path to the folder where the images are stored 
