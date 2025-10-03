@@ -1,0 +1,74 @@
+{
+  "_from": "bootswatch",
+  "_id": "bootswatch@5.2.3",
+  "_inBundle": false,
+  "_integrity": "sha512-tvnW15WoOY2sEp1uT1ITDQiJy2TekQa+K+Q28WDXibleIxsY0nAoC9IylbnUPD7Q5vkCIclOuBHLVBblJYYPSA==",
+  "_location": "/bootswatch",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "tag",
+    "registry": true,
+    "raw": "bootswatch",
+    "name": "bootswatch",
+    "escapedName": "bootswatch",
+    "rawSpec": "",
+    "saveSpec": null,
+    "fetchSpec": "latest"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/bootswatch/-/bootswatch-5.2.3.tgz",
+  "_shasum": "a12bef6ea1a54f1b5b55b472c11a846d1cb77239",
+  "_spec": "bootswatch",
+  "_where": "C:\\Users\\Cristian\\OneDrive\\Universidad\\Universidad-4\\TFG\\client",
+  "author": {
+    "name": "Thomas Park"
+  },
+  "bugs": {
+    "url": "https://github.com/thomaspark/bootswatch/issues"
+  },
+  "bundleDependencies": false,
+  "deprecated": false,
+  "description": "Bootswatch is a collection of themes for Bootstrap.",
+  "devDependencies": {
+    "@lodder/grunt-postcss": "^3.1.1",
+    "autoprefixer": "^10.4.12",
+    "bootstrap": "^5.2.3",
+    "bootstrap-icons": "^1.9.1",
+    "grunt": "^1.5.3",
+    "grunt-contrib-clean": "^2.0.0",
+    "grunt-contrib-concat": "^2.0.0",
+    "grunt-contrib-connect": "^3.0.0",
+    "grunt-contrib-copy": "^1.0.0",
+    "grunt-contrib-cssmin": "^4.0.0",
+    "grunt-contrib-watch": "^1.1.0",
+    "grunt-html": "^15.1.0",
+    "grunt-sass": "^3.1.0",
+    "postcss": "^8.4.17",
+    "prismjs": "^1.25.0",
+    "sass": "^1.55.0",
+    "stylelint": "^14.11.0",
+    "stylelint-config-twbs-bootstrap": "^3.0.0"
+  },
+  "files": [
+    "dist/**/*.{css,scss}"
+  ],
+  "homepage": "https://bootswatch.com",
+  "license": "MIT",
+  "name": "bootswatch",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thomaspark/bootswatch.git"
+  },
+  "scripts": {
+    "build": "grunt swatch",
+    "docs": "grunt docs",
+    "htmllint": "grunt htmllint",
+    "release": "grunt release",
+    "stylelint": "stylelint \"dist/**/*.scss\" --rd",
+    "test": "npm run stylelint"
+  },
+  "version": "5.2.3"
+}
